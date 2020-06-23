@@ -557,9 +557,11 @@ const loadTokenSymbol = async (tokenContract, tokenAddress, { network }) => {
 }
 
 const isAddressMiniMeToken = async (collateralAddress) => {
-  const miniMeTokenCheck = app.external(collateralAddress, miniMeTokenAbi).version()
   try {
-    return await miniMeTokenCheck.toPromise() === "MMT_0.1"
+    return await app
+      .external(collateralAddress, miniMeTokenAbi)
+      .version()
+      .toPromise() === "MMT_0.1"
   } catch (error) {
     console.log(`Collateral ${collateralAddress} not minime token:`, error)
     return false
