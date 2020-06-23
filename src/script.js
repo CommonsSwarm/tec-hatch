@@ -302,11 +302,12 @@ const handleCollateralToken = async (state, { collateral, reserveRatio, virtualB
   const tokenContract = tokenContracts.has(collateral) ? tokenContracts.get(collateral) : app.external(collateral, tokenAbi)
   tokenContracts.set(collateral, tokenContract)
   // loads data related to the collateral token
-  const [symbol, name, decimals, actualBalance] = await Promise.all([
+  const [symbol, name, decimals, actualBalance, isMiniMeToken] = await Promise.all([
     loadTokenSymbol(tokenContract, collateral, settings),
     loadTokenName(tokenContract, collateral, settings),
     loadTokenDecimals(tokenContract, collateral, settings),
     loadTokenBalance(collateral, settings),
+    isAddressMiniMeToken(collateral),
   ])
   collaterals.set(collateral, {
     ...collaterals.get(collateral),
@@ -317,6 +318,7 @@ const handleCollateralToken = async (state, { collateral, reserveRatio, virtualB
     virtualSupply,
     virtualBalance,
     actualBalance, // will be polled on the frontend too, until aragon.js PR#361 gets merged
+    isMiniMeToken,
   })
   return {
     ...state,
@@ -552,6 +554,12 @@ const loadTokenSymbol = async (tokenContract, tokenAddress, { network }) => {
     symbol = fallback
   }
   return symbol
+}
+
+const isAddressMiniMeToken = async (collateralAddress) => {
+  const miniMeTokenCheck = app.external(collateralAddress, miniMeTokenAbi).version()
+  console.log("MM VERSION: ", await miniMeTokenCheck.toPromise())
+  return await miniMeTokenCheck.toPromise() && await miniMeTokenCheck.toPromise() === "MMT_0.1"
 }
 
 /**

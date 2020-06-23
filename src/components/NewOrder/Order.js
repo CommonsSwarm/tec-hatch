@@ -1,12 +1,15 @@
 import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useApi, useAppState } from '@aragon/api-react'
+import { useApi, useAppState, useConnectedAccount, useCurrentApp } from '@aragon/api-react'
 import { Button, DropDown, GU, Info, Text, TextInput, theme, unselectable, useTheme } from '@aragon/ui'
 import { MainViewContext } from '../../context'
 import Total from './Total'
 import Info_ from './Info'
 import ValidationError from '../ValidationError'
 import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
+import miniMeTokenAbi from '../../abi/MiniMeToken.json'
+import marketMakerAbi from '../../abi/BancorMarketMaker.json'
+import ethers from 'ethers'
 
 const Order = ({ isBuyOrder }) => {
   // *****************************
@@ -20,6 +23,8 @@ const Order = ({ isBuyOrder }) => {
     bondedToken: { decimals: bondedDecimals, symbol: bondedSymbol },
   } = useAppState()
   const collateralItems = useMemo(() => [collaterals.primaryCollateral], [collaterals])
+  const connectedUser = useConnectedAccount()
+  const currentApp = useCurrentApp()
 
   // *****************************
   // aragon api
@@ -81,20 +86,30 @@ const Order = ({ isBuyOrder }) => {
 
   const handleSubmit = event => {
     event.preventDefault()
-    const address = collateralItems[selectedCollateral].address
+    const collateralAddress = collateralItems[selectedCollateral].address
     if (valid) {
       const amountBn = toDecimals(amount, isBuyOrder ? collateralItems[selectedCollateral].decimals : bondedDecimals).toFixed()
-
       const minReturnBn = toDecimals(minReturnAmount, isBuyOrder ? bondedDecimals : collateralItems[selectedCollateral].decimals).toFixed()
+
       if (isBuyOrder) {
-        const intent = { token: { address, value: amountBn, spender: marketMaker } }
-        api
-          .makeBuyOrder(address, amountBn, minReturnBn, intent)
-          .toPromise()
-          .catch(console.error)
+        if (collateralItems[selectedCollateral].isMiniMeToken) {
+          const marketMakerInterface = new ethers.utils.Interface(marketMakerAbi)
+          const makeBuyOrderData = marketMakerInterface.encodeFunctionData(
+            "makeBuyOrder(address,address,uint256,uint256)", [connectedUser, collateralAddress, amountBn, minReturnBn])
+          api
+            .external(collateralAddress, miniMeTokenAbi)
+            .approveAndCall(currentApp.appAddress, amountBn, makeBuyOrderData)
+            .toPromise()
+        } else {
+          const intent = { token: { address: collateralAddress, value: amountBn, spender: marketMaker } }
+          api
+            .makeBuyOrder(collateralAddress, amountBn, minReturnBn, intent)
+            .toPromise()
+            .catch(console.error)
+        }
       } else {
         api
-          .makeSellOrder(address, amountBn, minReturnBn)
+          .makeSellOrder(collateralAddress, amountBn, minReturnBn)
           .toPromise()
           .catch(console.error)
       }
