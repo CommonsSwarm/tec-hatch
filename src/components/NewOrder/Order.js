@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import ethers from 'ethers'
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useApi, useAppState, useConnectedAccount, useCurrentApp } from '@aragon/api-react'
 import { Button, DropDown, GU, Info, Text, TextInput, theme, unselectable, useTheme } from '@aragon/ui'
@@ -9,7 +10,6 @@ import ValidationError from '../ValidationError'
 import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
 import miniMeTokenAbi from '../../abi/MiniMeToken.json'
 import marketMakerAbi from '../../abi/BancorMarketMaker.json'
-import ethers from 'ethers'
 
 const Order = ({ isBuyOrder }) => {
   // *****************************

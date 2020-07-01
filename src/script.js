@@ -13,6 +13,7 @@ import retryEvery from './utils/retryEvery'
 import { Order, Presale } from './constants'
 
 const DEBUG = true
+const MINI_ME_TOKEN_VERSION = "MMT_0.1"
 
 // abis used to call decimals, name and symbol on a token
 const tokenAbi = [].concat(tokenDecimalsAbi, tokenNameAbi, tokenSymbolAbi)
@@ -561,7 +562,7 @@ const isAddressMiniMeToken = async (collateralAddress) => {
     return await app
       .external(collateralAddress, miniMeTokenAbi)
       .version()
-      .toPromise() === "MMT_0.1"
+      .toPromise() === MINI_ME_TOKEN_VERSION
   } catch (error) {
     console.log(`Collateral ${collateralAddress} not minime token:`, error)
     return false
