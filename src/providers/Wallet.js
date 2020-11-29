@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from 'react'
 import { providers as EthersProviders } from 'ethers'
 import { UseWalletProvider, useWallet } from 'use-wallet'
 import { getUseWalletConnectors } from '../utils/web3-utils'
-import { getNetwork, DEFAULT_CHAIN_ID } from '../networks'
+import { DEFAULT_CHAIN_ID } from '../networks'
 
 const WalletAugmentedContext = React.createContext()
 
@@ -17,16 +17,6 @@ const WalletAugmented = ({ children }) => {
 
   const ethers = useMemo(() => {
     return ethereum ? new EthersProviders.Web3Provider(ethereum) : null
-    // if (!ethereum) {
-    //   return new EthersProviders.JsonRpcProvider(getNetwork()?.defaultEthNode)
-    // }
-
-    // const ensRegistry = getNetwork()?.ensRegistry
-    // return new EthersProviders.Web3Provider(ethereum, {
-    //   name: '',
-    //   chainId: DEFAULT_CHAIN_ID,
-    //   ensAddress: ensRegistry,
-    // })
   }, [ethereum])
 
   const contextValue = useMemo(() => ({ ...wallet, ethers }), [wallet, ethers])
