@@ -2,7 +2,7 @@ import React from 'react'
 import { GU, Link, useTheme, useViewport } from '@aragon/ui'
 import AccountModule from '../Account/AccountModule'
 import { useWallet } from '../../providers/Wallet'
-import TECommonsLogo from '../../assets/TECommonsLogo.png'
+import TECLogo from '../../assets/TECLogo.png'
 
 const Header = () => {
   const theme = useTheme()
@@ -35,7 +35,7 @@ const Header = () => {
           `}
         >
           <Link href="#/home" external={false}>
-            <img src={TECommonsLogo} height={layoutSmall ? 40 : 60} alt="" />
+            <img src={TECLogo} height={layoutSmall ? 40 : 70} alt="TEC logo" />
           </Link>
           {!below('large') && (
             <nav
@@ -66,7 +66,6 @@ const Header = () => {
                   border-left: 0.5px solid ${theme.border};
                 `}
               />
-              {/* <BalanceModule /> */}
             </>
           )}
         </div>

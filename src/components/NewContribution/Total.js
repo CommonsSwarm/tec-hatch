@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Text } from '@aragon/ui'
-import { useAppState } from '@aragon/api-react'
 import styled from 'styled-components'
 import { PresaleViewContext } from '../../context'
 import { formatBigNumber, toDecimals } from '../../utils/bn-utils'
+import { useAppLogic } from '../../hooks/useAppLogic'
 
 export default ({ value, onError }) => {
-  // *****************************
-  // background script state
-  // *****************************
   const {
-    presale: {
-      contributionToken: { symbol: contributionSymbol, decimals: contributionDecimals },
+    config: {
+      contributionToken: {
+        symbol: contributionSymbol,
+        decimals: contributionDecimals,
+      },
       token: { symbol, decimals },
       exchangeRate,
     },
-  } = useAppState()
+  } = useAppLogic()
 
   // *****************************
   // context state
@@ -50,7 +50,15 @@ export default ({ value, onError }) => {
       setEvaluatedPrice(null)
       onError(false, null)
     }
-  }, [value])
+  }, [
+    value,
+    decimals,
+    contributionDecimals,
+    contributionSymbol,
+    exchangeRate,
+    onError,
+    userPrimaryCollateralBalance,
+  ])
 
   return (
     <div css="display: flex; justify-content: space-between; padding: 0 5px;">
@@ -63,7 +71,9 @@ export default ({ value, onError }) => {
           <Text weight="bold">{contributionSymbol}</Text>
         </div>
         <div css="display: flex; justify-content: flex-end;">
-          {evaluatedPrice && <AmountField color="grey">~{evaluatedPrice}</AmountField>}
+          {evaluatedPrice && (
+            <AmountField color="grey">~{evaluatedPrice}</AmountField>
+          )}
           {evaluatedPrice && <Text color="grey">{symbol}</Text>}
         </div>
       </div>

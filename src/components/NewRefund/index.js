@@ -10,7 +10,11 @@ export default () => {
   const { refundPanel, setRefundPanel } = useContext(PresaleViewContext)
 
   return (
-    <SidePanel title="Refund Presale Shares" opened={refundPanel} onClose={() => setRefundPanel(false)}>
+    <SidePanel
+      title="Refund Hatch Shares"
+      opened={refundPanel}
+      onClose={() => setRefundPanel(false)}
+    >
       <Refund />
     </SidePanel>
   )

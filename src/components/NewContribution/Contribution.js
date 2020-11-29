@@ -1,46 +1,38 @@
 import React, { useEffect, useContext, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useApi, useAppState, useConnectedAccount } from '@aragon/api-react'
 import { Button, Text, TextInput, theme, unselectable, GU } from '@aragon/ui'
 import { PresaleViewContext } from '../../context'
 import Total from './Total'
 import Info from './Info'
 import ValidationError from '../ValidationError'
 import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
+import { useAppLogic } from '../../hooks/useAppLogic'
+import { useWallet } from '../../providers/Wallet'
+import BigNumber from 'bignumber.js'
 
 export default () => {
-  // *****************************
-  // background script state
-  // *****************************
+  const { account } = useWallet()
+
   const {
-    addresses: { presale },
-    collaterals,
-    presale: {
-      contributionToken: { symbol: contributionSymbol, decimals: contributionDecimals },
+    actions: { contribute, getCollateralAllowance, approveCollateralAllowance },
+    config: {
+      id: hatchAddress,
+      contributionToken: {
+        symbol: contributionSymbol,
+        decimals: contributionDecimals,
+      },
     },
-  } = useAppState()
-
-  // *****************************
-  // aragon api
-  // *****************************
-  const api = useApi()
-  const account = useConnectedAccount()
-
-  // *****************************
-  // context state
-  // *****************************
-  const { presalePanel, setPresalePanel, userPrimaryCollateralBalance } = useContext(PresaleViewContext)
-  // *****************************
-  // internal state
-  // *****************************
+  } = useAppLogic()
+  const {
+    presalePanel,
+    setPresalePanel,
+    userPrimaryCollateralBalance,
+  } = useContext(PresaleViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const valueInput = useRef(null)
 
-  // *****************************
-  // effects
-  // *****************************
   // handle reset when opening
   useEffect(() => {
     if (presalePanel) {
@@ -55,9 +47,6 @@ export default () => {
     }
   }, [presalePanel])
 
-  // *****************************
-  // handlers
-  // *****************************
   const handleValueUpdate = event => {
     setValue(event.target.value)
   }
@@ -67,14 +56,21 @@ export default () => {
     setErrorMessage(message)
   }
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault()
     if (account) {
-      const intent = { token: { address: collaterals.primaryCollateral.address, value: toDecimals(value, contributionDecimals).toFixed(), spender: presale } }
-      api
-        .contribute(toDecimals(value, contributionDecimals).toFixed(), intent)
-        .toPromise()
-        .catch(console.error)
+      const amount = toDecimals(value, contributionDecimals).toFixed()
+      const allowance = await getCollateralAllowance(account, hatchAddress)
+      // Check if we had enough token allowance to make the contribution
+      if (allowance.lt(new BigNumber(value))) {
+        // If we had some allowance we set it back to zero before approving the contribution amount
+        if (!allowance.isZero()) {
+          await approveCollateralAllowance(hatchAddress, 0)
+        }
+
+        await approveCollateralAllowance(hatchAddress, amount)
+      }
+      contribute(account, amount).catch(console.error)
     }
     setPresalePanel(false)
   }
@@ -87,19 +83,31 @@ export default () => {
             margin: ${2 * GU}px 0;
           `}
         >
-          Your balance: {formatBigNumber(userPrimaryCollateralBalance, contributionDecimals)} {contributionSymbol}
+          Your balance:{' '}
+          {formatBigNumber(userPrimaryCollateralBalance, contributionDecimals)}{' '}
+          {contributionSymbol}
         </p>
         <ValueField key="collateral">
           <label>
             <StyledTextBlock>{contributionSymbol} TO SPEND</StyledTextBlock>
           </label>
-          <TextInput ref={valueInput} type="number" value={value} onChange={handleValueUpdate} min={0} placeholder="0" step="any" required wide />
+          <TextInput
+            ref={valueInput}
+            type="number"
+            value={value}
+            onChange={handleValueUpdate}
+            min={0}
+            placeholder="0"
+            step="any"
+            required
+            wide
+          />
         </ValueField>
       </InputsWrapper>
       <Total value={value} onError={validate} />
       <ButtonWrapper>
         <Button mode="strong" type="submit" disabled={!valid || !account} wide>
-          Buy presale shares
+          Buy hatch shares
         </Button>
       </ButtonWrapper>
       {errorMessage && <ValidationError messages={[errorMessage]} />}

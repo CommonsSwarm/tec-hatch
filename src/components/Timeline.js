@@ -42,7 +42,15 @@ Timeline.defaultProps = {
   title: 'Timeline',
 }
 
-const TimelineStep = ({ title, date, description, first, last, direction, ...props }) => {
+const TimelineStep = ({
+  title,
+  date,
+  description,
+  first,
+  last,
+  direction,
+  ...props
+}) => {
   const theme = useTheme()
   const { layoutName } = useLayout()
   return (
@@ -72,7 +80,9 @@ const TimelineStep = ({ title, date, description, first, last, direction, ...pro
           padding: ${direction === 'horizontal' || date !== 0 ? 2 * GU : 0}px 0;
         `}
       >
-        {date !== 0 && <Tag mode="identifier">{new Date(date).toLocaleDateString()}</Tag>}
+        {date !== 0 && (
+          <Tag mode="identifier">{new Date(date).toLocaleDateString()}</Tag>
+        )}
       </div>
       <p
         css={`
@@ -106,7 +116,9 @@ const TimelineSegment = ({ first, last, direction }) => {
           left: calc(50% - 0.5px);
           right: auto;
           width: 1px;
-          height: ${last ? `${3 * GU + DOT_SIZE / 2 - DOT_VERTICAL_SHIFT}px` : 'auto'};
+          height: ${last
+            ? `${3 * GU + DOT_SIZE / 2 - DOT_VERTICAL_SHIFT}px`
+            : 'auto'};
           background: ${theme.border};
         `}
       />
@@ -169,7 +181,11 @@ const TimelineDot = () => {
             width: ${DOT_SIZE / (7 / 3)}px;
             height: ${DOT_SIZE / (7 / 3)}px;
             border-radius: 50%;
-            background: linear-gradient(45deg, ${theme.accentEnd} 0%, ${theme.accentStart} 100%);
+            background: linear-gradient(
+              45deg,
+              ${theme.accentEnd} 0%,
+              ${theme.accentStart} 100%
+            );
           `}
         />
       </div>

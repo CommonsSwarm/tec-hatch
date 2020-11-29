@@ -1,32 +1,23 @@
 import React from 'react'
-import { useApi, useAppState, useConnectedAccount, GU } from '@aragon/api-react'
-import { Button, Info } from '@aragon/ui'
+import { Button, Info, GU } from '@aragon/ui'
 import Information from './Information'
 import { formatBigNumber } from '../../utils/bn-utils'
+import { useAppLogic } from '../../hooks/useAppLogic'
+import { useWallet } from '../../providers/Wallet'
 
 export default () => {
-  // *****************************
-  // background script state
-  // *****************************
+  const { account } = useWallet()
   const {
-    presale: {
+    actions: { refund },
+    config: {
       contributionToken: { symbol, decimals },
     },
     contributions,
-  } = useAppState()
-
-  // *****************************
-  // aragon api
-  // *****************************
-  const api = useApi()
-  const account = useConnectedAccount()
+  } = useAppLogic()
 
   const handleRefund = vestedPurchaseId => {
     if (account) {
-      api
-        .refund(account, vestedPurchaseId)
-        .toPromise()
-        .catch(console.error)
+      refund(account, vestedPurchaseId).catch(console.error)
     }
   }
 
@@ -42,8 +33,13 @@ export default () => {
                 margin: ${4 * GU}px 0;
               `}
             >
-              <Button mode="strong" wide onClick={() => handleRefund(c.vestedPurchaseId)}>
-                Refund contribution of {formatBigNumber(c.value, decimals)} {symbol} made on {new Date(c.timestamp).toLocaleDateString()}
+              <Button
+                mode="strong"
+                wide
+                onClick={() => handleRefund(c.vestedPurchaseId)}
+              >
+                Refund contribution of {formatBigNumber(c.value, decimals)}{' '}
+                {symbol} made on {new Date(c.timestamp).toLocaleDateString()}
               </Button>
             </div>
           )

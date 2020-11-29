@@ -1,32 +1,26 @@
 import React from 'react'
-import { AragonApi, useAppState, useGuiStyle } from '@aragon/api-react'
-import { Main, SyncIndicator } from '@aragon/ui'
-import appStateReducer from './appStateReducer'
-import PresaleView from './views/PresaleView'
+import { Main } from '@aragon/ui'
+import { WalletProvider } from './providers/Wallet'
+import { ConnectProvider as Connect } from './providers/Connect'
+
+import MainView from './components/MainView'
 
 import './assets/global.css'
+import { AppStateProvider } from './providers/AppState'
+import PresaleView from './views/PresaleView'
 
-const App = () => {
-  // *****************************
-  // background script state
-  // *****************************
-  const { isReady  } = useAppState()
-
-  // *****************************
-  // aragon api
-  // *****************************
-  const { appearance } = useGuiStyle()
-
+export default () => {
   return (
-    <Main theme={appearance} assetsUrl="./aragon-ui">
-      <SyncIndicator visible={!isReady} />
-      {isReady && <PresaleView />}
-    </Main>
+    <WalletProvider>
+      <Connect>
+        <AppStateProvider>
+          <Main theme="dark" assetsUrl="./aragon-ui" layout={false}>
+            <MainView>
+              <PresaleView />
+            </MainView>
+          </Main>
+        </AppStateProvider>
+      </Connect>
+    </WalletProvider>
   )
 }
-
-export default () => (
-  <AragonApi reducer={appStateReducer}>
-    <App />
-  </AragonApi>
-)

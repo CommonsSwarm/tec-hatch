@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-import { useAppState, useApi, useConnectedAccount } from '@aragon/api-react'
 import styled from 'styled-components'
 import {
   Box,
@@ -12,7 +11,6 @@ import {
   DataView,
   Text,
   DropDown,
-  shortenAddress,
   useTheme,
   unselectable,
   IdentityBadge,
@@ -24,6 +22,8 @@ import PresaleGoal from '../components/PresaleGoal'
 import Timeline from '../components/Timeline'
 import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
+import { useAppLogic } from '../hooks/useAppLogic'
+import { useWallet } from '../providers/Wallet'
 
 export default () => {
   const theme = useTheme()
@@ -31,23 +31,22 @@ export default () => {
   // background script, layout, connected account and dropdown states
   // *****************************
   const {
-    presale: { period, vestingCliffPeriod, vestingCompletePeriod, contributionToken, token },
+    actions: { openPresale },
+    config: {
+      period,
+      vestingCliffPeriod,
+      vestingCompletePeriod,
+      contributionToken,
+      token,
+    },
     contributions,
-  } = useAppState()
+  } = useAppLogic()
   const { layoutName } = useLayout()
-  const connectedAccount = useConnectedAccount()
+  const { account: connectedAccount } = useWallet()
   const [selected, setSelection] = useState(0)
-
-  // *****************************
-  // aragon api
-  // *****************************
-  const api = useApi()
-
-  // *****************************
-  // context state
-  // *****************************
   const { openDate, state } = useContext(PresaleViewContext)
-  const presaleEnded = state !== Presale.state.PENDING && state !== Presale.state.FUNDING
+  const presaleEnded =
+    state !== Presale.state.PENDING && state !== Presale.state.FUNDING
   const noOpenDate = state === Presale.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
   const vestingCliffDate = addMilliseconds(openDate, vestingCliffPeriod)
@@ -58,17 +57,16 @@ export default () => {
    * @returns {void}
    */
   const handleOpenPresale = () => {
-    api
-      .openPresale()
-      .toPromise()
-      .catch(console.error)
+    openPresale().catch(console.error)
   }
 
   let contributionList = [...contributions.entries()]
     .map(item => {
       const reducedValues = item[1].reduce((prev, current) => {
         return {
-          amount: new BigNumber(prev.amount).plus(new BigNumber(current.amount)),
+          amount: new BigNumber(prev.amount).plus(
+            new BigNumber(current.amount)
+          ),
           value: new BigNumber(prev.value).plus(new BigNumber(current.value)),
         }
       })
@@ -81,7 +79,10 @@ export default () => {
 
   contributionList = contributionList.map(item => ({
     account: item[0],
-    contributions: formatBigNumber(item[1].value, contributionToken.decimals) + ' ' + contributionToken.symbol,
+    contributions:
+      formatBigNumber(item[1].value, contributionToken.decimals) +
+      ' ' +
+      contributionToken.symbol,
     shares: formatBigNumber(item[1].amount, token.decimals),
   }))
 
@@ -89,11 +90,15 @@ export default () => {
     return item.account === connectedAccount
   })[0]
 
-  const contributionAccounts = contributionList.map(item => item.account)
+  const contributionAccounts = contributionList.map(({ account }) => (
+    <IdentityBadge key={account} entity={account} />
+  ))
   contributionAccounts.unshift('All')
 
   if (selected !== 0) {
-    contributionList = contributionList.filter(item => item.account === contributionAccounts[selected])
+    contributionList = contributionList.filter(
+      item => item.account === contributionAccounts[selected].key
+    )
   }
 
   return (
@@ -104,10 +109,15 @@ export default () => {
           secondary={
             <div>
               <PresaleGoal />
-              <Box heading="Marketplace Period">
+              <Box heading="Hatch Period">
                 {noOpenDate && (
-                  <Button wide mode="strong" label="Open presale" onClick={handleOpenPresale}>
-                    Open presale
+                  <Button
+                    wide
+                    mode="strong"
+                    label="Open hatch"
+                    onClick={handleOpenPresale}
+                  >
+                    Open hatch
                   </Button>
                 )}
                 {presaleEnded && (
@@ -116,7 +126,7 @@ export default () => {
                       font-size: 16px;
                     `}
                   >
-                    Presale closed
+                    Hatch closed
                   </p>
                 )}
                 {state === Presale.state.FUNDING && (
@@ -176,12 +186,28 @@ export default () => {
           primary={
             <div>
               <Timeline
-                title="Marketplace Timeline"
+                title="Hatch Timeline"
                 steps={[
-                  ['Presale opens', openDate, 'Contributors can buy presale shares'],
-                  ['Presale ends', openDate === 0 ? 0 : endDate, 'Contributors can ask for refund if presale has failed'],
-                  ['Cliff period ends', openDate === 0 ? 0 : vestingCliffDate, 'Presale shares start vesting'],
-                  ['Vesting period ends', openDate === 0 ? 0 : vestingCompleteDate, 'Presale shares are totally vested'],
+                  [
+                    'Hatch opens',
+                    openDate,
+                    'Contributors can buy hatch shares',
+                  ],
+                  [
+                    'Hatch ends',
+                    openDate === 0 ? 0 : endDate,
+                    'Contributors can ask for refund if hatch has failed',
+                  ],
+                  [
+                    'Cliff period ends',
+                    openDate === 0 ? 0 : vestingCliffDate,
+                    'Hatch shares start vesting',
+                  ],
+                  [
+                    'Vesting period ends',
+                    openDate === 0 ? 0 : vestingCompleteDate,
+                    'Hatch shares are totally vested',
+                  ],
                 ]}
               />
               <DataView
@@ -200,8 +226,22 @@ export default () => {
                     <DropDown
                       items={contributionAccounts}
                       selected={selected}
-                      renderLabel={() => shortenAddress(contributionAccounts[selected])}
-                      onChange={idx => setSelection(idx)}
+                      renderLabel={() => {
+                        if (selected === 0) {
+                          return contributionAccounts[selected]
+                        }
+                        else {
+                          return (
+                            <IdentityBadge
+                              key={contributionAccounts[selected]}
+                              entity={contributionAccounts[selected]}
+                            />
+                          )
+                        }
+                      }}
+                      onChange={idx => {
+                        setSelection(idx)
+                      }}
                       css="min-width: auto;"
                     />
                   </div>

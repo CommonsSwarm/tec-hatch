@@ -10,7 +10,11 @@ export default () => {
   const { presalePanel, setPresalePanel } = useContext(PresaleViewContext)
 
   return (
-    <SidePanel title="New Contribution" opened={presalePanel} onClose={() => setPresalePanel(false)}>
+    <SidePanel
+      title="New Contribution"
+      opened={presalePanel}
+      onClose={() => setPresalePanel(false)}
+    >
       <Contribution />
     </SidePanel>
   )
