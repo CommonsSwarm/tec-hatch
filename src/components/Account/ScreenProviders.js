@@ -1,13 +1,6 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  ButtonBase,
-  GU,
-  Link,
-  RADIUS,
-  textStyle,
-  useTheme,
-} from '@1hive/1hive-ui'
+import { ButtonBase, GU, Link, RADIUS, textStyle, useTheme} from '@aragon/ui'
 import { getProviderFromUseWalletId } from '../../ethereum-providers'
 import { getUseWalletProviders } from '../../utils/web3-utils'
 
