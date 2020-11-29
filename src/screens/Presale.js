@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import {
   Box,
@@ -17,7 +17,6 @@ import {
 } from '@aragon/ui'
 import BigNumber from 'bignumber.js'
 import addMilliseconds from 'date-fns/addMilliseconds'
-import { PresaleViewContext } from '../context'
 import PresaleGoal from '../components/PresaleGoal'
 import Timeline from '../components/Timeline'
 import { Presale } from '../constants'
@@ -27,13 +26,12 @@ import { useWallet } from '../providers/Wallet'
 
 export default () => {
   const theme = useTheme()
-  // *****************************
-  // background script, layout, connected account and dropdown states
-  // *****************************
   const {
     actions: { openPresale },
     config: {
       period,
+      openDate,
+      state,
       vestingCliffPeriod,
       vestingCompletePeriod,
       contributionToken,
@@ -44,7 +42,6 @@ export default () => {
   const { layoutName } = useLayout()
   const { account: connectedAccount } = useWallet()
   const [selected, setSelection] = useState(0)
-  const { openDate, state } = useContext(PresaleViewContext)
   const presaleEnded =
     state !== Presale.state.PENDING && state !== Presale.state.FUNDING
   const noOpenDate = state === Presale.state.PENDING && openDate === 0
@@ -229,8 +226,7 @@ export default () => {
                       renderLabel={() => {
                         if (selected === 0) {
                           return contributionAccounts[selected]
-                        }
-                        else {
+                        } else {
                           return (
                             <IdentityBadge
                               key={contributionAccounts[selected]}
