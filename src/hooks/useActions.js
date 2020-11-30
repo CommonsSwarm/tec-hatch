@@ -2,87 +2,103 @@ import { useCallback } from 'react'
 import BigNumber from 'bignumber.js'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
-import { getAppByName } from '../utils/connector-utils'
 import { useContract } from './useContract'
-
-import MarketMakerAbi from '../abi/BancorMarketMaker.json/'
+import MarketplaceAbi from '../abi/Marketplace.json'
 import TokenAbi from '../abi/Token.json'
 
-const GAS_LIMIT = 450000
-const APP_NAME = process.env.REACT_APP_PRESALE_APP_NAME
-const MARKET_MAKER_ADDRESS = process.env.REACT_APP_MARKETMAKER_APP_ADDRESS
-
-const EMPTY_TOKEN = { id: '', symbol: '', decimals: 18 }
-
-const computeTokenValue = (value, decimals) =>
-  new BigNumber(Math.floor(parseInt(value, 10) / Math.pow(10, decimals)))
+// const GAS_LIMIT = 600000
+const MARKETPLACE_ADDRESS = process.env.REACT_APP_MARKETPLACE_APP_ADDRESS
 
 const useActions = (onDone = () => {}) => {
-  const { account, ethers } = useWallet()
-  const { installedApps, config } = useAppState()
-  const token = config ? config.contributionToken : EMPTY_TOKEN
-  const marketMaker = useContract(MARKET_MAKER_ADDRESS, MarketMakerAbi)
+  const { account, web3 } = useWallet()
+  const { organization, config } = useAppState()
+  const token = config ? config.contributionToken : {}
+  /**
+   * Need to instantiate marketplace contract to call balanceOf.
+   * The marketplace app from Connect doesn't include public methods in intents
+   * property
+   */
+  const marketplace = useContract(MARKETPLACE_ADDRESS, MarketplaceAbi)
   const contributionToken = useContract(token.id, TokenAbi)
-  const presaleApp = getAppByName(installedApps, APP_NAME)
 
   const openPresale = useCallback(async () => {
-    sendIntent(presaleApp, 'openPresale', [], { ethers, from: account })
+    sendIntent(organization, MARKETPLACE_ADDRESS, 'openPresale', [], {
+      web3,
+      from: account,
+    })
 
     onDone()
-  }, [account, presaleApp, ethers, onDone])
+  }, [account, organization, web3, onDone])
 
   const closePresale = useCallback(() => {
-    sendIntent(presaleApp, 'closePresale', [], { ethers, from: account })
+    sendIntent(organization, MARKETPLACE_ADDRESS, 'closePresale', [], {
+      web3,
+      from: account,
+    })
 
     onDone()
-  }, [account, presaleApp, ethers, onDone])
+  }, [account, organization, web3, onDone])
 
   const contribute = useCallback(
-    async (contributor, value) => {
-      sendIntent(presaleApp, 'contribute', [contributor, value], {
-        ethers,
-        from: account,
-      })
-
-      onDone()
+    async value => {
+      sendIntent(
+        organization,
+        MARKETPLACE_ADDRESS,
+        'contribute',
+        [value],
+        {
+          web3,
+          from: account,
+        },
+        { onTxCreated: onDone }
+      )
     },
-    [account, presaleApp, ethers, onDone]
+    [account, organization, web3, onDone]
   )
 
   const refund = useCallback(
     async (contributor, vestedPurchaseId) => {
-      sendIntent(presaleApp, 'refund', [contributor, vestedPurchaseId], {
-        ethers,
-        from: account,
-      })
+      sendIntent(
+        organization,
+        MARKETPLACE_ADDRESS,
+        'refund',
+        [contributor, vestedPurchaseId],
+        { web3, from: account }
+      )
 
       onDone()
     },
-    [account, presaleApp, ethers, onDone]
+    [account, organization, web3, onDone]
   )
 
   const getCollateralAllowance = useCallback(
     async (owner, spender) => {
-      const allowance = await contributionToken.allowance(owner, spender)
-      return computeTokenValue(allowance)
+      const allowance = await contributionToken.methods
+        .allowance(owner, spender)
+        .call({ from: account })
+      return new BigNumber(allowance)
     },
-    [contributionToken]
+    [contributionToken, account]
   )
 
   const approveCollateralAllowance = useCallback(
     async (spender, amount) => {
-      const success = await contributionToken.approve(spender, amount)
+      const success = await contributionToken.methods
+        .approve(spender, amount)
+        .send({ from: account })
       return success
     },
-    [contributionToken]
+    [contributionToken, account]
   )
 
   const getEntityTokenBalance = useCallback(
-    async (entity, tokenAddress, decimals) => {
-      const balance = await marketMaker.balanceOf(entity, tokenAddress)
-      return computeTokenValue(balance)
+    async (entity, tokenAddress) => {
+      const balance = await marketplace.methods
+        .balanceOf(entity, tokenAddress)
+        .call({ from: account })
+      return new BigNumber(balance)
     },
-    [marketMaker]
+    [marketplace, account]
   )
 
   return {
@@ -96,12 +112,23 @@ const useActions = (onDone = () => {}) => {
   }
 }
 
-const sendIntent = async (app, fn, params, { ethers, from }) => {
+const sendIntent = async (
+  org,
+  appAddress,
+  fn,
+  params,
+  { web3, from },
+  { onTxCreated = () => {}, onCompleted = () => {} } = {}
+) => {
   try {
-    const intent = await app.intent(fn, params, { actAs: from })
-    const { to, data } = intent.transactions[0] // TODO: Handle errors when no tx path is found
+    const intent = org.appIntent(appAddress, fn, params)
+    const [tx] = await intent.transactions(from)
+    const { data, to } = tx
 
-    ethers.getSigner().sendTransaction({ data, to, gasLimit: GAS_LIMIT })
+    web3.eth
+      .sendTransaction({ from, to, data })
+      .on('transactionHash', () => onTxCreated())
+      .on('receipt', () => onCompleted())
   } catch (err) {
     console.error('Could not create tx:', err)
   }

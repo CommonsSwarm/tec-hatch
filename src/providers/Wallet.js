@@ -1,8 +1,8 @@
 import React, { useContext, useMemo } from 'react'
-import { providers as EthersProviders } from 'ethers'
+import Web3 from 'web3'
 import { UseWalletProvider, useWallet } from 'use-wallet'
 import { getUseWalletConnectors } from '../utils/web3-utils'
-import { DEFAULT_CHAIN_ID } from '../networks'
+import { getNetwork } from '../networks'
 
 const WalletAugmentedContext = React.createContext()
 
@@ -10,16 +10,19 @@ const useWalletAugmented = () => {
   return useContext(WalletAugmentedContext)
 }
 
-// Adds Ethers.js to the useWallet() object
+// Adds Web3.js to the useWallet() object
 const WalletAugmented = ({ children }) => {
   const wallet = useWallet()
   const { ethereum } = wallet
 
-  const ethers = useMemo(() => {
-    return ethereum ? new EthersProviders.Web3Provider(ethereum) : null
+  const web3 = useMemo(() => {
+    if (ethereum) {
+      return new Web3(ethereum)
+    }
+    return null
   }, [ethereum])
 
-  const contextValue = useMemo(() => ({ ...wallet, ethers }), [wallet, ethers])
+  const contextValue = useMemo(() => ({ ...wallet, web3 }), [wallet, web3])
 
   return (
     <WalletAugmentedContext.Provider value={contextValue}>
@@ -29,7 +32,7 @@ const WalletAugmented = ({ children }) => {
 }
 
 const WalletProvider = ({ children }) => {
-  const chainId = DEFAULT_CHAIN_ID
+  const { chainId } = getNetwork()
 
   const connectors = getUseWalletConnectors()
   return (
