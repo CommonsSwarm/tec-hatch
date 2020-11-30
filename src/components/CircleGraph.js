@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, color } from '@aragon/ui'
 import styled from 'styled-components'
-import { Transition, animated } from 'react-spring/renderprops'
+import { Spring, animated } from 'react-spring/renderprops'
 
 const BORDER_WIDTH = 4
 
@@ -15,8 +15,9 @@ const CircleGraph = ({ value, label, size, color, width }) => {
   const theme = useTheme()
   const length = Math.PI * 2 * (size - width)
   const radius = (size - width) / 2
+
   return (
-    <Transition to={{ progressValue: value }} native>
+    <Spring to={{ progressValue: value }} native>
       {({ progressValue }) => (
         <Main
           style={{
@@ -65,7 +66,7 @@ const CircleGraph = ({ value, label, size, color, width }) => {
           </Label>
         </Main>
       )}
-    </Transition>
+    </Spring>
   )
 }
 
@@ -113,4 +114,4 @@ const Label = styled(animated.div)`
   color: ${props => props.theme.content};
 `
 
-export default CircleGraph
+export default React.memo(CircleGraph)
