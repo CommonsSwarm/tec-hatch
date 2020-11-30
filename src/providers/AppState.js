@@ -12,19 +12,17 @@ export const AppStateProvider = ({ children }) => {
     organization,
     loadingAppData,
   } = useOrgData()
-
   const appLoading = !errors && loadingAppData
 
   return (
     <AppStateContext.Provider
       value={{
         config,
-        errors: { orgErrors: errors /* userErrors */ },
+        errors: { orgErrors: errors },
         installedApps,
         organization,
         isLoading: appLoading,
         presaleConnector,
-        /* user, */
       }}
     >
       {children}

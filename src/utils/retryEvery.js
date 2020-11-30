@@ -14,7 +14,10 @@
  * }, 1000, 2)
  *
  */
-export default async (callback, { initialRetryTimer = 1000, increaseFactor = 3, maxRetries = 3 } = {}) => {
+export default async (
+  callback,
+  { initialRetryTimer = 1000, increaseFactor = 3, maxRetries = 3 } = {}
+) => {
   const sleep = time => new Promise(resolve => setTimeout(resolve, time))
 
   let retryNum = 0
@@ -29,7 +32,9 @@ export default async (callback, { initialRetryTimer = 1000, increaseFactor = 3, 
 
       // Exponentially backoff attempts
       const nextRetryTime = retryTimer * increaseFactor
-      console.log(`Retrying in ${nextRetryTime}s... (attempt ${retryNum} of ${maxRetries})`)
+      console.log(
+        `Retrying in ${nextRetryTime}s... (attempt ${retryNum} of ${maxRetries})`
+      )
       await sleep(nextRetryTime)
       return attempt(nextRetryTime)
     }

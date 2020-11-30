@@ -7,6 +7,7 @@ const DOT_VERTICAL_SHIFT = 0.5 * GU
 
 const Timeline = ({ title, steps }) => {
   const { layoutName } = useLayout()
+
   return (
     <Box heading={title} padding={0}>
       <div
@@ -53,6 +54,7 @@ const TimelineStep = ({
 }) => {
   const theme = useTheme()
   const { layoutName } = useLayout()
+
   return (
     <section
       {...props}

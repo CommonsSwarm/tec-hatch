@@ -10,7 +10,6 @@ const AccountModuleErrorScreen = ({ error, onBack }) => {
   const elementRef = useRef()
 
   const [title, secondary] = useMemo(() => {
-    console.log(error)
     if (error instanceof UnsupportedChainError) {
       return [
         'Wrong network',

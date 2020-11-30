@@ -45,12 +45,26 @@ export const fromDecimals = (value, decimals) => {
  * @param {String} opts.numberSuffix - suffix to put at the end, default ''
  * @returns {String} the formatted value
  */
-export const formatBigNumber = (value, decimals, { dp = 2, rm = 1, keepSign = false, numberPrefix = '', numberSuffix = '', commify = true } = {}) => {
+export const formatBigNumber = (
+  value,
+  decimals,
+  {
+    dp = 2,
+    rm = 1,
+    keepSign = false,
+    numberPrefix = '',
+    numberSuffix = '',
+    commify = true,
+  } = {}
+) => {
   const valueDecimals = fromDecimals(value, decimals)
   const sign = valueDecimals.isPositive() ? '+' : '-'
   const prefix = keepSign ? `${sign}${numberPrefix}` : `${numberPrefix}`
 
-  return `${prefix}${valueDecimals.abs().toFormat(dp, rm, { ...FORMAT, groupSeparator: commify ? ',' : '' })}${numberSuffix}`
+  return `${prefix}${valueDecimals.abs().toFormat(dp, rm, {
+    ...FORMAT,
+    groupSeparator: commify ? ',' : '',
+  })}${numberSuffix}`
 }
 
 /**
