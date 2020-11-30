@@ -23,11 +23,14 @@ import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useAppLogic } from '../hooks/useAppLogic'
 import { useWallet } from '../providers/Wallet'
+import useActions from '../hooks/useActions'
+import { useAppState } from '../providers/AppState'
 
 export default () => {
   const theme = useTheme()
+  const { account: connectedAccount } = useWallet()
+  const { openPresale } = useActions()
   const {
-    actions: { openPresale },
     config: {
       period,
       openDate,
@@ -37,10 +40,9 @@ export default () => {
       contributionToken,
       token,
     },
-    contributions,
-  } = useAppLogic()
+  } = useAppState()
+  const { contributions } = useAppLogic()
   const { layoutName } = useLayout()
-  const { account: connectedAccount } = useWallet()
   const [selected, setSelection] = useState(0)
   const presaleEnded =
     state !== Presale.state.PENDING && state !== Presale.state.FUNDING
@@ -113,6 +115,7 @@ export default () => {
                     mode="strong"
                     label="Open hatch"
                     onClick={handleOpenPresale}
+                    disabled={!connectedAccount}
                   >
                     Open hatch
                   </Button>
@@ -229,8 +232,8 @@ export default () => {
                         } else {
                           return (
                             <IdentityBadge
-                              key={contributionAccounts[selected]}
-                              entity={contributionAccounts[selected]}
+                              key={contributionAccounts[selected].key}
+                              entity={contributionAccounts[selected].key}
                             />
                           )
                         }

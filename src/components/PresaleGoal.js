@@ -3,31 +3,31 @@ import { Box, Button, useTheme, GU, color } from '@aragon/ui'
 import CircleGraph from '../components/CircleGraph'
 import { PresaleViewContext } from '../context'
 import { Presale } from '../constants'
-import { useAppLogic } from '../hooks/useAppLogic'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useWallet } from '../providers/Wallet'
+import useActions from '../hooks/useActions'
+import { useAppState } from '../providers/AppState'
 
-export default () => {
+export default React.memo(() => {
   const theme = useTheme()
   const { account } = useWallet()
+  const { closePresale } = useActions()
   const {
-    actions: { closePresale },
     config: {
       contributionToken: { symbol, decimals },
       goal,
       totalRaised,
       state,
     },
-  } = useAppLogic()
+  } = useAppState()
   const { setRefundPanel } = useContext(PresaleViewContext)
-
   // *****************************
   // misc
   // *****************************
   const circleColor = {
     [Presale.state.PENDING]: color('#ecedf1'),
     [Presale.state.FUNDING]: theme.accent,
-    [Presale.state.GOAL_REACHED]: theme.positive,
+    [Presale.state.GOALREACHED]: theme.positive,
     [Presale.state.REFUNDING]: theme.negative,
     [Presale.state.CLOSED]: color('#21c1e7'),
   }
@@ -83,7 +83,7 @@ export default () => {
           </span>{' '}
           {symbol}
         </p>
-        {state === Presale.state.GOAL_REACHED && (
+        {state === Presale.state.GOALREACHED && (
           <>
             <p
               css={`
@@ -134,4 +134,4 @@ export default () => {
       </div>
     </Box>
   )
-}
+})

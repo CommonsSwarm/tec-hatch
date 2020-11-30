@@ -1,13 +1,11 @@
 import React from 'react'
-import { ScrollView, SyncIndicator, useViewport, Layout } from '@aragon/ui'
-import { useAppLogic } from '../hooks/useAppLogic'
+import { ScrollView, SyncIndicator, Layout } from '@aragon/ui'
 
 import Header from './Header/Header'
+import { useAppState } from '../providers/AppState'
 
 const MainView = ({ children }) => {
-  const { isLoading } = useAppLogic()
-  const { below } = useViewport()
-  // const layoutSmall = below('medium')
+  const { isLoading } = useAppState()
 
   return (
     <div

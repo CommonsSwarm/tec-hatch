@@ -3,7 +3,6 @@ import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import BigNumber from 'bignumber.js'
 import { Header, Button } from '@aragon/ui'
 import { useInterval } from '../hooks/use-interval'
-import { useAppLogic } from '../hooks/useAppLogic'
 import { useWallet } from '../providers/Wallet'
 
 import { Presale as PresaleConstants, Polling } from '../constants'
@@ -11,12 +10,14 @@ import Presale from '../screens/Presale'
 import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
 import { PresaleViewContext } from '../context'
+import useActions from '../hooks/useActions'
+import { useAppState } from '../providers/AppState'
 // import { IdentityProvider } from '../components/IdentityManager'
 
 export default () => {
   const { account: connectedUser } = useWallet()
+  const { getEntityTokenBalance } = useActions()
   const {
-    actions: { getEntityTokenBalance },
     config: {
       state,
       contributionToken: {
@@ -24,7 +25,7 @@ export default () => {
         decimals: contributionDecimals,
       },
     },
-  } = useAppLogic()
+  } = useAppState()
   const [presalePanel, setPresalePanel] = useState(false)
   const [refundPanel, setRefundPanel] = useState(false)
   // *****************************

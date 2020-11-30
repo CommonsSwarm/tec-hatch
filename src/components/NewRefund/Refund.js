@@ -4,16 +4,18 @@ import Information from './Information'
 import { formatBigNumber } from '../../utils/bn-utils'
 import { useAppLogic } from '../../hooks/useAppLogic'
 import { useWallet } from '../../providers/Wallet'
+import useActions from '../../hooks/useActions'
+import { useAppState } from '../../providers/AppState'
 
 export default () => {
   const { account } = useWallet()
+  const { refund } = useActions()
   const {
-    actions: { refund },
     config: {
       contributionToken: { symbol, decimals },
     },
-    contributions,
-  } = useAppLogic()
+  } = useAppState()
+  const { contributions } = useAppLogic()
 
   const handleRefund = vestedPurchaseId => {
     if (account) {
