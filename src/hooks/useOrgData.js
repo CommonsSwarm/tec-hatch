@@ -18,8 +18,7 @@ const useOrgData = () => {
   const [apps, appsStatus] = useApps()
   const [presaleApp] = useApp(APP_NAME)
   const [permissions, permissionsStatus] = usePermissions()
-
-  const PresaleAppPermissions = useMemo(() => {
+  const presaleAppPermissions = useMemo(() => {
     if (
       !permissions ||
       permissionsStatus.loading ||
@@ -42,9 +41,10 @@ const useOrgData = () => {
 
     const fetchPresaleConnector = async () => {
       try {
-        const roundRobinConnector = await connectPresale(presaleApp)
+        const presaleConnector = await connectPresale(presaleApp)
+        console.log(presaleConnector)
         if (!cancelled) {
-          setPresaleConnector(roundRobinConnector)
+          setPresaleConnector(presaleConnector)
         }
       } catch (err) {
         console.error(`Error fetching presale connector: ${err}`)
@@ -74,7 +74,7 @@ const useOrgData = () => {
     presaleConnector,
     installedApps: apps,
     organization,
-    permissions: PresaleAppPermissions,
+    permissions: presaleAppPermissions,
     loadingAppData: loadingData,
   }
 }

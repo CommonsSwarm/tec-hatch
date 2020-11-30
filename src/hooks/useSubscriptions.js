@@ -23,6 +23,7 @@ export const useConfigSubscription = presaleConnector => {
 
     rawConfigRef.current = rawConfig
     const transformedConfig = transformConfigData(config)
+
     setConfig(transformedConfig)
   }, [])
 
@@ -66,7 +67,6 @@ export const useContributionsSubscription = () => {
       },
       new Map()
     )
-
     setContributions(transformedContributions)
   }, [])
 
@@ -76,6 +76,7 @@ export const useContributionsSubscription = () => {
     }
 
     contributionsSubscription.current = presaleConnector.onContributions(
+      // TODO: Add pagination and remove hard-coded value
       { first: 1000, skip: 0 },
       onContributionsHandler
     )
