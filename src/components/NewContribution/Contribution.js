@@ -1,20 +1,35 @@
 import React, { useEffect, useContext, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Text, TextInput, theme, unselectable, GU } from '@aragon/ui'
+import {
+  Button,
+  Text,
+  TextInput,
+  theme,
+  unselectable,
+  GU,
+  LoadingRing,
+} from '@aragon/ui'
 import { PresaleViewContext } from '../../context'
 import Total from './Total'
 import Info from './Info'
+import TxInfo from './TxInfo'
 import ValidationError from '../ValidationError'
 import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
-import { useAppLogic } from '../../hooks/useAppLogic'
 import { useWallet } from '../../providers/Wallet'
-import BigNumber from 'bignumber.js'
+import useActions from '../../hooks/useActions'
+import { useAppState } from '../../providers/AppState'
 
-export default () => {
+const Contribution = () => {
   const { account } = useWallet()
-
   const {
-    actions: { contribute, getCollateralAllowance, approveCollateralAllowance },
+    contribute,
+    getCollateralAllowance,
+    approveCollateralAllowance,
+  } = useActions(() => {
+    setCreatingTx(false)
+    setPresalePanel(false)
+  })
+  const {
     config: {
       id: hatchAddress,
       contributionToken: {
@@ -22,7 +37,7 @@ export default () => {
         decimals: contributionDecimals,
       },
     },
-  } = useAppLogic()
+  } = useAppState()
   const {
     presalePanel,
     setPresalePanel,
@@ -30,6 +45,7 @@ export default () => {
   } = useContext(PresaleViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
+  const [creatingTx, setCreatingTx] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const valueInput = useRef(null)
 
@@ -59,20 +75,27 @@ export default () => {
   const handleSubmit = async event => {
     event.preventDefault()
     if (account) {
-      const amount = toDecimals(value, contributionDecimals).toFixed()
-      const allowance = await getCollateralAllowance(account, hatchAddress)
-      // Check if we had enough token allowance to make the contribution
-      if (allowance.lt(new BigNumber(value))) {
-        // If we had some allowance we set it back to zero before approving the contribution amount
-        if (!allowance.isZero()) {
-          await approveCollateralAllowance(hatchAddress, 0)
-        }
+      try {
+        const amount = toDecimals(value, contributionDecimals).toFixed()
+        const allowance = await getCollateralAllowance(account, hatchAddress)
 
-        await approveCollateralAllowance(hatchAddress, amount)
+        setCreatingTx(true)
+
+        // Check if we had enough token allowance to make the contribution
+        if (allowance.lt(amount)) {
+          // If we had some allowance we set it back to zero before approving the contribution amount
+          if (!allowance.isZero()) {
+            await approveCollateralAllowance(hatchAddress, 0)
+          }
+
+          await approveCollateralAllowance(hatchAddress, amount)
+        }
+        contribute(amount)
+      } catch (err) {
+        console.error(err)
+        setCreatingTx(false)
       }
-      contribute(account, amount).catch(console.error)
     }
-    setPresalePanel(false)
   }
 
   return (
@@ -101,17 +124,35 @@ export default () => {
             step="any"
             required
             wide
+            disabled={creatingTx}
           />
         </ValueField>
       </InputsWrapper>
       <Total value={value} onError={validate} />
       <ButtonWrapper>
-        <Button mode="strong" type="submit" disabled={!valid || !account} wide>
-          Buy hatch shares
+        <Button
+          mode="strong"
+          type="submit"
+          disabled={!valid || !account || creatingTx}
+          wide
+        >
+          {creatingTx ? (
+            <PreparingTxWrapper>
+              <LoadingRing
+                css={`
+                  margin-right: ${0.5 * GU}px;
+                `}
+              />{' '}
+              Preparing transaction
+            </PreparingTxWrapper>
+          ) : (
+            'Buy hatch shares'
+          )}
         </Button>
       </ButtonWrapper>
       {errorMessage && <ValidationError messages={[errorMessage]} />}
       <Info />
+      <TxInfo />
     </form>
   )
 }
@@ -129,6 +170,12 @@ const InputsWrapper = styled.div`
   flex-direction: column;
 `
 
+const PreparingTxWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const StyledTextBlock = styled(Text.Block).attrs({
   color: theme.textSecondary,
   smallcaps: true,
@@ -136,3 +183,5 @@ const StyledTextBlock = styled(Text.Block).attrs({
   ${unselectable()};
   display: flex;
 `
+
+export default Contribution

@@ -3,7 +3,7 @@ import { Text } from '@aragon/ui'
 import styled from 'styled-components'
 import { PresaleViewContext } from '../../context'
 import { formatBigNumber, toDecimals } from '../../utils/bn-utils'
-import { useAppLogic } from '../../hooks/useAppLogic'
+import { useAppState } from '../../providers/AppState'
 
 export default ({ value, onError }) => {
   const {
@@ -15,7 +15,7 @@ export default ({ value, onError }) => {
       token: { symbol, decimals },
       exchangeRate,
     },
-  } = useAppLogic()
+  } = useAppState()
 
   // *****************************
   // context state
