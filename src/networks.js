@@ -1,5 +1,8 @@
 const ORG_ADDRESS = process.env.REACT_APP_ORG_ADDRESS
 const CONNECTOR_TYPE = process.env.REACT_APP_CONNECTOR_TYPE
+const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
+  ? process.env.REACT_APP_CHAIN_ID
+  : 4
 const DEFAULT_NETWORK = 'xdai'
 
 const networks = {
@@ -28,9 +31,7 @@ const networks = {
   },
 }
 
-export const DEFAULT_CHAIN_ID = 4
-
-export const getNetworkType = (chainId = DEFAULT_CHAIN_ID) => {
+export const getNetworkType = (chainId = CHAIN_ID) => {
   chainId = String(chainId)
 
   switch (chainId) {
