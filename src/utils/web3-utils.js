@@ -1,4 +1,5 @@
 import { toChecksumAddress } from 'web3-utils'
+import { secondsToMilliseconds } from './date-utils'
 
 export const addressesEqual = (first, second) => {
   first = first && toChecksumAddress(first)
@@ -23,12 +24,8 @@ export const getUseWalletConnectors = () => {
   }, {})
 }
 
-export const timestampToMilliseconds = timestamp => {
-  return timestamp * 1000
-}
-
 export const timestampToDate = timestamp => {
-  return new Date(timestampToMilliseconds(timestamp))
+  return new Date(secondsToMilliseconds(timestamp))
 }
 
 export { toHex } from 'web3-utils'
