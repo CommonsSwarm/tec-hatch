@@ -1,17 +1,24 @@
 import BigNumber from 'bignumber.js'
-import { timestampToDate } from './web3-utils'
+import { timestampToMilliseconds } from './web3-utils'
 
 // TODO: Need to fetch this variable from the MarketMaker contract
 const PPM = 1000000
 
-export const transformConfigData = config => {
+export const transformConfigData = (config, ppm = PPM) => {
   return {
     ...config,
-    openDate: timestampToDate(config.openDate),
+    openDate: timestampToMilliseconds(config.openDate),
+    period: timestampToMilliseconds(config.period),
+    vestingCliffPeriod: timestampToMilliseconds(config.vestingCliffPeriod),
+    vestingCompletePeriod: timestampToMilliseconds(
+      config.vestingCompletePeriod
+    ),
+    vestingCliffDate: timestampToMilliseconds(config.vestingCliffDate),
+    vestingCompleteDate: timestampToMilliseconds(config.vestingCompleteDate),
     state: config.state.toUpperCase(),
-    exchangeRate: new BigNumber(config.exchangeRate).div(PPM),
+    exchangeRate: new BigNumber(config.exchangeRate).div(ppm),
     goal: new BigNumber(config.goal),
-    totalRaised: new BigNumber(config.goal),
+    totalRaised: new BigNumber(config.totalRaised),
   }
 }
 

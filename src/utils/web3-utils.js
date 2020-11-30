@@ -23,8 +23,12 @@ export const getUseWalletConnectors = () => {
   }, {})
 }
 
+export const timestampToMilliseconds = timestamp => {
+  return timestamp * 1000
+}
+
 export const timestampToDate = timestamp => {
-  return new Date(timestamp * 1000)
+  return new Date(timestampToMilliseconds(timestamp))
 }
 
 export { toHex } from 'web3-utils'
