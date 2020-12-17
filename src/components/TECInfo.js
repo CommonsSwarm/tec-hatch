@@ -16,16 +16,16 @@ const TECInfo = () => {
             An emerging engineering discipline focused on holistic systems
             design and the theory, practice and tools used to design and verify
             tokenized ecosystems i.e. cryptoeconomic systems and their
-            simulation using tools like cadCAD,
+            simulation using tools like cadCAD.
           </li>
           <li>
             A discipline of responsibility; adhering to the highest principles
-            of ethical conduct (from ethical engineering)
+            of ethical conduct (from ethical engineering).
           </li>
           <li>
             A community pushing forward the field of token engineering in theory
             and practice. (See more Modeling Crypto Protocols as Complex
-            Systems, TE Process)
+            Systems, TE Process).
           </li>
         </ol>
       </Paragraph>
@@ -36,7 +36,7 @@ const TECInfo = () => {
             Resources that groups of people (communities, organizations) create
             and manage for individual and collective benefit. These resources
             are held collectively, not owned privately (see Fractar Ownership,
-            Wiki and Automating Ostrom)
+            Wiki and Automating Ostrom).
           </li>
         </ol>
       </Paragraph>
@@ -44,7 +44,7 @@ const TECInfo = () => {
       <Paragraph>
         A few co-creative sessions were held to identify the TEC Vision, Mission
         and Values using this Miro, followed by a-sync work and voting on the
-        Discord Channel
+        Discord Channel.
       </Paragraph>
       <Paragraph>
         <ImageWrapper>
@@ -68,7 +68,7 @@ const TECInfo = () => {
         <a href={codeOfConductUrl} target="_blank" rel="noreferrer">
           TEC Code of Conduct
         </a>
-        )
+        ).
       </Paragraph>
     </div>
   )
