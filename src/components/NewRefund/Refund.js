@@ -1,25 +1,40 @@
-import React from 'react'
-import { Button, Info, GU } from '@aragon/ui'
+import React, { useContext } from 'react'
+import { Button, Info, GU, LoadingRing } from '@aragon/ui'
 import Information from './Information'
 import { formatBigNumber } from '../../utils/bn-utils'
-import { useAppLogic } from '../../hooks/useAppLogic'
 import { useWallet } from '../../providers/Wallet'
 import useActions from '../../hooks/useActions'
 import { useAppState } from '../../providers/AppState'
+import { PresaleViewContext } from '../../context'
+import { useContributionsSubscription } from '../../hooks/useSubscriptions'
 
 export default () => {
   const { account } = useWallet()
-  const { refund } = useActions()
+  const { refund } = useActions((err, a) => {
+    if (err) {
+      console.error(err)
+    }
+    setCreatingTx(false)
+    setRefundPanel(false)
+  })
   const {
     config: {
       contributionToken: { symbol, decimals },
     },
   } = useAppState()
-  const { contributions } = useAppLogic()
 
+  const contributions = useContributionsSubscription({
+    contributor: account,
+    orderBy: 'value',
+    orderDirection: 'desc',
+  })
+  const { setRefundPanel, creatingTx, setCreatingTx } = useContext(
+    PresaleViewContext
+  )
   const handleRefund = vestedPurchaseId => {
     if (account) {
-      refund(account, vestedPurchaseId).catch(console.error)
+      setCreatingTx(true)
+      refund(account, vestedPurchaseId)
     }
   }
 
@@ -39,9 +54,18 @@ export default () => {
                 mode="strong"
                 wide
                 onClick={() => handleRefund(c.vestedPurchaseId)}
+                disabled={creatingTx}
               >
-                Refund contribution of {formatBigNumber(c.value, decimals)}{' '}
-                {symbol} made on {new Date(c.timestamp).toLocaleDateString()}
+                {creatingTx ? (
+                  <div>
+                    <LoadingRing />
+                  </div>
+                ) : (
+                  <span>
+                    Refund contribution of {formatBigNumber(c.value, decimals)}{' '}
+                    {symbol}
+                  </span>
+                )}
               </Button>
             </div>
           )

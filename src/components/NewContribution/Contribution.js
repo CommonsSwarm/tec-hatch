@@ -25,7 +25,10 @@ const Contribution = () => {
     contribute,
     getCollateralAllowance,
     approveCollateralAllowance,
-  } = useActions(() => {
+  } = useActions(err => {
+    if (err) {
+      console.error(err)
+    }
     setCreatingTx(false)
     setPresalePanel(false)
   })
@@ -41,11 +44,12 @@ const Contribution = () => {
   const {
     presalePanel,
     setPresalePanel,
+    creatingTx,
+    setCreatingTx,
     userPrimaryCollateralBalance,
   } = useContext(PresaleViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
-  const [creatingTx, setCreatingTx] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const valueInput = useRef(null)
 

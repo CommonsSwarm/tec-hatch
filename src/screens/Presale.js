@@ -1,80 +1,75 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import ReactPlayer from 'react-player/vimeo'
 import {
   Box,
   Button,
   Countdown,
   BREAKPOINTS,
   GU,
-  Split,
-  useLayout,
-  DataView,
   Text,
-  DropDown,
   useTheme,
+  Split,
   unselectable,
-  IdentityBadge,
+  Tag,
 } from '@aragon/ui'
 import BigNumber from 'bignumber.js'
 import addMilliseconds from 'date-fns/addMilliseconds'
 import PresaleGoal from '../components/PresaleGoal'
-import Timeline from '../components/Timeline'
 import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
-import { useAppLogic } from '../hooks/useAppLogic'
 import { useWallet } from '../providers/Wallet'
 import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
+import TECInfo from '../components/TECInfo'
+import { useContributionsSubscription } from '../hooks/useSubscriptions'
+import TopContributors from '../components/TopContributors'
+
+const TOP_CONTRIBUTORS_COUNT = 10
 
 export default () => {
   const theme = useTheme()
   const { account: connectedAccount } = useWallet()
   const { openPresale } = useActions()
   const {
-    config: {
-      period,
-      openDate,
-      state,
-      vestingCliffPeriod,
-      vestingCompletePeriod,
-      contributionToken,
-      token,
-    },
+    config: { period, openDate, state, contributionToken, token },
   } = useAppState()
-  const { contributions } = useAppLogic()
-  const { layoutName } = useLayout()
-  const [selected, setSelection] = useState(0)
+  const contributions = useContributionsSubscription({
+    count: TOP_CONTRIBUTORS_COUNT,
+    orderBy: 'value',
+    orderDirection: 'desc',
+  })
+
   const presaleEnded =
     state !== Presale.state.PENDING && state !== Presale.state.FUNDING
   const noOpenDate = state === Presale.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
-  const vestingCliffDate = addMilliseconds(openDate, vestingCliffPeriod)
-  const vestingCompleteDate = addMilliseconds(openDate, vestingCompletePeriod)
+  const videoUrl = 'https://vimeo.com/112836958'
 
   /**
    * Calls the `presale.open` smart contarct function on button click
    * @returns {void}
    */
   const handleOpenPresale = () => {
+    console.log('here')
     openPresale().catch(console.error)
   }
 
-  let contributionList = [...contributions.entries()]
-    .map(item => {
-      const reducedValues = item[1].reduce((prev, current) => {
-        return {
-          amount: new BigNumber(prev.amount).plus(
-            new BigNumber(current.amount)
-          ),
-          value: new BigNumber(prev.value).plus(new BigNumber(current.value)),
-        }
-      })
-
-      item[1] = reducedValues
-
-      return item
+  let contributionList = [...contributions.entries()].map(item => {
+    // Add up amount and value of every vesting period
+    const reducedValues = item[1].reduce((prev, current) => {
+      return {
+        amount: new BigNumber(prev.amount).plus(new BigNumber(current.amount)),
+        value: new BigNumber(prev.value).plus(new BigNumber(current.value)),
+      }
     })
-    .sort((a, b) => b[1].value - a[1].value)
+
+    item[1] = reducedValues
+
+    return item
+  })
+  // Fetched contributions from connector are already sorted
+  // .sort((a, b) => b[1].value - a[1].value)
 
   contributionList = contributionList.map(item => ({
     account: item[0],
@@ -89,26 +84,32 @@ export default () => {
     return item.account === connectedAccount
   })[0]
 
-  const contributionAccounts = contributionList.map(({ account }) => (
-    <IdentityBadge key={account} entity={account} />
-  ))
-  contributionAccounts.unshift('All')
-
-  if (selected !== 0) {
-    contributionList = contributionList.filter(
-      item => item.account === contributionAccounts[selected].key
-    )
-  }
-
   return (
     <>
       <Container theme={theme}>
         <Split
-          invert={layoutName !== 'large' ? 'vertical' : 'horizontal'}
+          primary={
+            <div>
+              <ReactPlayer
+                style={{ marginBottom: 4 * GU }}
+                width="100%"
+                height="460px"
+                url={videoUrl}
+                controls
+              />
+              <div
+                css={`
+                  width: 85%;
+                `}
+              >
+                <TECInfo />
+              </div>
+            </div>
+          }
           secondary={
             <div>
               <PresaleGoal />
-              <Box heading="Hatch Period">
+              <Box heading="Fundraising Period">
                 {noOpenDate && (
                   <Button
                     wide
@@ -139,16 +140,24 @@ export default () => {
                   </p>
                 )}
                 {!noOpenDate && !presaleEnded && (
-                  <Countdown
-                    css={`
-                      margin-top: ${1 * GU}px;
-                    `}
-                    end={endDate}
-                  />
+                  <>
+                    <Countdown
+                      css={`
+                        margin-top: ${1 * GU}px;
+                      `}
+                      end={endDate}
+                    />
+                    <Tag
+                      css={`
+                        margin-top: ${2 * GU}px;
+                      `}
+                      label={`Hatch ends ${endDate.toLocaleDateString()}`}
+                    />
+                  </>
                 )}
               </Box>
               {myContributions && (
-                <Box heading="My Contributions Info">
+                <Box heading="My Contributions">
                   <div
                     css={`
                       display: flex;
@@ -181,71 +190,9 @@ export default () => {
                   </div>
                 </Box>
               )}
-            </div>
-          }
-          primary={
-            <div>
-              <Timeline
-                title="Hatch Timeline"
-                steps={[
-                  [
-                    'Hatch opens',
-                    openDate,
-                    'Contributors can buy hatch shares',
-                  ],
-                  [
-                    'Hatch ends',
-                    openDate === 0 ? 0 : endDate,
-                    'Contributors can ask for refund if hatch has failed',
-                  ],
-                  [
-                    'Cliff period ends',
-                    openDate === 0 ? 0 : vestingCliffDate,
-                    'Hatch shares start vesting',
-                  ],
-                  [
-                    'Vesting period ends',
-                    openDate === 0 ? 0 : vestingCompleteDate,
-                    'Hatch shares are totally vested',
-                  ],
-                ]}
-              />
-              <DataView
-                fields={['Account', 'Contributions', 'Shares']}
-                entries={contributionList}
-                renderEntry={({ account, contributions, shares }) => {
-                  return [
-                    <IdentityBadge key="account" entity={account} />,
-                    <Text key="contributions">{contributions}</Text>,
-                    <Text key="shares">{shares}</Text>,
-                  ]
-                }}
-                heading={
-                  <div className="filter-item">
-                    <span className="filter-label">Filter Account</span>
-                    <DropDown
-                      items={contributionAccounts}
-                      selected={selected}
-                      renderLabel={() => {
-                        if (selected === 0) {
-                          return contributionAccounts[selected]
-                        } else {
-                          return (
-                            <IdentityBadge
-                              key={contributionAccounts[selected].key}
-                              entity={contributionAccounts[selected].key}
-                            />
-                          )
-                        }
-                      }}
-                      onChange={idx => {
-                        setSelection(idx)
-                      }}
-                      css="min-width: auto;"
-                    />
-                  </div>
-                }
-              />
+              {contributionList && (
+                <TopContributors contributors={contributionList} />
+              )}
             </div>
           }
         />

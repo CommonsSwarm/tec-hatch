@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { toChecksumAddress } from '../utils/web3-utils'
 import { secondsToMilliseconds } from './date-utils'
 
 // TODO: Need to fetch this variable from the MarketMaker contract
@@ -23,5 +24,6 @@ export const transformConfigData = (config, ppm = PPM) => {
 export const transformContributionData = contribution => {
   return {
     ...contribution,
+    contributor: toChecksumAddress(contribution.contributor),
   }
 }

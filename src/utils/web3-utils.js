@@ -28,4 +28,4 @@ export const timestampToDate = timestamp => {
   return new Date(secondsToMilliseconds(timestamp))
 }
 
-export { toHex } from 'web3-utils'
+export { toHex, toChecksumAddress } from 'web3-utils'

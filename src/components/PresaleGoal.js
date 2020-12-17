@@ -20,7 +20,7 @@ export default React.memo(() => {
       state,
     },
   } = useAppState()
-  const { setRefundPanel } = useContext(PresaleViewContext)
+  const { setRefundPanel, setPresalePanel } = useContext(PresaleViewContext)
   // *****************************
   // misc
   // *****************************
@@ -45,7 +45,7 @@ export default React.memo(() => {
   }
 
   return (
-    <Box heading="Hatch Goal">
+    <Box heading="Fundraising Goal">
       <div className="circle">
         <CircleGraph
           value={totalRaised.div(goal).toNumber()}
@@ -83,6 +83,19 @@ export default React.memo(() => {
           </span>{' '}
           {symbol}
         </p>
+        {state === Presale.state.FUNDING && (
+          <div
+            css={`
+              margin-top: ${2 * GU}px;
+            `}
+          >
+            <Button
+              mode="strong"
+              label="Buy hatch shares"
+              onClick={() => setPresalePanel(true)}
+            />
+          </div>
+        )}
         {state === Presale.state.GOALREACHED && (
           <>
             <p
@@ -94,7 +107,7 @@ export default React.memo(() => {
             >
               <strong>Hatch goal completed! 🎉</strong>
             </p>
-            <Button
+            {/* <Button
               wide
               mode="strong"
               label="Open trading"
@@ -105,7 +118,7 @@ export default React.memo(() => {
               onClick={handleOpenTrading}
             >
               Open trading
-            </Button>
+            </Button> */}
           </>
         )}
         {state === Presale.state.REFUNDING && (

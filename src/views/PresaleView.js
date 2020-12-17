@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import BigNumber from 'bignumber.js'
-import { Header, Button } from '@aragon/ui'
+import { Header } from '@aragon/ui'
 import { useInterval } from '../hooks/use-interval'
 import { useWallet } from '../providers/Wallet'
 
-import { Presale as PresaleConstants, Polling } from '../constants'
+import { Polling } from '../constants'
 import Presale from '../screens/Presale'
 import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
@@ -19,7 +19,6 @@ export default () => {
   const { getEntityTokenBalance } = useActions()
   const {
     config: {
-      state,
       contributionToken: {
         id: contributionAddress,
         decimals: contributionDecimals,
@@ -28,6 +27,7 @@ export default () => {
   } = useAppState()
   const [presalePanel, setPresalePanel] = useState(false)
   const [refundPanel, setRefundPanel] = useState(false)
+  const [creatingTx, setCreatingTx] = useState(false)
   // *****************************
   // context state
   // *****************************
@@ -41,6 +41,8 @@ export default () => {
     setPresalePanel,
     refundPanel,
     setRefundPanel,
+    creatingTx,
+    setCreatingTx,
   }
 
   // *****************************
@@ -98,17 +100,7 @@ export default () => {
         onResolve={handleResolveLocalIdentity}
         onShowLocalIdentityModal={handleShowLocalIdentityModal}
       > */}
-      <Header
-        primary="Token Engineering Commons Hatch"
-        secondary={
-          <Button
-            disabled={state !== PresaleConstants.state.FUNDING}
-            mode="strong"
-            label="Buy hatch shares"
-            onClick={() => setPresalePanel(true)}
-          />
-        }
-      />
+      <Header primary="Token Engineering Commons Hatch" />
       <Presale />
       <NewContribution />
       <NewRefund />

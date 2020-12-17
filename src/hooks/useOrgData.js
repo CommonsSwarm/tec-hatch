@@ -42,7 +42,7 @@ const useOrgData = () => {
     const fetchPresaleConnector = async () => {
       try {
         const presaleConnector = await connectPresale(presaleApp)
-        console.log(presaleConnector)
+
         if (!cancelled) {
           setPresaleConnector(presaleConnector)
         }
