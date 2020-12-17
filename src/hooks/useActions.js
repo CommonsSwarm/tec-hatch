@@ -50,7 +50,7 @@ const useActions = (onDone = () => {}) => {
           web3,
           from: account,
         },
-        { onTxCreated: onDone }
+        { onTxCreated: onDone, onError: onDone }
       )
     },
     [account, organization, web3, onDone]
@@ -63,10 +63,9 @@ const useActions = (onDone = () => {}) => {
         MARKETPLACE_ADDRESS,
         'refund',
         [contributor, vestedPurchaseId],
-        { web3, from: account }
+        { web3, from: account },
+        { onTxCreated: onDone, onError: onDone }
       )
-
-      onDone()
     },
     [account, organization, web3, onDone]
   )
@@ -118,7 +117,7 @@ const sendIntent = async (
   fn,
   params,
   { web3, from },
-  { onTxCreated = () => {}, onCompleted = () => {} } = {}
+  { onTxCreated = () => {}, onCompleted = () => {}, onError = () => {} } = {}
 ) => {
   try {
     const intent = org.appIntent(appAddress, fn, params)
@@ -127,10 +126,11 @@ const sendIntent = async (
 
     web3.eth
       .sendTransaction({ from, to, data })
-      .on('transactionHash', () => onTxCreated())
-      .on('receipt', () => onCompleted())
+      .on('transactionHash', onTxCreated)
+      .on('receipt', onCompleted)
+      .on('error', onError)
   } catch (err) {
-    console.error('Could not create tx:', err)
+    onError(err)
   }
 }
 
