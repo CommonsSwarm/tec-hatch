@@ -64,7 +64,7 @@ export const formatBigNumber = (
   return `${prefix}${valueDecimals.abs().toFormat(dp, rm, {
     ...FORMAT,
     groupSeparator: commify ? ',' : '',
-  })}${numberSuffix}`
+  })}${numberSuffix}`.replace(/\.00$/, '')
 }
 
 /**
