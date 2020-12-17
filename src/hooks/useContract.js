@@ -1,9 +1,14 @@
+import Web3 from 'web3'
+import { getNetwork } from '../networks'
 import { useWallet } from '../providers/Wallet'
 
 const contractsCache = new Map()
 
-export const useContract = (address, abi, signer = true) => {
-  const { web3 } = useWallet()
+export const useContract = (address, abi, readOnly = false) => {
+  const { web3: walletWeb3 } = useWallet()
+  const { defaultEthNode } = getNetwork()
+
+  const web3 = readOnly ? new Web3(defaultEthNode) : walletWeb3
 
   if (!address || !web3) {
     return

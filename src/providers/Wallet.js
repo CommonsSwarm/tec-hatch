@@ -19,6 +19,7 @@ const WalletAugmented = ({ children }) => {
     if (ethereum) {
       return new Web3(ethereum)
     }
+
     return null
   }, [ethereum])
 

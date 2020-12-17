@@ -4,28 +4,41 @@ import {
   transformConfigData,
   transformContributionData,
 } from '../utils/data-transform-utils'
+import { useContract } from './useContract'
+import presaleAbi from '../abi/Presale.json'
+import { Presale } from '../constants'
+const PRESALE_ADDRESS = process.env.REACT_APP_PRESALE_APP_ADDRESS
 
 export const useConfigSubscription = presaleConnector => {
   const [config, setConfig] = useState(null)
-
+  const presale = useContract(PRESALE_ADDRESS, presaleAbi, true)
   const rawConfigRef = useRef(null)
   const configSubscription = useRef(null)
 
-  const onConfigHandler = useCallback((err, config) => {
-    if (err || !config) {
-      return
-    }
+  const onConfigHandler = useCallback(
+    async (err, config) => {
+      if (err || !config) {
+        return
+      }
+      /**
+       * Need to fetch hatch state because contract state
+       * variable is not updated when hatch period is over.
+       */
+      const intState = await presale.methods.state().call()
+      config.state = Presale.intState[intState]
 
-    const rawConfig = JSON.stringify(config)
-    if (rawConfigRef && rawConfigRef.current === rawConfig) {
-      return
-    }
+      const rawConfig = JSON.stringify(config)
+      if (rawConfigRef && rawConfigRef.current === rawConfig) {
+        return
+      }
 
-    rawConfigRef.current = rawConfig
-    const transformedConfig = transformConfigData(config)
+      rawConfigRef.current = rawConfig
+      const transformedConfig = transformConfigData(config)
 
-    setConfig(transformedConfig)
-  }, [])
+      setConfig(transformedConfig)
+    },
+    [presale]
+  )
 
   useEffect(() => {
     if (!presaleConnector) {
@@ -40,9 +53,15 @@ export const useConfigSubscription = presaleConnector => {
   return config
 }
 
-export const useContributionsSubscription = () => {
+export const useContributionsSubscription = ({
+  contributor = '',
+  count = 1000,
+  skip = 0,
+  orderBy = 'contributor',
+  orderDirection = 'asc',
+} = {}) => {
   const { presaleConnector } = useAppState()
-  const [contributions, setContributions] = useState([])
+  const [contributions, setContributions] = useState(new Map())
 
   const contributionsSubscription = useRef(null)
 
@@ -76,14 +95,21 @@ export const useContributionsSubscription = () => {
     }
 
     contributionsSubscription.current = presaleConnector.onContributions(
-      // TODO: Add pagination and remove hard-coded value
-      { first: 1000, skip: 0 },
+      { contributor, first: count, skip, orderBy, orderDirection },
       onContributionsHandler
     )
     return () => {
       contributionsSubscription.current.unsubscribe()
     }
-  }, [presaleConnector, onContributionsHandler])
+  }, [
+    presaleConnector,
+    onContributionsHandler,
+    contributor,
+    count,
+    skip,
+    orderBy,
+    orderDirection,
+  ])
 
   return contributions
 }
