@@ -161,11 +161,52 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "goal",
+    "name": "CLOSE_ROLE",
     "outputs": [
       {
         "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_contributor",
+        "type": "address"
+      },
+      {
+        "name": "_vestedPurchaseId",
         "type": "uint256"
+      }
+    ],
+    "name": "refund",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "close",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "contributionToken",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -243,9 +284,46 @@
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_contributor",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "contribute",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "getInitializationBlock",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "contributionToTokens",
     "outputs": [
       {
         "name": "",
@@ -328,6 +406,20 @@
   {
     "constant": true,
     "inputs": [],
+    "name": "state",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
     "name": "isClosed",
     "outputs": [
       {
@@ -354,6 +446,68 @@
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_tokenManager",
+        "type": "address"
+      },
+      {
+        "name": "_reserve",
+        "type": "address"
+      },
+      {
+        "name": "_beneficiary",
+        "type": "address"
+      },
+      {
+        "name": "_contributionToken",
+        "type": "address"
+      },
+      {
+        "name": "_minGoal",
+        "type": "uint256"
+      },
+      {
+        "name": "_maxGoal",
+        "type": "uint256"
+      },
+      {
+        "name": "_period",
+        "type": "uint64"
+      },
+      {
+        "name": "_exchangeRate",
+        "type": "uint256"
+      },
+      {
+        "name": "_vestingCliffPeriod",
+        "type": "uint64"
+      },
+      {
+        "name": "_vestingCompletePeriod",
+        "type": "uint64"
+      },
+      {
+        "name": "_supplyOfferedPct",
+        "type": "uint256"
+      },
+      {
+        "name": "_fundingForBeneficiaryPct",
+        "type": "uint256"
+      },
+      {
+        "name": "_openDate",
+        "type": "uint64"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "reserve",
@@ -361,6 +515,20 @@
       {
         "name": "",
         "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "minGoal",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -454,11 +622,11 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "controller",
+    "name": "maxGoal",
     "outputs": [
       {
         "name": "",
-        "type": "address"
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -477,6 +645,15 @@
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "open",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -599,168 +776,5 @@
     ],
     "name": "RecoverToVault",
     "type": "event"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_controller",
-        "type": "address"
-      },
-      {
-        "name": "_tokenManager",
-        "type": "address"
-      },
-      {
-        "name": "_reserve",
-        "type": "address"
-      },
-      {
-        "name": "_beneficiary",
-        "type": "address"
-      },
-      {
-        "name": "_contributionToken",
-        "type": "address"
-      },
-      {
-        "name": "_goal",
-        "type": "uint256"
-      },
-      {
-        "name": "_period",
-        "type": "uint64"
-      },
-      {
-        "name": "_exchangeRate",
-        "type": "uint256"
-      },
-      {
-        "name": "_vestingCliffPeriod",
-        "type": "uint64"
-      },
-      {
-        "name": "_vestingCompletePeriod",
-        "type": "uint64"
-      },
-      {
-        "name": "_supplyOfferedPct",
-        "type": "uint256"
-      },
-      {
-        "name": "_fundingForBeneficiaryPct",
-        "type": "uint256"
-      },
-      {
-        "name": "_openDate",
-        "type": "uint64"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "open",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_contributor",
-        "type": "address"
-      },
-      {
-        "name": "_value",
-        "type": "uint256"
-      }
-    ],
-    "name": "contribute",
-    "outputs": [],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_contributor",
-        "type": "address"
-      },
-      {
-        "name": "_vestedPurchaseId",
-        "type": "uint256"
-      }
-    ],
-    "name": "refund",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "close",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_value",
-        "type": "uint256"
-      }
-    ],
-    "name": "contributionToTokens",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "contributionToken",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "state",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
   }
 ]

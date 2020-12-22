@@ -16,7 +16,8 @@ export const transformConfigData = (config, ppm = PPM) => {
     vestingCompleteDate: secondsToMilliseconds(config.vestingCompleteDate),
     state: config.state.toUpperCase(),
     exchangeRate: new BigNumber(config.exchangeRate).div(ppm),
-    goal: new BigNumber(config.goal),
+    minGoal: new BigNumber(config.minGoal),
+    maxGoal: new BigNumber(config.maxGoal),
     totalRaised: new BigNumber(config.totalRaised),
   }
 }

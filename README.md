@@ -214,7 +214,8 @@ All values coming from the event, except `ppm` which can be found on the backgro
         "vestingCliffPeriod": Number,
         "vestingCompletePeriod": Number,
         "exchangeRate": BigNumber,
-        "goal": BigNumber,
+        "minGoal": BigNumber,
+        "maxGoal": BigNumber,
         "totalRaised": BigNumber // "polled from the frontend"
     },
     "contributions": Map("contributor": String, [{

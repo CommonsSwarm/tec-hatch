@@ -20,6 +20,7 @@ export const useConfigSubscription = presaleConnector => {
       if (err || !config) {
         return
       }
+
       /**
        * Need to fetch hatch state because contract state
        * variable is not updated when hatch period is over.
@@ -62,6 +63,7 @@ export const useContributionsSubscription = ({
 } = {}) => {
   const { presaleConnector } = useAppState()
   const [contributions, setContributions] = useState(new Map())
+  const [initialFetch, setInitialFetch] = useState(false)
 
   const contributionsSubscription = useRef(null)
 

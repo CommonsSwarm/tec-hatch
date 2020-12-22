@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import Web3 from 'web3'
 import { getNetwork } from '../networks'
 import { useWallet } from '../providers/Wallet'
@@ -8,7 +9,10 @@ export const useContract = (address, abi, readOnly = false) => {
   const { web3: walletWeb3 } = useWallet()
   const { defaultEthNode } = getNetwork()
 
-  const web3 = readOnly ? new Web3(defaultEthNode) : walletWeb3
+  // TODO: See if this works
+  const defaultWeb3 = useMemo(() => new Web3(defaultEthNode), [defaultEthNode])
+
+  const web3 = readOnly ? defaultWeb3 : walletWeb3
 
   if (!address || !web3) {
     return

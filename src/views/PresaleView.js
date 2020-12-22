@@ -58,11 +58,7 @@ export default () => {
   // watch for a connected user and get its balances
   useEffect(() => {
     const getUserPrimaryCollateralBalance = async () => {
-      const balance = await getEntityTokenBalance(
-        connectedUser,
-        contributionAddress,
-        contributionDecimals
-      )
+      const balance = await getEntityTokenBalance(connectedUser)
       setUserPrimaryCollateralBalance(balance)
     }
     if (connectedUser) {
@@ -81,9 +77,7 @@ export default () => {
     // only poll if there is a connected user
     if (connectedUser) {
       newUserPrimaryCollateralBalance = await getEntityTokenBalance(
-        connectedUser,
-        contributionAddress,
-        contributionDecimals
+        connectedUser
       )
     }
     // TODO: keep an eye on React 17

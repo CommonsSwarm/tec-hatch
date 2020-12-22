@@ -15,7 +15,7 @@ export default React.memo(() => {
   const {
     config: {
       contributionToken: { symbol, decimals },
-      goal,
+      minGoal,
       totalRaised,
       state,
     },
@@ -48,7 +48,7 @@ export default React.memo(() => {
     <Box heading="Fundraising Goal">
       <div className="circle">
         <CircleGraph
-          value={totalRaised.div(goal).toNumber()}
+          value={totalRaised.div(minGoal).toNumber()}
           size={20.5 * GU}
           width={6}
           color={circleColor[state]}
@@ -57,7 +57,7 @@ export default React.memo(() => {
           title={`${formatBigNumber(
             totalRaised,
             decimals
-          )} ${symbol} of ${formatBigNumber(goal, decimals)} ${symbol}`}
+          )} ${symbol} of ${formatBigNumber(minGoal, decimals)} ${symbol}`}
           css={`
             max-width: 100%;
             overflow: hidden;
@@ -79,7 +79,7 @@ export default React.memo(() => {
               color: ${theme.surfaceContent};
             `}
           >
-            {formatBigNumber(goal, decimals)}
+            {formatBigNumber(minGoal, decimals)}
           </span>{' '}
           {symbol}
         </p>

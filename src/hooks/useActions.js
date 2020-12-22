@@ -3,26 +3,20 @@ import BigNumber from 'bignumber.js'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import { useContract } from './useContract'
-import MarketplaceAbi from '../abi/Marketplace.json'
 import TokenAbi from '../abi/Token.json'
 
 // const GAS_LIMIT = 600000
-const MARKETPLACE_ADDRESS = process.env.REACT_APP_MARKETPLACE_APP_ADDRESS
+const PRESALE_ADDRESS = process.env.REACT_APP_PRESALE_APP_ADDRESS
 
 const useActions = (onDone = () => {}) => {
   const { account, web3 } = useWallet()
   const { organization, config } = useAppState()
   const token = config ? config.contributionToken : {}
-  /**
-   * Need to instantiate marketplace contract to call balanceOf.
-   * The marketplace app from Connect doesn't include public methods in intents
-   * property
-   */
-  const marketplace = useContract(MARKETPLACE_ADDRESS, MarketplaceAbi)
+
   const contributionToken = useContract(token.id, TokenAbi)
 
   const openPresale = useCallback(async () => {
-    sendIntent(organization, MARKETPLACE_ADDRESS, 'openPresale', [], {
+    sendIntent(organization, PRESALE_ADDRESS, 'open', [], {
       web3,
       from: account,
     })
@@ -31,7 +25,7 @@ const useActions = (onDone = () => {}) => {
   }, [account, organization, web3, onDone])
 
   const closePresale = useCallback(() => {
-    sendIntent(organization, MARKETPLACE_ADDRESS, 'closePresale', [], {
+    sendIntent(organization, PRESALE_ADDRESS, 'close', [], {
       web3,
       from: account,
     })
@@ -43,7 +37,7 @@ const useActions = (onDone = () => {}) => {
     async value => {
       sendIntent(
         organization,
-        MARKETPLACE_ADDRESS,
+        PRESALE_ADDRESS,
         'contribute',
         [value],
         {
@@ -60,7 +54,7 @@ const useActions = (onDone = () => {}) => {
     async (contributor, vestedPurchaseId) => {
       sendIntent(
         organization,
-        MARKETPLACE_ADDRESS,
+        PRESALE_ADDRESS,
         'refund',
         [contributor, vestedPurchaseId],
         { web3, from: account },
@@ -91,13 +85,13 @@ const useActions = (onDone = () => {}) => {
   )
 
   const getEntityTokenBalance = useCallback(
-    async (entity, tokenAddress) => {
-      const balance = await marketplace.methods
-        .balanceOf(entity, tokenAddress)
+    async entity => {
+      const balance = await contributionToken.methods
+        .balanceOf(entity)
         .call({ from: account })
       return new BigNumber(balance)
     },
-    [marketplace, account]
+    [contributionToken, account]
   )
 
   return {
