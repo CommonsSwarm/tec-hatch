@@ -53,7 +53,7 @@ const CircleGraph = ({ value, label, size, color, width }) => {
             />
           </CircleSvg>
           <Label theme={theme} size={size / 3}>
-            {progressValue.interpolate(t => label(Math.min(1, Math.max(0, t))))}
+            {progressValue.interpolate(t => label(Math.max(0, t)))}
           </Label>
           <Label
             theme={theme}
