@@ -7,11 +7,11 @@ import {
 import { useContract } from './useContract'
 import presaleAbi from '../abi/Presale.json'
 import { Presale } from '../constants'
-const PRESALE_ADDRESS = process.env.REACT_APP_PRESALE_APP_ADDRESS
 
 export const useConfigSubscription = presaleConnector => {
   const [config, setConfig] = useState(null)
-  const presale = useContract(PRESALE_ADDRESS, presaleAbi, true)
+  const presaleAddress = presaleConnector?.address
+  const presale = useContract(presaleAddress, presaleAbi, true)
   const rawConfigRef = useRef(null)
   const configSubscription = useRef(null)
 

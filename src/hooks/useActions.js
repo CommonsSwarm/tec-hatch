@@ -4,40 +4,41 @@ import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import { useContract } from './useContract'
 import TokenAbi from '../abi/Token.json'
+import PresaleAbi from '../abi/Presale.json'
 
 // const GAS_LIMIT = 600000
-const PRESALE_ADDRESS = process.env.REACT_APP_PRESALE_APP_ADDRESS
 
 const useActions = (onDone = () => {}) => {
   const { account, web3 } = useWallet()
-  const { organization, config } = useAppState()
+  const { organization, config, presaleApp: app } = useAppState()
   const token = config ? config.contributionToken : {}
-
   const contributionToken = useContract(token.id, TokenAbi)
+  const appAddress = app?.address
+  const presaleApp = useContract(appAddress, PresaleAbi, true)
 
   const openPresale = useCallback(async () => {
-    sendIntent(organization, PRESALE_ADDRESS, 'open', [], {
+    sendIntent(organization, appAddress, 'open', [], {
       web3,
       from: account,
     })
 
     onDone()
-  }, [account, organization, web3, onDone])
+  }, [account, organization, appAddress, web3, onDone])
 
   const closePresale = useCallback(() => {
-    sendIntent(organization, PRESALE_ADDRESS, 'close', [], {
+    sendIntent(organization, appAddress, 'close', [], {
       web3,
       from: account,
     })
 
     onDone()
-  }, [account, organization, web3, onDone])
+  }, [account, organization, appAddress, web3, onDone])
 
   const contribute = useCallback(
     async value => {
       sendIntent(
         organization,
-        PRESALE_ADDRESS,
+        appAddress,
         'contribute',
         [value],
         {
@@ -47,21 +48,21 @@ const useActions = (onDone = () => {}) => {
         { onTxCreated: onDone, onError: onDone }
       )
     },
-    [account, organization, web3, onDone]
+    [account, organization, appAddress, web3, onDone]
   )
 
   const refund = useCallback(
     async (contributor, vestedPurchaseId) => {
       sendIntent(
         organization,
-        PRESALE_ADDRESS,
+        appAddress,
         'refund',
         [contributor, vestedPurchaseId],
         { web3, from: account },
         { onTxCreated: onDone, onError: onDone }
       )
     },
-    [account, organization, web3, onDone]
+    [account, organization, appAddress, web3, onDone]
   )
 
   const getCollateralAllowance = useCallback(
@@ -86,12 +87,12 @@ const useActions = (onDone = () => {}) => {
 
   const getEntityTokenBalance = useCallback(
     async entity => {
-      const balance = await contributionToken.methods
+      const balance = await presaleApp.methods
         .balanceOf(entity)
         .call({ from: account })
       return new BigNumber(balance)
     },
-    [contributionToken, account]
+    [presaleApp, account]
   )
 
   return {
@@ -122,9 +123,10 @@ const sendIntent = async (
       .sendTransaction({ from, to, data })
       .on('transactionHash', onTxCreated)
       .on('receipt', onCompleted)
-      .on('error', onError)
+      .on('error', err => onError(undefined, err))
   } catch (err) {
-    onError(err)
+    console.log('Error when sending intent')
+    onError(undefined, err)
   }
 }
 

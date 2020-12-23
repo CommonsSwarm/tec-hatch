@@ -73,6 +73,7 @@ const useOrgData = () => {
     errors,
     presaleConnector,
     installedApps: apps,
+    presaleApp,
     organization,
     permissions: presaleAppPermissions,
     loadingAppData: loadingData,
