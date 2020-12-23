@@ -25,7 +25,7 @@ const Contribution = () => {
     contribute,
     getCollateralAllowance,
     approveCollateralAllowance,
-  } = useActions(err => {
+  } = useActions((res, err) => {
     if (err) {
       console.error(err)
     }
@@ -82,7 +82,6 @@ const Contribution = () => {
       try {
         const amount = toDecimals(value, contributionDecimals).toFixed()
         const allowance = await getCollateralAllowance(account, hatchAddress)
-
         setCreatingTx(true)
 
         // Check if we had enough token allowance to make the contribution
@@ -91,10 +90,9 @@ const Contribution = () => {
           if (!allowance.isZero()) {
             await approveCollateralAllowance(hatchAddress, 0)
           }
-
           await approveCollateralAllowance(hatchAddress, amount)
         }
-        contribute(amount)
+        await contribute(amount)
       } catch (err) {
         console.error(err)
         setCreatingTx(false)

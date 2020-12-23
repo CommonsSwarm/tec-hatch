@@ -51,7 +51,6 @@ export default () => {
    * @returns {void}
    */
   const handleOpenPresale = () => {
-    console.log('here')
     openPresale().catch(console.error)
   }
 
@@ -77,7 +76,8 @@ export default () => {
       formatBigNumber(item[1].value, contributionToken.decimals) +
       ' ' +
       contributionToken.symbol,
-    shares: formatBigNumber(item[1].amount, token.decimals),
+    shares:
+      formatBigNumber(item[1].amount, token.decimals) + ' ' + token.symbol,
   }))
 
   const myContributions = contributionList.filter(item => {
@@ -190,7 +190,7 @@ export default () => {
                   </div>
                 </Box>
               )}
-              {contributionList && (
+              {!!contributionList.length && (
                 <TopContributors contributors={contributionList} />
               )}
             </div>
