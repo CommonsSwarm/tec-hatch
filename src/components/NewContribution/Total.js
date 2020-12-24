@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text } from '@aragon/ui'
+import { Text } from '@tecommons/ui'
 import styled from 'styled-components'
 import { PresaleViewContext } from '../../context'
 import { formatBigNumber, toDecimals } from '../../utils/bn-utils'

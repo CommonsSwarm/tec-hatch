@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { Box, Button, useTheme, GU, color } from '@aragon/ui'
-import CircleGraph from '../components/CircleGraph'
+import { Box, Button, CircleGraph, useTheme, GU, color } from '@tecommons/ui'
+// import CircleGraph from '../components/CircleGraph'
 import { PresaleViewContext } from '../context'
 import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
@@ -49,9 +49,7 @@ export default React.memo(() => {
       <div className="circle">
         <CircleGraph
           value={totalRaised.div(minGoal).toNumber()}
-          size={20.5 * GU}
-          width={6}
-          color={circleColor[state]}
+          size={20.5 * GU}         
         />
         <p
           title={`${formatBigNumber(
@@ -90,7 +88,7 @@ export default React.memo(() => {
             `}
           >
             <Button
-              mode="strong"
+              mode="normal"
               label="Buy hatch shares"
               onClick={() => setPresalePanel(true)}
             />
@@ -107,18 +105,6 @@ export default React.memo(() => {
             >
               <strong>Hatch goal completed! 🎉</strong>
             </p>
-            {/* <Button
-              wide
-              mode="strong"
-              label="Open trading"
-              css={`
-                margin-top: ${2 * GU}px;
-                width: 100%;
-              `}
-              onClick={handleOpenTrading}
-            >
-              Open trading
-            </Button> */}
           </>
         )}
         {state === Presale.state.REFUNDING && (

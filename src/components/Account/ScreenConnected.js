@@ -9,7 +9,7 @@ import {
   RADIUS,
   textStyle,
   useTheme,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 import { getNetworkType } from '../../networks'
 import { getProviderFromUseWalletId } from '../../ethereum-providers'
@@ -124,10 +124,13 @@ const AccountScreenConnected = ({ onClosePopover, wallet }) => {
               ${textStyle('label2')};
             `}
           >
-            <IconCheck size="small" />
+            <IconCheck size="small" css={
+              `color: ${theme.green};
+            `}/>
             <span
               css={`
                 margin-left: ${0.5 * GU}px;
+                color: ${theme.green}
               `}
             >
               {`Connected to ${networkName} Network`}

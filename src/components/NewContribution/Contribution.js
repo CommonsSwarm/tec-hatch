@@ -8,7 +8,7 @@ import {
   unselectable,
   GU,
   LoadingRing,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 import { PresaleViewContext } from '../../context'
 import Total from './Total'
 import Info from './Info'
@@ -135,7 +135,7 @@ const Contribution = () => {
       <Total value={value} onError={validate} />
       <ButtonWrapper>
         <Button
-          mode="strong"
+          mode="normal"
           type="submit"
           disabled={!valid || !account || creatingTx}
           wide
