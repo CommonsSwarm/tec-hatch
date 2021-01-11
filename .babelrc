@@ -5,12 +5,25 @@
       {
         "modules": false,
         "useBuiltIns": "entry",
-        "core-js": 3,
-        "shippedProposals": true
+        "corejs": 3
       }
-    ]
+    ],
+    "@babel/preset-react"
   ],
   "plugins": [
-    "babel-plugin-styled-components"
-  ]
+    ["styled-components", { "displayName": true }]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "modules": "commonjs",
+            "targets": { "node": "current" }
+          }
+        ]
+      ]
+    }
+  }
 }

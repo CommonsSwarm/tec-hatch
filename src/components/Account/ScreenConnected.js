@@ -124,13 +124,16 @@ const AccountScreenConnected = ({ onClosePopover, wallet }) => {
               ${textStyle('label2')};
             `}
           >
-            <IconCheck size="small" css={
-              `color: ${theme.green};
-            `}/>
+            <IconCheck
+              size="small"
+              css={`
+                color: ${theme.green};
+              `}
+            />
             <span
               css={`
                 margin-left: ${0.5 * GU}px;
-                color: ${theme.green}
+                color: ${theme.green};
               `}
             >
               {`Connected to ${networkName} Network`}

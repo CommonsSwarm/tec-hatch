@@ -63,7 +63,7 @@ export const useContributionsSubscription = ({
 } = {}) => {
   const { presaleConnector } = useAppState()
   const [contributions, setContributions] = useState(new Map())
-  const [initialFetch, setInitialFetch] = useState(false)
+  // const [initialFetch, setInitialFetch] = useState(false)
 
   const contributionsSubscription = useRef(null)
 

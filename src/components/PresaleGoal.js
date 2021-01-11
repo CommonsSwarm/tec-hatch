@@ -1,17 +1,17 @@
 import React, { useContext } from 'react'
-import { Box, Button, CircleGraph, useTheme, GU, color } from '@tecommons/ui'
+import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
 // import CircleGraph from '../components/CircleGraph'
 import { PresaleViewContext } from '../context'
 import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
-import { useWallet } from '../providers/Wallet'
-import useActions from '../hooks/useActions'
+// import { useWallet } from '../providers/Wallet'
+// import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
 
 export default React.memo(() => {
   const theme = useTheme()
-  const { account } = useWallet()
-  const { closePresale } = useActions()
+  // const { account } = useWallet()
+  // const { closePresale } = useActions()
   const {
     config: {
       contributionToken: { symbol, decimals },
@@ -24,32 +24,32 @@ export default React.memo(() => {
   // *****************************
   // misc
   // *****************************
-  const circleColor = {
-    [Presale.state.PENDING]: color('#ecedf1'),
-    [Presale.state.FUNDING]: theme.accent,
-    [Presale.state.GOALREACHED]: theme.positive,
-    [Presale.state.REFUNDING]: theme.negative,
-    [Presale.state.CLOSED]: color('#21c1e7'),
-  }
+  // const circleColor = {
+  //   [Presale.state.PENDING]: color('#ecedf1'),
+  //   [Presale.state.FUNDING]: theme.accent,
+  //   [Presale.state.GOALREACHED]: theme.positive,
+  //   [Presale.state.REFUNDING]: theme.negative,
+  //   [Presale.state.CLOSED]: color('#21c1e7'),
+  // }
 
   /**
    * Calls the `presale.close` smart contarct function on button click
    * @param {Object} event - the event to prevent
    * @returns {void}
    */
-  const handleOpenTrading = event => {
-    event.preventDefault()
-    if (account) {
-      closePresale().catch(console.error)
-    }
-  }
+  // const handleOpenTrading = event => {
+  //   event.preventDefault()
+  //   if (account) {
+  //     closePresale().catch(console.error)
+  //   }
+  // }
 
   return (
     <Box heading="Fundraising Goal">
       <div className="circle">
         <CircleGraph
           value={totalRaised.div(minGoal).toNumber()}
-          size={20.5 * GU}         
+          size={20.5 * GU}
         />
         <p
           title={`${formatBigNumber(
