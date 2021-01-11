@@ -14,7 +14,7 @@ export default () => {
     <WalletProvider>
       <Connect>
         <AppStateProvider>
-          <Main theme="dark" assetsUrl="./aragon-ui" layout={false}>
+          <Main theme="dark" assetsUrl="/aragon-ui/" layout={false}>
             <MainView>
               <PresaleView />
             </MainView>
