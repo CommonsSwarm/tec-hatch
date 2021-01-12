@@ -4,7 +4,7 @@ import useOrgData from '../hooks/useOrgData.js'
 const AppStateContext = createContext()
 
 export const AppStateProvider = ({ children }) => {
-  //this is a test line
+  // this is a test line
   const {
     config,
     errors,
