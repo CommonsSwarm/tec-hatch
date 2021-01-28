@@ -5,7 +5,7 @@ import { Box, GU, IdentityBadge, textStyle } from '@aragon/ui'
 const TopContributors = ({ contributors = [] }) => {
   return (
     <Box heading="Top Contributors">
-      {contributors.map(({ account, contributions }) => (
+      {contributors.map(({ account, formattedTotalValue }) => (
         <Contributor key={account}>
           <IdentityBadge entity={account} />
           <div
@@ -14,7 +14,7 @@ const TopContributors = ({ contributors = [] }) => {
               margin-left: ${3 * GU}px;
             `}
           >
-            {contributions}
+            {formattedTotalValue}
           </div>
         </Contributor>
       ))}
