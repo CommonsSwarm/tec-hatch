@@ -1,4 +1,5 @@
 import React from 'react'
+import { SnackbarProvider } from 'notistack'
 import { Main } from '@aragon/ui'
 import { WalletProvider } from './providers/Wallet'
 import { ConnectProvider as Connect } from './providers/Connect'
@@ -15,9 +16,11 @@ export default () => {
       <Connect>
         <AppStateProvider>
           <Main theme="dark" assetsUrl="./aragon-ui" layout={false}>
-            <MainView>
-              <PresaleView />
-            </MainView>
+            <SnackbarProvider>
+              <MainView>
+                <PresaleView />
+              </MainView>
+            </SnackbarProvider>
           </Main>
         </AppStateProvider>
       </Connect>
