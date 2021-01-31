@@ -27,7 +27,6 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.maxby": "^4.6.0",
     "lodash.minby": "^4.6.0",
-    "notistack": "^1.0.3",
     "perf_hooks": "0.0.1",
     "plotly.js-finance-dist": "^1.51.2",
     "prop-types": "^15.7.2",
