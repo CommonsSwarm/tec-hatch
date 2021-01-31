@@ -4,6 +4,9 @@ import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import useTxExecution from './useTxExecution'
 
+const TX_GAS_LIMIT = 850000
+const PRE_TX_GAS_LIMIT = 450000
+
 const useActions = () => {
   const { ethers } = useWallet()
   const {
@@ -38,7 +41,10 @@ const useActions = () => {
 
           onTxSigning(tx, i, txLength)
 
-          const txResponse = await signer.sendTransaction(tx)
+          const txResponse = await signer.sendTransaction({
+            ...tx,
+            gasLimit: i < txLength - 1 ? PRE_TX_GAS_LIMIT : TX_GAS_LIMIT,
+          })
 
           onTxSigned(txResponse, i, txLength)
 
