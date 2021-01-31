@@ -20,16 +20,40 @@ const BaseSnackbar = ({ icon, message }) => (
 )
 
 export const PendingSnackbar = () => (
-  <BaseSnackbar icon={<IconClock />} message="Transaction being mined..." />
+  <BaseSnackbar
+    icon={
+      <IconClock
+        css={`
+          color: lightSkyBlue;
+        `}
+      />
+    }
+    message="Transaction being mined..."
+  />
 )
 
 export const ConfirmedSnackbar = () => (
-  <BaseSnackbar icon={<IconCheck />} message="Transaction Confirmed!" />
+  <BaseSnackbar
+    icon={
+      <IconCheck
+        css={`
+          color: chartreuse;
+        `}
+      />
+    }
+    message="Transaction Confirmed!"
+  />
 )
 
 export const ErrorSnackbar = ({ userRejected }) => (
   <BaseSnackbar
-    icon={<IconCross />}
+    icon={
+      <IconCross
+        css={`
+          color: red;
+        `}
+      />
+    }
     message={
       userRejected ? 'Transaction rejected by user' : 'Transaction Failed'
     }

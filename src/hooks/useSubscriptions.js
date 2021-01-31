@@ -124,6 +124,7 @@ export const useContributorSubscription = ({
   const onContributorHandler = useCallback(
     (err, contributor) => {
       if (err || !contributor) {
+        setContributor(null)
         return
       }
 
