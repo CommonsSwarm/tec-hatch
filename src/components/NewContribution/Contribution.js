@@ -138,7 +138,7 @@ const Contribution = () => {
                   margin-right: ${0.5 * GU}px;
                 `}
               />{' '}
-              {preTxStatus === PRE_TX_FETCHING && 'Loading'}
+              {preTxStatus === PRE_TX_FETCHING && TX_DESCRIPTIONS[txStatus]}
               {preTxStatus === PRE_TX_PROCESSING &&
                 `Pretransactions (${txCurrentIndex} of ${txCounter - 1}): ${
                   TX_DESCRIPTIONS[txStatus]

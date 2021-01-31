@@ -17,9 +17,3 @@ export const TX_DESCRIPTIONS = {
   [TX_ERROR]: 'Transaction failed',
   [PRE_TX_FINISHED]: 'Waiting for signature',
 }
-
-export const SNACKBAR_TX_DESCRIPTIONS = {
-  [TX_MINING]: 'Transaction being mined...',
-  [TX_SUCCESS]: 'Transaction confirmed!',
-  [TX_ERROR]: 'Transaction failed',
-}
