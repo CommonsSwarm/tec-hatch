@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Button, Info, GU, LoadingRing } from '@aragon/ui'
+import { Button, Info, GU, LoadingRing } from '@tecommons/ui'
 import Information from './Information'
 import { formatBigNumber } from '../../utils/bn-utils'
 import { useWallet } from '../../providers/Wallet'

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info, GU } from '@aragon/ui'
+import { Info, GU } from '@tecommons/ui'
 
 const TxInfo = () => {
   return (

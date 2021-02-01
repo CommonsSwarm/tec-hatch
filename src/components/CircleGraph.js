@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, color } from '@aragon/ui'
+import { useTheme, color } from '@tecommons/ui'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring/renderprops'
 

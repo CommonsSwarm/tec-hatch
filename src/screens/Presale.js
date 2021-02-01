@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import ReactPlayer from 'react-player/vimeo'
 import {
@@ -12,7 +12,7 @@ import {
   Split,
   unselectable,
   Tag,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 import BigNumber from 'bignumber.js'
 import addMilliseconds from 'date-fns/addMilliseconds'
 import PresaleGoal from '../components/PresaleGoal'
@@ -214,7 +214,6 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     font-size: 18px;
-    color: red;
 
     .progress-text {
       display: inherit;

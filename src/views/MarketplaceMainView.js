@@ -8,7 +8,7 @@ import {
   useLayout,
   ContextMenu,
   ContextMenuItem,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 import BigNumber from 'bignumber.js'
 import { useInterval } from '../hooks/use-interval'
 import NewOrder from '../components/NewOrder'
