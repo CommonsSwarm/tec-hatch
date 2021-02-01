@@ -4,13 +4,10 @@
   "private": true,
   "author": "TECommons",
   "repository": "github:1Hive/marketplace-app",
-  "homepage": "https://github.com/TECommons/tec-hatch",
   "bugs": "https://github.com/TECommons/tec-hatch/issues",
   "license": "(GPL-3.0-or-later OR MIT)",
   "scripts": {
     "build": "npm run sync-assets && react-app-rewired build",
-    "build:app": "parcel build index.html -d ./dist/ --public-url \".\" --no-cache",
-    "serve": "parcel serve index.html --out-dir ./dist/ --no-cache",
     "sync-assets": "copy-aragon-ui-assets ./public",
     "start": "npm run sync-assets && react-app-rewired start"
   },
