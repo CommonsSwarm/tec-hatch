@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import ReactPlayer from 'react-player/vimeo'
 import {
@@ -12,17 +12,19 @@ import {
   Split,
   unselectable,
   Tag,
-} from '@aragon/ui'
-import BigNumber from 'bignumber.js'
+  LoadingRing,
+} from '@tecommons/ui'
 import addMilliseconds from 'date-fns/addMilliseconds'
 import PresaleGoal from '../components/PresaleGoal'
 import { Presale } from '../constants'
-import { formatBigNumber } from '../utils/bn-utils'
 import { useWallet } from '../providers/Wallet'
 import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
 import TECInfo from '../components/TECInfo'
-import { useContributionsSubscription } from '../hooks/useSubscriptions'
+import {
+  useContributorsSubscription,
+  useContributorSubscription,
+} from '../hooks/useSubscriptions'
 import TopContributors from '../components/TopContributors'
 
 const TOP_CONTRIBUTORS_COUNT = 10
@@ -30,16 +32,21 @@ const TOP_CONTRIBUTORS_COUNT = 10
 export default () => {
   const theme = useTheme()
   const { account: connectedAccount } = useWallet()
-  const { openPresale } = useActions()
   const {
-    config: { period, openDate, state, contributionToken, token },
+    openHatch,
+    txsData: { txStatus },
+  } = useActions()
+  const {
+    config: { period, openDate, state },
   } = useAppState()
-  const contributions = useContributionsSubscription({
+  const contributors = useContributorsSubscription({
     count: TOP_CONTRIBUTORS_COUNT,
-    orderBy: 'value',
+    orderBy: 'totalValue',
     orderDirection: 'desc',
   })
-
+  const connectedContributor = useContributorSubscription({
+    contributor: connectedAccount,
+  })
   const presaleEnded =
     state !== Presale.state.PENDING && state !== Presale.state.FUNDING
   const noOpenDate = state === Presale.state.PENDING && openDate === 0
@@ -47,42 +54,12 @@ export default () => {
   const videoUrl = 'https://vimeo.com/112836958'
 
   /**
-   * Calls the `presale.open` smart contarct function on button click
+   * Calls the `presale.open` smart contract function on button click
    * @returns {void}
    */
   const handleOpenPresale = () => {
-    openPresale().catch(console.error)
+    openHatch(connectedAccount)
   }
-
-  let contributionList = [...contributions.entries()].map(item => {
-    // Add up amount and value of every vesting period
-    const reducedValues = item[1].reduce((prev, current) => {
-      return {
-        amount: new BigNumber(prev.amount).plus(new BigNumber(current.amount)),
-        value: new BigNumber(prev.value).plus(new BigNumber(current.value)),
-      }
-    })
-
-    item[1] = reducedValues
-
-    return item
-  })
-  // Fetched contributions from connector are already sorted
-  // .sort((a, b) => b[1].value - a[1].value)
-
-  contributionList = contributionList.map(item => ({
-    account: item[0],
-    contributions:
-      formatBigNumber(item[1].value, contributionToken.decimals) +
-      ' ' +
-      contributionToken.symbol,
-    shares:
-      formatBigNumber(item[1].amount, token.decimals) + ' ' + token.symbol,
-  }))
-
-  const myContributions = contributionList.filter(item => {
-    return item.account === connectedAccount
-  })[0]
 
   return (
     <>
@@ -116,9 +93,12 @@ export default () => {
                     mode="strong"
                     label="Open hatch"
                     onClick={handleOpenPresale}
-                    disabled={!connectedAccount}
+                    disabled={!connectedAccount || !!txStatus}
                   >
-                    Open hatch
+                    <AlignedText>
+                      {txStatus && <LoadingRing />}
+                      Open hatch
+                    </AlignedText>
                   </Button>
                 )}
                 {presaleEnded && (
@@ -156,7 +136,7 @@ export default () => {
                   </>
                 )}
               </Box>
-              {myContributions && (
+              {connectedContributor && (
                 <Box heading="My Contributions">
                   <div
                     css={`
@@ -171,7 +151,7 @@ export default () => {
                     >
                       Contributions
                     </p>
-                    <Text>{myContributions.contributions}</Text>
+                    <Text>{connectedContributor.formattedTotalValue}</Text>
                   </div>
                   <div
                     css={`
@@ -186,12 +166,12 @@ export default () => {
                     >
                       Shares
                     </p>
-                    <Text>{myContributions.shares}</Text>
+                    <Text>{connectedContributor.formattedTotalAmount}</Text>
                   </div>
                 </Box>
               )}
-              {!!contributionList.length && (
-                <TopContributors contributors={contributionList} />
+              {!!contributors.length && (
+                <TopContributors contributors={contributors} />
               )}
             </div>
           }
@@ -200,6 +180,12 @@ export default () => {
     </>
   )
 }
+
+const AlignedText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 const Container = styled.div`
   display: flex;
@@ -214,7 +200,6 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     font-size: 18px;
-    color: red;
 
     .progress-text {
       display: inherit;

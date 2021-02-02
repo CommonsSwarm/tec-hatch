@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonBase, GU, IconDown, useTheme, useViewport } from '@aragon/ui'
+import { ButtonBase, GU, IconDown, useTheme, useViewport } from '@tecommons/ui'
 
 const HeaderModule = ({ content, hasPopover = true, icon, onClick }) => {
   const { above } = useViewport()

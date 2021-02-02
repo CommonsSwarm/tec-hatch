@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Info, GU } from '@aragon/ui'
+import { Info, GU } from '@tecommons/ui'
 
 const TxInfo = () => {
   return (
@@ -10,14 +10,14 @@ const TxInfo = () => {
       `}
     >
       <Info mode="warning">
-        <Title>TWO TRANSACTIONS REQUIRED </Title>
+        <Title>TWO OR THREE TRANSACTIONS REQUIRED </Title>
         <Paragraph>
-          This action requires two transactions to be signed in Metamask. Please
-          confirm them one after another.{' '}
+          This action requires two or three transactions to be signed in
+          Metamask. Please confirm them one after another.{' '}
         </Paragraph>
         <Paragraph>
-          In some situations, Metamask may warn you that the second transaction
-          will fail. Please ignore this warning.
+          In some situations, Metamask may warn you that the second or third
+          transaction will fail. Please ignore this warning.
         </Paragraph>
       </Info>
     </div>

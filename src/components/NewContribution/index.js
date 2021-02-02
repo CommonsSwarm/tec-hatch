@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { SidePanel } from '@aragon/ui'
+import { SidePanel } from '@tecommons/ui'
 import { PresaleViewContext } from '../../context'
 import Contribution from './Contribution'
 

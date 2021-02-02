@@ -8,7 +8,7 @@ import {
   unselectable,
   GU,
   LoadingRing,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 import { PresaleViewContext } from '../../context'
 import Total from './Total'
 import Info from './Info'
@@ -18,23 +18,21 @@ import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
 import { useWallet } from '../../providers/Wallet'
 import useActions from '../../hooks/useActions'
 import { useAppState } from '../../providers/AppState'
+import { TX_DESCRIPTIONS, TxStatuses } from '../../constants'
+
+const {
+  PRE_TX_FETCHING,
+  PRE_TX_FINISHED,
+  PRE_TX_PROCESSING,
+  TX_ERROR,
+  TX_MINING,
+} = TxStatuses
 
 const Contribution = () => {
   const { account } = useWallet()
-  const {
-    contribute,
-    getCollateralAllowance,
-    approveCollateralAllowance,
-  } = useActions((res, err) => {
-    if (err) {
-      console.error(err)
-    }
-    setCreatingTx(false)
-    setPresalePanel(false)
-  })
+  const { contribute, txsData } = useActions()
   const {
     config: {
-      id: hatchAddress,
       contributionToken: {
         symbol: contributionSymbol,
         decimals: contributionDecimals,
@@ -44,13 +42,13 @@ const Contribution = () => {
   const {
     presalePanel,
     setPresalePanel,
-    creatingTx,
-    setCreatingTx,
     userPrimaryCollateralBalance,
   } = useContext(PresaleViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
+  const { txStatus, preTxStatus, txCounter, txCurrentIndex } = txsData
+
   const valueInput = useRef(null)
 
   // handle reset when opening
@@ -63,9 +61,19 @@ const Contribution = () => {
 
       // Focus the right input after some time to avoid the panel transition to
       // be skipped by the browser.
-      valueInput && setTimeout(() => valueInput.current.focus(), 100)
+      valueInput && setTimeout(() => valueInput.current.focus(), 300)
     }
   }, [presalePanel])
+
+  useEffect(() => {
+    if (
+      txStatus === TX_ERROR ||
+      (preTxStatus === PRE_TX_FINISHED && txStatus === TX_MINING)
+    ) {
+      setPresalePanel(false)
+    }
+    return () => {}
+  }, [preTxStatus, txStatus, setPresalePanel])
 
   const handleValueUpdate = event => {
     setValue(event.target.value)
@@ -79,24 +87,9 @@ const Contribution = () => {
   const handleSubmit = async event => {
     event.preventDefault()
     if (account) {
-      try {
-        const amount = toDecimals(value, contributionDecimals).toFixed()
-        const allowance = await getCollateralAllowance(account, hatchAddress)
-        setCreatingTx(true)
+      const amount = toDecimals(value, contributionDecimals).toFixed()
 
-        // Check if we had enough token allowance to make the contribution
-        if (allowance.lt(amount)) {
-          // If we had some allowance we set it back to zero before approving the contribution amount
-          if (!allowance.isZero()) {
-            await approveCollateralAllowance(hatchAddress, 0)
-          }
-          await approveCollateralAllowance(hatchAddress, amount)
-        }
-        await contribute(amount)
-      } catch (err) {
-        console.error(err)
-        setCreatingTx(false)
-      }
+      await contribute(account, amount)
     }
   }
 
@@ -126,26 +119,31 @@ const Contribution = () => {
             step="any"
             required
             wide
-            disabled={creatingTx}
+            disabled={!!preTxStatus}
           />
         </ValueField>
       </InputsWrapper>
       <Total value={value} onError={validate} />
       <ButtonWrapper>
         <Button
-          mode="strong"
+          mode="normal"
           type="submit"
-          disabled={!valid || !account || creatingTx}
+          disabled={!valid || !account || !!preTxStatus}
           wide
         >
-          {creatingTx ? (
+          {preTxStatus ? (
             <PreparingTxWrapper>
               <LoadingRing
                 css={`
                   margin-right: ${0.5 * GU}px;
                 `}
               />{' '}
-              Preparing transaction
+              {preTxStatus === PRE_TX_FETCHING && TX_DESCRIPTIONS[txStatus]}
+              {preTxStatus === PRE_TX_PROCESSING &&
+                `Pretransactions (${txCurrentIndex} of ${txCounter - 1}): ${
+                  TX_DESCRIPTIONS[txStatus]
+                }`}
+              {preTxStatus === PRE_TX_FINISHED && 'Buy hatch shares'}
             </PreparingTxWrapper>
           ) : (
             'Buy hatch shares'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, SyncIndicator, Layout } from '@aragon/ui'
+import { ScrollView, SyncIndicator, Layout } from '@tecommons/ui'
 
 import Header from './Header/Header'
 import { useAppState } from '../providers/AppState'

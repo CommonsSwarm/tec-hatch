@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useTheme, color } from '@aragon/ui'
+import { useTheme, color } from '@tecommons/ui'
 import styled from 'styled-components'
 import { Spring, animated } from 'react-spring/renderprops'
 
@@ -53,7 +53,7 @@ const CircleGraph = ({ value, label, size, color, width }) => {
             />
           </CircleSvg>
           <Label theme={theme} size={size / 3}>
-            {progressValue.interpolate(t => label(Math.min(1, Math.max(0, t))))}
+            {progressValue.interpolate(t => label(Math.max(0, t)))}
           </Label>
           <Label
             theme={theme}

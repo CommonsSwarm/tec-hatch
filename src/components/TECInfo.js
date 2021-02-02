@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { GU, textStyle } from '@aragon/ui'
+import { Link, GU, textStyle } from '@tecommons/ui'
 
 const TECInfo = () => {
   const miroUrl = 'https://miro.medium.com/max/700/0*f1EsD1L-1_cTmTos'
@@ -65,9 +65,9 @@ const TECInfo = () => {
         actions. We are value driven, (non profit driven) and will strive to
         support token engineering projects that appreciate the value of public
         goods and ethical, inclusive economic systems. (See also, the{' '}
-        <a href={codeOfConductUrl} target="_blank" rel="noreferrer">
+        <Link href={codeOfConductUrl} target="_blank" rel="noreferrer">
           TEC Code of Conduct
-        </a>
+        </Link>
         ).
       </Paragraph>
     </div>

@@ -1,17 +1,13 @@
 import React, { useContext } from 'react'
-import { Box, Button, useTheme, GU, color } from '@aragon/ui'
-import CircleGraph from '../components/CircleGraph'
+import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
+// import CircleGraph from '../components/CircleGraph'
 import { PresaleViewContext } from '../context'
 import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
-import { useWallet } from '../providers/Wallet'
-import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
 
 export default React.memo(() => {
   const theme = useTheme()
-  const { account } = useWallet()
-  const { closePresale } = useActions()
   const {
     config: {
       contributionToken: { symbol, decimals },
@@ -24,25 +20,13 @@ export default React.memo(() => {
   // *****************************
   // misc
   // *****************************
-  const circleColor = {
-    [Presale.state.PENDING]: color('#ecedf1'),
-    [Presale.state.FUNDING]: theme.accent,
-    [Presale.state.GOALREACHED]: theme.positive,
-    [Presale.state.REFUNDING]: theme.negative,
-    [Presale.state.CLOSED]: color('#21c1e7'),
-  }
-
-  /**
-   * Calls the `presale.close` smart contarct function on button click
-   * @param {Object} event - the event to prevent
-   * @returns {void}
-   */
-  const handleOpenTrading = event => {
-    event.preventDefault()
-    if (account) {
-      closePresale().catch(console.error)
-    }
-  }
+  // const circleColor = {
+  //   [Presale.state.PENDING]: color('#ecedf1'),
+  //   [Presale.state.FUNDING]: theme.accent,
+  //   [Presale.state.GOALREACHED]: theme.positive,
+  //   [Presale.state.REFUNDING]: theme.negative,
+  //   [Presale.state.CLOSED]: color('#21c1e7'),
+  // }
 
   return (
     <Box heading="Fundraising Goal">
@@ -50,8 +34,6 @@ export default React.memo(() => {
         <CircleGraph
           value={totalRaised.div(minGoal).toNumber()}
           size={20.5 * GU}
-          width={6}
-          color={circleColor[state]}
         />
         <p
           title={`${formatBigNumber(
@@ -90,7 +72,7 @@ export default React.memo(() => {
             `}
           >
             <Button
-              mode="strong"
+              mode="normal"
               label="Buy hatch shares"
               onClick={() => setPresalePanel(true)}
             />
@@ -107,18 +89,6 @@ export default React.memo(() => {
             >
               <strong>Hatch goal completed! 🎉</strong>
             </p>
-            {/* <Button
-              wide
-              mode="strong"
-              label="Open trading"
-              css={`
-                margin-top: ${2 * GU}px;
-                width: 100%;
-              `}
-              onClick={handleOpenTrading}
-            >
-              Open trading
-            </Button> */}
           </>
         )}
         {state === Presale.state.REFUNDING && (

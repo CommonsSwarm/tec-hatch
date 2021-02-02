@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import BigNumber from 'bignumber.js'
-import { Header } from '@aragon/ui'
+import { Header } from '@tecommons/ui'
 import { useInterval } from '../hooks/use-interval'
 import { useWallet } from '../providers/Wallet'
 
@@ -16,7 +15,7 @@ import { useAppState } from '../providers/AppState'
 
 export default () => {
   const { account: connectedUser } = useWallet()
-  const { getEntityTokenBalance } = useActions()
+  const { getAccountTokenBalance } = useActions()
   const {
     config: {
       contributionToken: {
@@ -27,7 +26,6 @@ export default () => {
   } = useAppState()
   const [presalePanel, setPresalePanel] = useState(false)
   const [refundPanel, setRefundPanel] = useState(false)
-  const [creatingTx, setCreatingTx] = useState(false)
   // *****************************
   // context state
   // *****************************
@@ -41,8 +39,6 @@ export default () => {
     setPresalePanel,
     refundPanel,
     setRefundPanel,
-    creatingTx,
-    setCreatingTx,
   }
 
   // *****************************
@@ -58,17 +54,19 @@ export default () => {
   // watch for a connected user and get its balances
   useEffect(() => {
     const getUserPrimaryCollateralBalance = async () => {
-      const balance = await getEntityTokenBalance(connectedUser)
+      const balance = await getAccountTokenBalance(connectedUser)
       setUserPrimaryCollateralBalance(balance)
     }
     if (connectedUser) {
       getUserPrimaryCollateralBalance()
+    } else {
+      setUserPrimaryCollateralBalance(new BigNumber(0))
     }
   }, [
     connectedUser,
     contributionAddress,
     contributionDecimals,
-    getEntityTokenBalance,
+    getAccountTokenBalance,
   ])
 
   // polls the start date
@@ -76,16 +74,12 @@ export default () => {
     let newUserPrimaryCollateralBalance = userPrimaryCollateralBalance
     // only poll if there is a connected user
     if (connectedUser) {
-      newUserPrimaryCollateralBalance = await getEntityTokenBalance(
+      newUserPrimaryCollateralBalance = await getAccountTokenBalance(
         connectedUser
       )
     }
-    // TODO: keep an eye on React 17
-    batchedUpdates(() => {
-      // only update if values are different
-      if (!newUserPrimaryCollateralBalance.eq(userPrimaryCollateralBalance))
-        setUserPrimaryCollateralBalance(newUserPrimaryCollateralBalance)
-    })
+    if (!newUserPrimaryCollateralBalance.eq(userPrimaryCollateralBalance))
+      setUserPrimaryCollateralBalance(newUserPrimaryCollateralBalance)
   }, Polling.DURATION)
 
   return (
