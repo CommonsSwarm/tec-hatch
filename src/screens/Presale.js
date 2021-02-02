@@ -13,7 +13,7 @@ import {
   unselectable,
   Tag,
   LoadingRing,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 import addMilliseconds from 'date-fns/addMilliseconds'
 import PresaleGoal from '../components/PresaleGoal'
 import { Presale } from '../constants'
@@ -200,7 +200,6 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     font-size: 18px;
-    color: red;
 
     .progress-text {
       display: inherit;

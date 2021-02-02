@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Info, GU, LoadingRing, DropDown } from '@aragon/ui'
+import { Button, Info, GU, LoadingRing, DropDown } from '@tecommons/ui'
 import Information from './Information'
 import { formatBigNumber } from '../../utils/bn-utils'
 import { useWallet } from '../../providers/Wallet'

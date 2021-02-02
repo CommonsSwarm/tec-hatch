@@ -11,7 +11,8 @@ import { addressesEqual } from '../utils/web3-utils'
 import { useConfigSubscription } from './useSubscriptions'
 
 const APP_NAME = process.env.REACT_APP_PRESALE_APP_NAME
-
+console.log(APP_NAME)
+console.log(process.env.REACT_APP_ORG_ADDRESS)
 const useOrgData = () => {
   const [presaleConnector, setPresaleConnector] = useState(null)
   const [organization, orgStatus] = useOrganization()

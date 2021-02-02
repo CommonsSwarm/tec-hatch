@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import BigNumber from 'bignumber.js'
-import { Header } from '@aragon/ui'
+import { Header } from '@tecommons/ui'
 import { useInterval } from '../hooks/use-interval'
 import { useWallet } from '../providers/Wallet'
 

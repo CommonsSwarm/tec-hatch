@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react'
-import { useToast } from '@aragon/ui'
+import { useToast } from '@tecommons/ui'
 import useMounted from './useMounted'
 import {
   PendingSnackbar,

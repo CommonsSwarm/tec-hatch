@@ -67,7 +67,6 @@ export const useContributorsSubscription = ({
     config: { contributionToken, token },
   } = useAppState()
   const [contributors, setContributors] = useState([])
-  // const [initialFetch, setInitialFetch] = useState(false)
 
   const contributorsSubscription = useRef(null)
 

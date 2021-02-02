@@ -1,5 +1,5 @@
 import React from 'react'
-import { GU, Info } from '@aragon/ui'
+import { GU, Info } from '@tecommons/ui'
 
 const ValidationError = ({ messages }) => {
   return (

@@ -7,7 +7,7 @@ import {
   shortenAddress,
   textStyle,
   useTheme,
-} from '@aragon/ui'
+} from '@tecommons/ui'
 
 import HeaderModule from '../Header/HeaderModule'
 import { useWallet } from '../../providers/Wallet'
@@ -57,7 +57,7 @@ const AccountButton = ({ onClick }) => {
           <div
             css={`
               font-size: 11px; /* doesn’t exist in aragonUI */
-              color: ${theme.positive};
+              color: ${theme.green};
             `}
           >
             Connected
