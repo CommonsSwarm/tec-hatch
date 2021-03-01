@@ -10,20 +10,11 @@ import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
 import { PresaleViewContext } from '../context'
 import useActions from '../hooks/useActions'
-import { useAppState } from '../providers/AppState'
 // import { IdentityProvider } from '../components/IdentityManager'
 
 export default () => {
   const { account: connectedUser } = useWallet()
-  const { getAccountTokenBalance } = useActions()
-  const {
-    config: {
-      contributionToken: {
-        id: contributionAddress,
-        decimals: contributionDecimals,
-      },
-    },
-  } = useAppState()
+  const { getAccountTokenBalance, getAllowedContributionAmount } = useActions()
   const [presalePanel, setPresalePanel] = useState(false)
   const [refundPanel, setRefundPanel] = useState(false)
   // *****************************
@@ -33,8 +24,14 @@ export default () => {
     userPrimaryCollateralBalance,
     setUserPrimaryCollateralBalance,
   ] = useState(new BigNumber(0))
+  const [
+    userAllowedContributionAmount,
+    setUserAllowedContributionAmount,
+  ] = useState(new BigNumber(0))
+
   const context = {
-    userPrimaryCollateralBalance: userPrimaryCollateralBalance,
+    userPrimaryCollateralBalance,
+    userAllowedContributionAmount,
     presalePanel,
     setPresalePanel,
     refundPanel,
@@ -51,35 +48,50 @@ export default () => {
   //   return api.requestAddressIdentityModification(address).toPromise()
   // }
 
-  // watch for a connected user and get its balances
+  // watch for a connected user and get its token data
   useEffect(() => {
-    const getUserPrimaryCollateralBalance = async () => {
+    const getUserTokenData = async () => {
       const balance = await getAccountTokenBalance(connectedUser)
+      const availableAmount = await getAllowedContributionAmount(connectedUser)
       setUserPrimaryCollateralBalance(balance)
+      setUserAllowedContributionAmount(availableAmount)
     }
     if (connectedUser) {
-      getUserPrimaryCollateralBalance()
+      getUserTokenData()
     } else {
       setUserPrimaryCollateralBalance(new BigNumber(0))
+      setUserAllowedContributionAmount(new BigNumber(0))
     }
   }, [
     connectedUser,
-    contributionAddress,
-    contributionDecimals,
     getAccountTokenBalance,
+    getAllowedContributionAmount,
+    setUserPrimaryCollateralBalance,
+    setUserAllowedContributionAmount,
   ])
 
   // polls the start date
   useInterval(async () => {
     let newUserPrimaryCollateralBalance = userPrimaryCollateralBalance
+    let newUserAllowedContributionAmount = userAllowedContributionAmount
+
     // only poll if there is a connected user
     if (connectedUser) {
       newUserPrimaryCollateralBalance = await getAccountTokenBalance(
         connectedUser
       )
+      newUserAllowedContributionAmount = await getAllowedContributionAmount(
+        connectedUser
+      )
     }
-    if (!newUserPrimaryCollateralBalance.eq(userPrimaryCollateralBalance))
+
+    if (!newUserPrimaryCollateralBalance.eq(userPrimaryCollateralBalance)) {
       setUserPrimaryCollateralBalance(newUserPrimaryCollateralBalance)
+    }
+
+    if (!newUserAllowedContributionAmount.eq(userAllowedContributionAmount)) {
+      setUserAllowedContributionAmount(newUserAllowedContributionAmount)
+    }
   }, Polling.DURATION)
 
   return (
