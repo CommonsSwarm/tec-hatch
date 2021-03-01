@@ -10,10 +10,12 @@ export default React.memo(() => {
   const theme = useTheme()
   const {
     config: {
-      contributionToken: { symbol, decimals },
-      minGoal,
-      totalRaised,
-      state,
+      presaleConfig: {
+        contributionToken: { symbol, decimals },
+        minGoal,
+        totalRaised,
+        state,
+      },
     },
   } = useAppState()
   const { setRefundPanel, setPresalePanel } = useContext(PresaleViewContext)

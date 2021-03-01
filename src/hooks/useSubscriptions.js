@@ -19,6 +19,7 @@ export const useConfigSubscription = presaleConnector => {
   const onConfigHandler = useCallback(
     async (err, config) => {
       if (err || !config) {
+        console.error(err)
         return
       }
 
@@ -28,7 +29,7 @@ export const useConfigSubscription = presaleConnector => {
        */
       const intState = await presale.methods.state().call()
 
-      config.state = Presale.intState[intState]
+      config.presaleConfig.state = Presale.intState[intState]
 
       const rawConfig = JSON.stringify(config)
       if (rawConfigRef && rawConfigRef.current === rawConfig) {
@@ -48,7 +49,9 @@ export const useConfigSubscription = presaleConnector => {
       return
     }
 
-    configSubscription.current = presaleConnector.onConfig(onConfigHandler)
+    configSubscription.current = presaleConnector.onGeneralConfig(
+      onConfigHandler
+    )
 
     return () => configSubscription.current.unsubscribe()
   }, [presaleConnector, onConfigHandler])
@@ -64,7 +67,9 @@ export const useContributorsSubscription = ({
 } = {}) => {
   const {
     presaleConnector,
-    config: { contributionToken, token },
+    config: {
+      presaleConfig: { contributionToken, token },
+    },
   } = useAppState()
   const [contributors, setContributors] = useState([])
 
@@ -114,7 +119,9 @@ export const useContributorSubscription = ({
 }) => {
   const {
     presaleConnector,
-    config: { contributionToken, token },
+    config: {
+      presaleConfig: { contributionToken, token },
+    },
   } = useAppState()
   const [contributor, setContributor] = useState(null)
   const contributorSubscription = useRef(null)
