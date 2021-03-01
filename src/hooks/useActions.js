@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import useTxExecution from './useTxExecution'
+import { transformContributorData } from '../utils/data-transform-utils'
 
 const TX_GAS_LIMIT = 850000
 const PRE_TX_GAS_LIMIT = 450000
@@ -17,7 +18,12 @@ const useActions = () => {
     txCurrentIndex,
   } = useTxExecution()
   const signer = useMemo(() => ethers?.getSigner(), [ethers])
-  const { presaleConnector } = useAppState()
+  const {
+    presaleConnector,
+    config: {
+      presaleConfig: { contributionToken, token },
+    },
+  } = useAppState()
   const {
     onTxsFetched,
     onTxSigning,
@@ -111,12 +117,34 @@ const useActions = () => {
     [presaleConnector]
   )
 
+  const getAllowedContributionAmount = useCallback(
+    async entity => {
+      const allowedAmount = await presaleConnector.getAllowedContributionAmount(
+        entity
+      )
+
+      return new BigNumber(allowedAmount.toHexString(), 16)
+    },
+    [presaleConnector]
+  )
+
+  const getContributor = useCallback(
+    async entity => {
+      const contributor = await presaleConnector.contributor(entity)
+
+      return transformContributorData(contributor, contributionToken, token)
+    },
+    [presaleConnector, contributionToken, token]
+  )
+
   return {
     openHatch,
     closeHatch,
     contribute,
     refund,
     getAccountTokenBalance,
+    getAllowedContributionAmount,
+    getContributor,
     txsData: {
       txStatus,
       preTxStatus,

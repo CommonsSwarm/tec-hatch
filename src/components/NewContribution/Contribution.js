@@ -11,14 +11,18 @@ import {
 } from '@tecommons/ui'
 import { PresaleViewContext } from '../../context'
 import Total from './Total'
-import Info from './Info'
-import TxInfo from './TxInfo'
+import {
+  MaxContributionInformation,
+  HatchInformation,
+  TxInformation,
+} from './Information'
 import ValidationError from '../ValidationError'
 import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
 import { useWallet } from '../../providers/Wallet'
 import useActions from '../../hooks/useActions'
 import { useAppState } from '../../providers/AppState'
 import { TX_DESCRIPTIONS, TxStatuses } from '../../constants'
+import BigNumber from 'bignumber.js'
 
 const {
   PRE_TX_FETCHING,
@@ -30,12 +34,17 @@ const {
 
 const Contribution = () => {
   const { account } = useWallet()
-  const { contribute, txsData } = useActions()
+  const { contribute, getContributor, txsData } = useActions()
   const {
     config: {
-      contributionToken: {
-        symbol: contributionSymbol,
-        decimals: contributionDecimals,
+      presaleConfig: {
+        contributionToken: {
+          symbol: contributionSymbol,
+          decimals: contributionDecimals,
+        },
+      },
+      presaleOracleConfig: {
+        scoreToken: { symbol: scoreSymbol },
       },
     },
   } = useAppState()
@@ -43,6 +52,7 @@ const Contribution = () => {
     presalePanel,
     setPresalePanel,
     userPrimaryCollateralBalance,
+    userAllowedContributionAmount,
   } = useContext(PresaleViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
@@ -74,6 +84,31 @@ const Contribution = () => {
     }
     return () => {}
   }, [preTxStatus, txStatus, setPresalePanel])
+
+  useEffect(() => {
+    async function checkAccountBalances(account) {
+      const contributor = await getContributor(account)
+      if (userAllowedContributionAmount.eq(new BigNumber(0))) {
+        if (contributor.totalValue.eq(new BigNumber(0))) {
+          validate(
+            false,
+            `You can't contribute to the hatch because you don't have ${scoreSymbol} tokens.`
+          )
+        } else {
+          validate(
+            false,
+            `You don't have any allowed contribution amount left.`
+          )
+        }
+      }
+    }
+
+    if (account) {
+      checkAccountBalances(account)
+    }
+
+    return () => {}
+  }, [account, getContributor, scoreSymbol, userAllowedContributionAmount])
 
   const handleValueUpdate = event => {
     setValue(event.target.value)
@@ -107,7 +142,19 @@ const Contribution = () => {
         </p>
         <ValueField key="collateral">
           <label>
-            <StyledTextBlock>{contributionSymbol} TO SPEND</StyledTextBlock>
+            <StyledTextBlock>
+              {contributionSymbol} TO SPEND{' '}
+              {account && (
+                <>
+                  (Maximum Allowed{' '}
+                  {formatBigNumber(
+                    userAllowedContributionAmount,
+                    contributionDecimals
+                  )}{' '}
+                  {contributionSymbol})
+                </>
+              )}
+            </StyledTextBlock>
           </label>
           <TextInput
             ref={valueInput}
@@ -151,8 +198,13 @@ const Contribution = () => {
         </Button>
       </ButtonWrapper>
       {errorMessage && <ValidationError messages={[errorMessage]} />}
-      <Info />
-      <TxInfo />
+      {
+        <div>
+          <MaxContributionInformation scoreSymbol={scoreSymbol} />
+          <HatchInformation />
+          <TxInformation />
+        </div>
+      }
     </form>
   )
 }
