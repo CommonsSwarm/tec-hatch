@@ -14,7 +14,7 @@
   "dependencies": {
     "@aragon/connect": "^0.8.0-alpha.6",
     "@aragon/connect-react": "^0.8.0-alpha.6",
-    "@tecommons/connect-hatch": "^1.0.0",
+    "@tecommons/connect-hatch": "^2.0.0",
     "@tecommons/ui": "^1.0.8",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
