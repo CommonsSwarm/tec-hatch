@@ -130,9 +130,13 @@ const useActions = () => {
 
   const getContributor = useCallback(
     async entity => {
-      const contributor = await presaleConnector.contributor(entity)
+      try {
+        const contributor = await presaleConnector.contributor(entity)
 
-      return transformContributorData(contributor, contributionToken, token)
+        return transformContributorData(contributor, contributionToken, token)
+      } catch (err) {
+        return null
+      }
     },
     [presaleConnector, contributionToken, token]
   )

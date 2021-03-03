@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import ReactPlayer from 'react-player/vimeo'
 import {
@@ -21,7 +21,10 @@ import { useWallet } from '../providers/Wallet'
 import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
 import TECInfo from '../components/TECInfo'
-import { useContributorsSubscription } from '../hooks/useSubscriptions'
+import {
+  useContributorsSubscription,
+  useContributorSubscription,
+} from '../hooks/useSubscriptions'
 import TopContributors from '../components/TopContributors'
 
 const TOP_CONTRIBUTORS_COUNT = 10
@@ -31,7 +34,6 @@ export default () => {
   const { account: connectedAccount } = useWallet()
   const {
     openHatch,
-    getContributor,
     txsData: { txStatus },
   } = useActions()
   const {
@@ -44,24 +46,15 @@ export default () => {
     orderBy: 'totalValue',
     orderDirection: 'desc',
   })
-  const [connectedContributor, setConnectedContributor] = useState(null)
+  const connectedContributor = useContributorSubscription({
+    contributor: connectedAccount,
+  })
   const presaleEnded =
     state !== Presale.state.PENDING && state !== Presale.state.FUNDING
   const noOpenDate = state === Presale.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
   const videoUrl = 'https://vimeo.com/112836958'
 
-  useEffect(() => {
-    async function getConnectedContributor(entity) {
-      const contributor = await getContributor(entity)
-
-      setConnectedContributor(contributor)
-    }
-    if (connectedAccount) {
-      getConnectedContributor(connectedAccount)
-    }
-    return () => {}
-  }, [connectedAccount, getContributor])
   /**
    * Calls the `presale.open` smart contract function on button click
    * @returns {void}

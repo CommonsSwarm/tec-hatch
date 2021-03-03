@@ -88,8 +88,11 @@ const Contribution = () => {
   useEffect(() => {
     async function checkAccountBalances(account) {
       const contributor = await getContributor(account)
+      const totalContribution = contributor
+        ? contributor.totalValue
+        : new BigNumber(0)
       if (userAllowedContributionAmount.eq(new BigNumber(0))) {
-        if (contributor.totalValue.eq(new BigNumber(0))) {
+        if (totalContribution.eq(new BigNumber(0))) {
           validate(
             false,
             `You can't contribute to the hatch because you don't have ${scoreSymbol} tokens.`
