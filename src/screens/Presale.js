@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import ReactPlayer from 'react-player/vimeo'
+import ReactPlayer from 'react-player/youtube'
 import {
   Box,
   Button,
@@ -53,7 +53,7 @@ export default () => {
     state !== Presale.state.PENDING && state !== Presale.state.FUNDING
   const noOpenDate = state === Presale.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
-  const videoUrl = 'https://vimeo.com/112836958'
+  const videoUrl = 'https://youtu.be/sgoTeOYnv0g?t=612'
 
   /**
    * Calls the `presale.open` smart contract function on button click
