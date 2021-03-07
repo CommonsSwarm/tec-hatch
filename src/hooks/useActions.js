@@ -6,7 +6,7 @@ import useTxExecution from './useTxExecution'
 import { transformContributorData } from '../utils/data-transform-utils'
 
 const TX_GAS_LIMIT = 850000
-const PRE_TX_GAS_LIMIT = 450000
+const PRE_TX_GAS_LIMIT = 50000
 
 const useActions = () => {
   const { ethers } = useWallet()

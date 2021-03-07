@@ -32,6 +32,7 @@ export const useConfigSubscription = presaleConnector => {
       config.presaleConfig.state = Presale.intState[intState]
 
       const rawConfig = JSON.stringify(config)
+
       if (rawConfigRef && rawConfigRef.current === rawConfig) {
         return
       }
