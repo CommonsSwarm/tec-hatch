@@ -4,20 +4,18 @@ import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
 import { PresaleViewContext } from '../context'
 import { Presale } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
-// import { useWallet } from '../providers/Wallet'
-// import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
 
 export default React.memo(() => {
   const theme = useTheme()
-  // const { account } = useWallet()
-  // const { closePresale } = useActions()
   const {
     config: {
-      contributionToken: { symbol, decimals },
-      minGoal,
-      totalRaised,
-      state,
+      presaleConfig: {
+        contributionToken: { symbol, decimals },
+        minGoal,
+        totalRaised,
+        state,
+      },
     },
   } = useAppState()
   const { setRefundPanel, setPresalePanel } = useContext(PresaleViewContext)
@@ -30,18 +28,6 @@ export default React.memo(() => {
   //   [Presale.state.GOALREACHED]: theme.positive,
   //   [Presale.state.REFUNDING]: theme.negative,
   //   [Presale.state.CLOSED]: color('#21c1e7'),
-  // }
-
-  /**
-   * Calls the `presale.close` smart contarct function on button click
-   * @param {Object} event - the event to prevent
-   * @returns {void}
-   */
-  // const handleOpenTrading = event => {
-  //   event.preventDefault()
-  //   if (account) {
-  //     closePresale().catch(console.error)
-  //   }
   // }
 
   return (

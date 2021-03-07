@@ -8,19 +8,24 @@ import { useAppState } from '../../providers/AppState'
 export default ({ value, onError }) => {
   const {
     config: {
-      contributionToken: {
-        symbol: contributionSymbol,
-        decimals: contributionDecimals,
+      presaleConfig: {
+        contributionToken: {
+          symbol: contributionSymbol,
+          decimals: contributionDecimals,
+        },
+        token: { symbol, decimals },
+        exchangeRate,
       },
-      token: { symbol, decimals },
-      exchangeRate,
     },
   } = useAppState()
 
   // *****************************
   // context state
   // *****************************
-  const { userPrimaryCollateralBalance } = useContext(PresaleViewContext)
+  const {
+    userPrimaryCollateralBalance,
+    userAllowedContributionAmount,
+  } = useContext(PresaleViewContext)
 
   // *****************************
   // internal state
@@ -39,6 +44,16 @@ export default ({ value, onError }) => {
       setFormattedValue(formatBigNumber(valueBn, contributionDecimals))
       setEvaluatedPrice(null)
       onError(false, `Your ${contributionSymbol} balance is not sufficient`)
+    } else if (userAllowedContributionAmount.lt(valueBn)) {
+      setFormattedValue(formatBigNumber(valueBn, contributionDecimals))
+      setEvaluatedPrice(null)
+      onError(
+        false,
+        `You can contribute a maximum of ${formatBigNumber(
+          userAllowedContributionAmount,
+          contributionDecimals
+        )} ${contributionSymbol}`
+      )
     } else if (value?.length && value > 0) {
       // only try to evaluate when an amount is entered, and valid
       setFormattedValue(formatBigNumber(valueBn, contributionDecimals))
@@ -58,6 +73,7 @@ export default ({ value, onError }) => {
     exchangeRate,
     onError,
     userPrimaryCollateralBalance,
+    userAllowedContributionAmount,
   ])
 
   return (

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 import BigNumber from 'bignumber.js'
 import { Header } from '@tecommons/ui'
 import { useInterval } from '../hooks/use-interval'
@@ -11,23 +10,13 @@ import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
 import { PresaleViewContext } from '../context'
 import useActions from '../hooks/useActions'
-import { useAppState } from '../providers/AppState'
 // import { IdentityProvider } from '../components/IdentityManager'
 
 export default () => {
   const { account: connectedUser } = useWallet()
-  const { getEntityTokenBalance } = useActions()
-  const {
-    config: {
-      contributionToken: {
-        id: contributionAddress,
-        decimals: contributionDecimals,
-      },
-    },
-  } = useAppState()
+  const { getAccountTokenBalance, getAllowedContributionAmount } = useActions()
   const [presalePanel, setPresalePanel] = useState(false)
   const [refundPanel, setRefundPanel] = useState(false)
-  const [creatingTx, setCreatingTx] = useState(false)
   // *****************************
   // context state
   // *****************************
@@ -35,14 +24,18 @@ export default () => {
     userPrimaryCollateralBalance,
     setUserPrimaryCollateralBalance,
   ] = useState(new BigNumber(0))
+  const [
+    userAllowedContributionAmount,
+    setUserAllowedContributionAmount,
+  ] = useState(new BigNumber(0))
+
   const context = {
-    userPrimaryCollateralBalance: userPrimaryCollateralBalance,
+    userPrimaryCollateralBalance,
+    userAllowedContributionAmount,
     presalePanel,
     setPresalePanel,
     refundPanel,
     setRefundPanel,
-    creatingTx,
-    setCreatingTx,
   }
 
   // *****************************
@@ -55,37 +48,50 @@ export default () => {
   //   return api.requestAddressIdentityModification(address).toPromise()
   // }
 
-  // watch for a connected user and get its balances
+  // watch for a connected user and get its token data
   useEffect(() => {
-    const getUserPrimaryCollateralBalance = async () => {
-      const balance = await getEntityTokenBalance(connectedUser)
+    const getUserTokenData = async () => {
+      const balance = await getAccountTokenBalance(connectedUser)
+      const availableAmount = await getAllowedContributionAmount(connectedUser)
       setUserPrimaryCollateralBalance(balance)
+      setUserAllowedContributionAmount(availableAmount)
     }
     if (connectedUser) {
-      getUserPrimaryCollateralBalance()
+      getUserTokenData()
+    } else {
+      setUserPrimaryCollateralBalance(new BigNumber(0))
+      setUserAllowedContributionAmount(new BigNumber(0))
     }
   }, [
     connectedUser,
-    contributionAddress,
-    contributionDecimals,
-    getEntityTokenBalance,
+    getAccountTokenBalance,
+    getAllowedContributionAmount,
+    setUserPrimaryCollateralBalance,
+    setUserAllowedContributionAmount,
   ])
 
   // polls the start date
   useInterval(async () => {
     let newUserPrimaryCollateralBalance = userPrimaryCollateralBalance
+    let newUserAllowedContributionAmount = userAllowedContributionAmount
+
     // only poll if there is a connected user
     if (connectedUser) {
-      newUserPrimaryCollateralBalance = await getEntityTokenBalance(
+      newUserPrimaryCollateralBalance = await getAccountTokenBalance(
+        connectedUser
+      )
+      newUserAllowedContributionAmount = await getAllowedContributionAmount(
         connectedUser
       )
     }
-    // TODO: keep an eye on React 17
-    batchedUpdates(() => {
-      // only update if values are different
-      if (!newUserPrimaryCollateralBalance.eq(userPrimaryCollateralBalance))
-        setUserPrimaryCollateralBalance(newUserPrimaryCollateralBalance)
-    })
+
+    if (!newUserPrimaryCollateralBalance.eq(userPrimaryCollateralBalance)) {
+      setUserPrimaryCollateralBalance(newUserPrimaryCollateralBalance)
+    }
+
+    if (!newUserAllowedContributionAmount.eq(userAllowedContributionAmount)) {
+      setUserAllowedContributionAmount(newUserAllowedContributionAmount)
+    }
   }, Polling.DURATION)
 
   return (

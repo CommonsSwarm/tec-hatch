@@ -1,130 +1,160 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
-import { useContract } from './useContract'
-import TokenAbi from '../abi/Token.json'
+import useTxExecution from './useTxExecution'
+import { transformContributorData } from '../utils/data-transform-utils'
 
-// const GAS_LIMIT = 600000
-const PRESALE_ADDRESS = process.env.REACT_APP_PRESALE_APP_ADDRESS
+const TX_GAS_LIMIT = 850000
+const PRE_TX_GAS_LIMIT = 50000
 
-const useActions = (onDone = () => {}) => {
-  const { account, web3 } = useWallet()
-  const { organization, config } = useAppState()
-  const token = config ? config.contributionToken : {}
+const useActions = () => {
+  const { ethers } = useWallet()
+  const {
+    txHandlers,
+    txStatus,
+    preTxStatus,
+    txCounter,
+    txCurrentIndex,
+  } = useTxExecution()
+  const signer = useMemo(() => ethers?.getSigner(), [ethers])
+  const {
+    presaleConnector,
+    config: {
+      presaleConfig: { contributionToken, token },
+    },
+  } = useAppState()
+  const {
+    onTxsFetched,
+    onTxSigning,
+    onTxSigned,
+    onTxSuccess,
+    onTxError,
+  } = txHandlers
 
-  const contributionToken = useContract(token.id, TokenAbi)
+  const executeAction = useCallback(
+    async ({ transactions = [] } = {}) => {
+      const txLength = transactions.length
 
-  const openPresale = useCallback(async () => {
-    sendIntent(organization, PRESALE_ADDRESS, 'open', [], {
-      web3,
-      from: account,
-    })
+      if (!txLength) {
+        return
+      }
+      onTxsFetched(txLength)
 
-    onDone()
-  }, [account, organization, web3, onDone])
+      try {
+        for (let i = 0; i < txLength; i++) {
+          const tx = transactions[i]
 
-  const closePresale = useCallback(() => {
-    sendIntent(organization, PRESALE_ADDRESS, 'close', [], {
-      web3,
-      from: account,
-    })
+          onTxSigning(tx, i, txLength)
 
-    onDone()
-  }, [account, organization, web3, onDone])
+          const txResponse = await signer.sendTransaction({
+            ...tx,
+            gasLimit: i < txLength - 1 ? PRE_TX_GAS_LIMIT : TX_GAS_LIMIT,
+          })
+
+          onTxSigned(txResponse, i, txLength)
+
+          const txReceipt = await txResponse.wait()
+
+          onTxSuccess(txReceipt, i, txLength)
+        }
+      } catch (err) {
+        console.error(err)
+        onTxError(err)
+      }
+    },
+    [signer, onTxsFetched, onTxSigning, onTxSigned, onTxSuccess, onTxError]
+  )
+
+  const openHatch = useCallback(
+    async signerAddress => {
+      const intent = await presaleConnector.open(signerAddress)
+
+      executeAction(intent)
+    },
+    [presaleConnector, executeAction]
+  )
+
+  const closeHatch = useCallback(
+    async signerAddress => {
+      const intent = await presaleConnector.close(signerAddress)
+
+      executeAction(intent)
+    },
+    [presaleConnector, executeAction]
+  )
 
   const contribute = useCallback(
-    async value => {
-      sendIntent(
-        organization,
-        PRESALE_ADDRESS,
-        'contribute',
-        [value],
-        {
-          web3,
-          from: account,
-        },
-        { onTxCreated: onDone, onError: onDone }
-      )
+    async (contributor, value) => {
+      const intent = await presaleConnector.contribute(contributor, value)
+
+      executeAction(intent)
     },
-    [account, organization, web3, onDone]
+    [presaleConnector, executeAction]
   )
 
   const refund = useCallback(
     async (contributor, vestedPurchaseId) => {
-      sendIntent(
-        organization,
-        PRESALE_ADDRESS,
-        'refund',
-        [contributor, vestedPurchaseId],
-        { web3, from: account },
-        { onTxCreated: onDone, onError: onDone }
+      const intent = await presaleConnector.refund(
+        contributor,
+        vestedPurchaseId
       )
+
+      executeAction(intent)
     },
-    [account, organization, web3, onDone]
+    [presaleConnector, executeAction]
   )
 
-  const getCollateralAllowance = useCallback(
-    async (owner, spender) => {
-      const allowance = await contributionToken.methods
-        .allowance(owner, spender)
-        .call({ from: account })
-      return new BigNumber(allowance)
-    },
-    [contributionToken, account]
-  )
-
-  const approveCollateralAllowance = useCallback(
-    async (spender, amount) => {
-      const success = await contributionToken.methods
-        .approve(spender, amount)
-        .send({ from: account })
-      return success
-    },
-    [contributionToken, account]
-  )
-
-  const getEntityTokenBalance = useCallback(
+  const getAccountTokenBalance = useCallback(
     async entity => {
-      const balance = await contributionToken.methods
-        .balanceOf(entity)
-        .call({ from: account })
-      return new BigNumber(balance)
+      const balance = await presaleConnector.tokenBalance(entity)
+      /**
+       * Connector uses ethers' lower-version BigNumber.js
+       * library which returns a BigNumber with a hex field only
+       */
+      return new BigNumber(balance.toHexString(), 16)
     },
-    [contributionToken, account]
+    [presaleConnector]
+  )
+
+  const getAllowedContributionAmount = useCallback(
+    async entity => {
+      const allowedAmount = await presaleConnector.getAllowedContributionAmount(
+        entity
+      )
+
+      return new BigNumber(allowedAmount.toHexString(), 16)
+    },
+    [presaleConnector]
+  )
+
+  const getContributor = useCallback(
+    async entity => {
+      try {
+        const contributor = await presaleConnector.contributor(entity)
+
+        return transformContributorData(contributor, contributionToken, token)
+      } catch (err) {
+        return null
+      }
+    },
+    [presaleConnector, contributionToken, token]
   )
 
   return {
-    openPresale,
-    closePresale,
+    openHatch,
+    closeHatch,
     contribute,
     refund,
-    getCollateralAllowance,
-    approveCollateralAllowance,
-    getEntityTokenBalance,
-  }
-}
-
-const sendIntent = async (
-  org,
-  appAddress,
-  fn,
-  params,
-  { web3, from },
-  { onTxCreated = () => {}, onCompleted = () => {}, onError = () => {} } = {}
-) => {
-  try {
-    const intent = org.appIntent(appAddress, fn, params)
-    const [tx] = await intent.transactions(from)
-    const { data, to } = tx
-
-    web3.eth
-      .sendTransaction({ from, to, data })
-      .on('transactionHash', onTxCreated)
-      .on('receipt', onCompleted)
-      .on('error', onError)
-  } catch (err) {
-    onError(err)
+    getAccountTokenBalance,
+    getAllowedContributionAmount,
+    getContributor,
+    txsData: {
+      txStatus,
+      preTxStatus,
+      txCounter,
+      txCurrentIndex,
+    },
   }
 }
 

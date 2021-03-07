@@ -9,10 +9,12 @@ export const AppStateProvider = ({ children }) => {
     config,
     errors,
     presaleConnector,
+    presaleApp,
     installedApps,
     organization,
     loadingAppData,
   } = useOrgData()
+
   const appLoading = !errors && loadingAppData
 
   return (
@@ -21,6 +23,7 @@ export const AppStateProvider = ({ children }) => {
         config,
         errors: { orgErrors: errors },
         installedApps,
+        presaleApp,
         organization,
         isLoading: appLoading,
         presaleConnector,
