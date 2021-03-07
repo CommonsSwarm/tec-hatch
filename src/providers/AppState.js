@@ -14,6 +14,7 @@ export const AppStateProvider = ({ children }) => {
     organization,
     loadingAppData,
   } = useOrgData()
+
   const appLoading = !errors && loadingAppData
 
   return (

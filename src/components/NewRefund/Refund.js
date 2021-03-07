@@ -17,7 +17,9 @@ const Refund = () => {
   const { refund, txsData } = useActions()
   const {
     config: {
-      contributionToken: { symbol, decimals },
+      presaleConfig: {
+        contributionToken: { symbol, decimals },
+      },
     },
   } = useAppState()
   const { setRefundPanel } = useContext(PresaleViewContext)

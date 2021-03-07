@@ -37,7 +37,9 @@ export default () => {
     txsData: { txStatus },
   } = useActions()
   const {
-    config: { period, openDate, state },
+    config: {
+      presaleConfig: { period, openDate, state },
+    },
   } = useAppState()
   const contributors = useContributorsSubscription({
     count: TOP_CONTRIBUTORS_COUNT,
