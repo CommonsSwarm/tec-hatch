@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
 import { SidePanel } from '@tecommons/ui'
-import { PresaleViewContext } from '../../context'
+import { HatchViewContext } from '../../context'
 import Refund from './Refund'
 
 export default () => {
   // *****************************
   // context state
   // *****************************
-  const { refundPanel, setRefundPanel } = useContext(PresaleViewContext)
+  const { refundPanel, setRefundPanel } = useContext(HatchViewContext)
 
   return (
     <SidePanel

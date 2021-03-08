@@ -8,8 +8,8 @@ export const AppStateProvider = ({ children }) => {
   const {
     config,
     errors,
-    presaleConnector,
-    presaleApp,
+    hatchConnector,
+    hatchApp,
     installedApps,
     organization,
     loadingAppData,
@@ -23,10 +23,10 @@ export const AppStateProvider = ({ children }) => {
         config,
         errors: { orgErrors: errors },
         installedApps,
-        presaleApp,
+        hatchApp,
         organization,
         isLoading: appLoading,
-        presaleConnector,
+        hatchConnector,
       }}
     >
       {children}

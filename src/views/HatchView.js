@@ -5,17 +5,17 @@ import { useInterval } from '../hooks/use-interval'
 import { useWallet } from '../providers/Wallet'
 
 import { Polling } from '../constants'
-import Presale from '../screens/Presale'
+import Hatch from '../screens/Hatch'
 import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
-import { PresaleViewContext } from '../context'
+import { HatchViewContext } from '../context'
 import useActions from '../hooks/useActions'
 // import { IdentityProvider } from '../components/IdentityManager'
 
 export default () => {
   const { account: connectedUser } = useWallet()
   const { getAccountTokenBalance, getAllowedContributionAmount } = useActions()
-  const [presalePanel, setPresalePanel] = useState(false)
+  const [hatchPanel, setHatchPanel] = useState(false)
   const [refundPanel, setRefundPanel] = useState(false)
   // *****************************
   // context state
@@ -32,8 +32,8 @@ export default () => {
   const context = {
     userPrimaryCollateralBalance,
     userAllowedContributionAmount,
-    presalePanel,
-    setPresalePanel,
+    hatchPanel,
+    setHatchPanel,
     refundPanel,
     setRefundPanel,
   }
@@ -95,16 +95,16 @@ export default () => {
   }, Polling.DURATION)
 
   return (
-    <PresaleViewContext.Provider value={context}>
+    <HatchViewContext.Provider value={context}>
       {/* <IdentityProvider
         onResolve={handleResolveLocalIdentity}
         onShowLocalIdentityModal={handleShowLocalIdentityModal}
       > */}
       <Header primary="Token Engineering Commons Hatch" />
-      <Presale />
+      <Hatch />
       <NewContribution />
       <NewRefund />
       {/* </IdentityProvider> */}
-    </PresaleViewContext.Provider>
+    </HatchViewContext.Provider>
   )
 }

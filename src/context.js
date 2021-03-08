@@ -1,3 +1,3 @@
 import { createContext } from 'react'
 
-export const PresaleViewContext = createContext()
+export const HatchViewContext = createContext()

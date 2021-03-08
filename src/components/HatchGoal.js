@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
 // import CircleGraph from '../components/CircleGraph'
-import { PresaleViewContext } from '../context'
-import { Presale } from '../constants'
+import { HatchViewContext } from '../context'
+import { Hatch } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useAppState } from '../providers/AppState'
 
@@ -10,7 +10,7 @@ export default React.memo(() => {
   const theme = useTheme()
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: { symbol, decimals },
         minGoal,
         totalRaised,
@@ -18,16 +18,16 @@ export default React.memo(() => {
       },
     },
   } = useAppState()
-  const { setRefundPanel, setPresalePanel } = useContext(PresaleViewContext)
+  const { setRefundPanel, setHatchPanel } = useContext(HatchViewContext)
   // *****************************
   // misc
   // *****************************
   // const circleColor = {
-  //   [Presale.state.PENDING]: color('#ecedf1'),
-  //   [Presale.state.FUNDING]: theme.accent,
-  //   [Presale.state.GOALREACHED]: theme.positive,
-  //   [Presale.state.REFUNDING]: theme.negative,
-  //   [Presale.state.CLOSED]: color('#21c1e7'),
+  //   [Hatch.state.PENDING]: color('#ecedf1'),
+  //   [Hatch.state.FUNDING]: theme.accent,
+  //   [Hatch.state.GOALREACHED]: theme.positive,
+  //   [Hatch.state.REFUNDING]: theme.negative,
+  //   [Hatch.state.CLOSED]: color('#21c1e7'),
   // }
 
   return (
@@ -67,7 +67,7 @@ export default React.memo(() => {
           </span>{' '}
           {symbol}
         </p>
-        {state === Presale.state.FUNDING && (
+        {state === Hatch.state.FUNDING && (
           <div
             css={`
               margin-top: ${2 * GU}px;
@@ -76,11 +76,11 @@ export default React.memo(() => {
             <Button
               mode="normal"
               label="Buy hatch shares"
-              onClick={() => setPresalePanel(true)}
+              onClick={() => setHatchPanel(true)}
             />
           </div>
         )}
-        {state === Presale.state.GOALREACHED && (
+        {state === Hatch.state.GOALREACHED && (
           <>
             <p
               css={`
@@ -93,7 +93,7 @@ export default React.memo(() => {
             </p>
           </>
         )}
-        {state === Presale.state.REFUNDING && (
+        {state === Hatch.state.REFUNDING && (
           <>
             <p
               css={`
