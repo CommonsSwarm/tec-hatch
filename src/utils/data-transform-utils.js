@@ -4,36 +4,34 @@ import { formatBigNumber } from './bn-utils'
 import { secondsToMilliseconds } from './date-utils'
 
 export const transformConfigData = config => {
-  const presaleConfig = config.presaleConfig
-  const presaleOracleConfig = config.presaleOracleConfig
+  const hatchConfig = config.hatchConfig
+  const hatchOracleConfig = config.hatchOracleConfig
 
   return {
     ...config,
-    presaleConfig: {
-      ...presaleConfig,
-      openDate: secondsToMilliseconds(presaleConfig.openDate),
-      period: secondsToMilliseconds(presaleConfig.period),
-      vestingCliffPeriod: secondsToMilliseconds(
-        presaleConfig.vestingCliffPeriod
-      ),
+    hatchConfig: {
+      ...hatchConfig,
+      openDate: secondsToMilliseconds(hatchConfig.openDate),
+      period: secondsToMilliseconds(hatchConfig.period),
+      vestingCliffPeriod: secondsToMilliseconds(hatchConfig.vestingCliffPeriod),
       vestingCompletePeriod: secondsToMilliseconds(
-        presaleConfig.vestingCompletePeriod
+        hatchConfig.vestingCompletePeriod
       ),
-      vestingCliffDate: secondsToMilliseconds(presaleConfig.vestingCliffDate),
+      vestingCliffDate: secondsToMilliseconds(hatchConfig.vestingCliffDate),
       vestingCompleteDate: secondsToMilliseconds(
-        presaleConfig.vestingCompleteDate
+        hatchConfig.vestingCompleteDate
       ),
-      state: presaleConfig.state.toUpperCase(),
-      exchangeRate: new BigNumber(presaleConfig.exchangeRate).div(
-        new BigNumber(presaleConfig.PPM)
+      state: hatchConfig.state.toUpperCase(),
+      exchangeRate: new BigNumber(hatchConfig.exchangeRate).div(
+        new BigNumber(hatchConfig.PPM)
       ),
-      minGoal: new BigNumber(presaleConfig.minGoal),
-      maxGoal: new BigNumber(presaleConfig.maxGoal),
-      totalRaised: new BigNumber(presaleConfig.totalRaised),
+      minGoal: new BigNumber(hatchConfig.minGoal),
+      maxGoal: new BigNumber(hatchConfig.maxGoal),
+      totalRaised: new BigNumber(hatchConfig.totalRaised),
     },
-    presaleOracleConfig: {
-      ...presaleOracleConfig,
-      ratio: new BigNumber(presaleOracleConfig.ratio),
+    hatchOracleConfig: {
+      ...hatchOracleConfig,
+      ratio: new BigNumber(hatchOracleConfig.ratio),
     },
   }
 }

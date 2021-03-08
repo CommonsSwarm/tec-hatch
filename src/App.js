@@ -7,7 +7,7 @@ import MainView from './components/MainView'
 
 import './assets/global.css'
 import { AppStateProvider } from './providers/AppState'
-import PresaleView from './views/PresaleView'
+import HatchView from './views/HatchView'
 
 export default () => {
   return (
@@ -17,7 +17,7 @@ export default () => {
           <Main theme="dark" assetsUrl="/aragon-ui" layout={false}>
             <ToastHub>
               <MainView>
-                <PresaleView />
+                <HatchView />
               </MainView>
             </ToastHub>
           </Main>

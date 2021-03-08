@@ -1,19 +1,19 @@
 import React, { useContext } from 'react'
 import { SidePanel } from '@tecommons/ui'
-import { PresaleViewContext } from '../../context'
+import { HatchViewContext } from '../../context'
 import Contribution from './Contribution'
 
 export default () => {
   // *****************************
   // context state
   // *****************************
-  const { presalePanel, setPresalePanel } = useContext(PresaleViewContext)
+  const { hatchPanel, setHatchPanel } = useContext(HatchViewContext)
 
   return (
     <SidePanel
       title="New Contribution"
-      opened={presalePanel}
-      onClose={() => setPresalePanel(false)}
+      opened={hatchPanel}
+      onClose={() => setHatchPanel(false)}
     >
       <Contribution />
     </SidePanel>

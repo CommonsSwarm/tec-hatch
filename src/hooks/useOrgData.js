@@ -6,59 +6,59 @@ import {
   usePermissions,
 } from '@aragon/connect-react'
 
-import connectPresale from '@tecommons/connect-hatch'
+import connectHatch from '@tecommons/connect-hatch'
 import { addressesEqual } from '../utils/web3-utils'
 import { useConfigSubscription } from './useSubscriptions'
 
-const APP_NAME = process.env.REACT_APP_PRESALE_APP_NAME
+const APP_NAME = process.env.REACT_APP_HATCH_APP_NAME
 
 const useOrgData = () => {
-  const [presaleConnector, setPresaleConnector] = useState(null)
+  const [hatchConnector, setHatchConnector] = useState(null)
   const [organization, orgStatus] = useOrganization()
   const [apps, appsStatus] = useApps()
-  const [presaleApp] = useApp(APP_NAME)
+  const [hatchApp] = useApp(APP_NAME)
   const [permissions, permissionsStatus] = usePermissions()
-  const presaleAppPermissions = useMemo(() => {
+  const hatchAppPermissions = useMemo(() => {
     if (
       !permissions ||
       permissionsStatus.loading ||
       permissionsStatus.error ||
-      !presaleApp
+      !hatchApp
     ) {
       return
     }
     return permissions.filter(({ appAddress }) =>
-      addressesEqual(appAddress, presaleApp.address)
+      addressesEqual(appAddress, hatchApp.address)
     )
-  }, [presaleApp, permissions, permissionsStatus])
+  }, [hatchApp, permissions, permissionsStatus])
 
   useEffect(() => {
-    if (!presaleApp) {
+    if (!hatchApp) {
       return
     }
 
     let cancelled = false
 
-    const fetchPresaleConnector = async () => {
+    const fetchHatchConnector = async () => {
       try {
-        const presaleConnector = await connectPresale(presaleApp)
+        const hatchConnector = await connectHatch(hatchApp)
 
         if (!cancelled) {
-          setPresaleConnector(presaleConnector)
+          setHatchConnector(hatchConnector)
         }
       } catch (err) {
-        console.error(`Error fetching presale connector: ${err}`)
+        console.error(`Error fetching hatch connector: ${err}`)
       }
     }
 
-    fetchPresaleConnector()
+    fetchHatchConnector()
 
     return () => {
       cancelled = true
     }
-  }, [presaleApp])
+  }, [hatchApp])
 
-  const config = useConfigSubscription(presaleConnector)
+  const config = useConfigSubscription(hatchConnector)
 
   const loadingData =
     orgStatus.loading ||
@@ -71,11 +71,11 @@ const useOrgData = () => {
   return {
     config,
     errors,
-    presaleConnector,
+    hatchConnector,
     installedApps: apps,
-    presaleApp,
+    hatchApp,
     organization,
-    permissions: presaleAppPermissions,
+    permissions: hatchAppPermissions,
     loadingAppData: loadingData,
   }
 }

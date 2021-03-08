@@ -19,9 +19,9 @@ const useActions = () => {
   } = useTxExecution()
   const signer = useMemo(() => ethers?.getSigner(), [ethers])
   const {
-    presaleConnector,
+    hatchConnector,
     config: {
-      presaleConfig: { contributionToken, token },
+      hatchConfig: { contributionToken, token },
     },
   } = useAppState()
   const {
@@ -68,77 +68,74 @@ const useActions = () => {
 
   const openHatch = useCallback(
     async signerAddress => {
-      const intent = await presaleConnector.open(signerAddress)
+      const intent = await hatchConnector.open(signerAddress)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const closeHatch = useCallback(
     async signerAddress => {
-      const intent = await presaleConnector.close(signerAddress)
+      const intent = await hatchConnector.close(signerAddress)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const contribute = useCallback(
     async (contributor, value) => {
-      const intent = await presaleConnector.contribute(contributor, value)
+      const intent = await hatchConnector.contribute(contributor, value)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const refund = useCallback(
     async (contributor, vestedPurchaseId) => {
-      const intent = await presaleConnector.refund(
-        contributor,
-        vestedPurchaseId
-      )
+      const intent = await hatchConnector.refund(contributor, vestedPurchaseId)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const getAccountTokenBalance = useCallback(
     async entity => {
-      const balance = await presaleConnector.tokenBalance(entity)
+      const balance = await hatchConnector.tokenBalance(entity)
       /**
        * Connector uses ethers' lower-version BigNumber.js
        * library which returns a BigNumber with a hex field only
        */
       return new BigNumber(balance.toHexString(), 16)
     },
-    [presaleConnector]
+    [hatchConnector]
   )
 
   const getAllowedContributionAmount = useCallback(
     async entity => {
-      const allowedAmount = await presaleConnector.getAllowedContributionAmount(
+      const allowedAmount = await hatchConnector.getAllowedContributionAmount(
         entity
       )
 
       return new BigNumber(allowedAmount.toHexString(), 16)
     },
-    [presaleConnector]
+    [hatchConnector]
   )
 
   const getContributor = useCallback(
     async entity => {
       try {
-        const contributor = await presaleConnector.contributor(entity)
+        const contributor = await hatchConnector.contributor(entity)
 
         return transformContributorData(contributor, contributionToken, token)
       } catch (err) {
         return null
       }
     },
-    [presaleConnector, contributionToken, token]
+    [hatchConnector, contributionToken, token]
   )
 
   return {

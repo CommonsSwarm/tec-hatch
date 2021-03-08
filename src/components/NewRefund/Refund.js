@@ -6,7 +6,7 @@ import { formatBigNumber } from '../../utils/bn-utils'
 import { useWallet } from '../../providers/Wallet'
 import useActions from '../../hooks/useActions'
 import { useAppState } from '../../providers/AppState'
-import { PresaleViewContext } from '../../context'
+import { HatchViewContext } from '../../context'
 import { useContributionsSubscription } from '../../hooks/useSubscriptions'
 import { TxStatuses } from '../../constants'
 
@@ -17,12 +17,12 @@ const Refund = () => {
   const { refund, txsData } = useActions()
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: { symbol, decimals },
       },
     },
   } = useAppState()
-  const { setRefundPanel } = useContext(PresaleViewContext)
+  const { setRefundPanel } = useContext(HatchViewContext)
   const { txStatus, preTxStatus } = txsData
   const contributions = useContributionsSubscription({
     contributor: account,

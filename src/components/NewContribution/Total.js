@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Text } from '@tecommons/ui'
 import styled from 'styled-components'
-import { PresaleViewContext } from '../../context'
+import { HatchViewContext } from '../../context'
 import { formatBigNumber, toDecimals } from '../../utils/bn-utils'
 import { useAppState } from '../../providers/AppState'
 
 export default ({ value, onError }) => {
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: {
           symbol: contributionSymbol,
           decimals: contributionDecimals,
@@ -25,7 +25,7 @@ export default ({ value, onError }) => {
   const {
     userPrimaryCollateralBalance,
     userAllowedContributionAmount,
-  } = useContext(PresaleViewContext)
+  } = useContext(HatchViewContext)
 
   // *****************************
   // internal state

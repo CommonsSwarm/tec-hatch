@@ -9,7 +9,7 @@ import {
   GU,
   LoadingRing,
 } from '@tecommons/ui'
-import { PresaleViewContext } from '../../context'
+import { HatchViewContext } from '../../context'
 import Total from './Total'
 import {
   MaxContributionInformation,
@@ -37,23 +37,23 @@ const Contribution = () => {
   const { contribute, getContributor, txsData } = useActions()
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: {
           symbol: contributionSymbol,
           decimals: contributionDecimals,
         },
       },
-      presaleOracleConfig: {
+      hatchOracleConfig: {
         scoreToken: { symbol: scoreSymbol },
       },
     },
   } = useAppState()
   const {
-    presalePanel,
-    setPresalePanel,
+    hatchPanel,
+    setHatchPanel,
     userPrimaryCollateralBalance,
     userAllowedContributionAmount,
-  } = useContext(PresaleViewContext)
+  } = useContext(HatchViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -63,7 +63,7 @@ const Contribution = () => {
 
   // handle reset when opening
   useEffect(() => {
-    if (presalePanel) {
+    if (hatchPanel) {
       // reset to default values
       setValue('')
       setValid(false)
@@ -73,17 +73,17 @@ const Contribution = () => {
       // be skipped by the browser.
       valueInput && setTimeout(() => valueInput.current.focus(), 300)
     }
-  }, [presalePanel])
+  }, [hatchPanel])
 
   useEffect(() => {
     if (
       txStatus === TX_ERROR ||
       (preTxStatus === PRE_TX_FINISHED && txStatus === TX_MINING)
     ) {
-      setPresalePanel(false)
+      setHatchPanel(false)
     }
     return () => {}
-  }, [preTxStatus, txStatus, setPresalePanel])
+  }, [preTxStatus, txStatus, setHatchPanel])
 
   useEffect(() => {
     async function checkAccountBalances(account) {

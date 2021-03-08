@@ -15,8 +15,8 @@ import {
   LoadingRing,
 } from '@tecommons/ui'
 import addMilliseconds from 'date-fns/addMilliseconds'
-import PresaleGoal from '../components/PresaleGoal'
-import { Presale } from '../constants'
+import HatchGoal from '../components/HatchGoal'
+import { Hatch } from '../constants'
 import { useWallet } from '../providers/Wallet'
 import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
@@ -38,7 +38,7 @@ export default () => {
   } = useActions()
   const {
     config: {
-      presaleConfig: { period, openDate, state },
+      hatchConfig: { period, openDate, state },
     },
   } = useAppState()
   const contributors = useContributorsSubscription({
@@ -49,17 +49,17 @@ export default () => {
   const connectedContributor = useContributorSubscription({
     contributor: connectedAccount,
   })
-  const presaleEnded =
-    state !== Presale.state.PENDING && state !== Presale.state.FUNDING
-  const noOpenDate = state === Presale.state.PENDING && openDate === 0
+  const hatchEnded =
+    state !== Hatch.state.PENDING && state !== Hatch.state.FUNDING
+  const noOpenDate = state === Hatch.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
   const videoUrl = 'https://youtu.be/sgoTeOYnv0g?t=612'
 
   /**
-   * Calls the `presale.open` smart contract function on button click
+   * Calls the `hatch.open` smart contract function on button click
    * @returns {void}
    */
-  const handleOpenPresale = () => {
+  const handleOpenHatch = () => {
     openHatch(connectedAccount)
   }
 
@@ -87,14 +87,14 @@ export default () => {
           }
           secondary={
             <div>
-              <PresaleGoal />
+              <HatchGoal />
               <Box heading="Fundraising Period">
                 {noOpenDate && (
                   <Button
                     wide
                     mode="strong"
                     label="Open hatch"
-                    onClick={handleOpenPresale}
+                    onClick={handleOpenHatch}
                     disabled={!connectedAccount || !!txStatus}
                   >
                     <AlignedText>
@@ -103,7 +103,7 @@ export default () => {
                     </AlignedText>
                   </Button>
                 )}
-                {presaleEnded && (
+                {hatchEnded && (
                   <p
                     css={`
                       font-size: 16px;
@@ -112,7 +112,7 @@ export default () => {
                     Hatch closed
                   </p>
                 )}
-                {state === Presale.state.FUNDING && (
+                {state === Hatch.state.FUNDING && (
                   <p
                     css={`
                       font-size: 16px;
@@ -121,7 +121,7 @@ export default () => {
                     Time remaining
                   </p>
                 )}
-                {!noOpenDate && !presaleEnded && (
+                {!noOpenDate && !hatchEnded && (
                   <>
                     <Countdown
                       css={`
