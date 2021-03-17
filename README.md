@@ -10,16 +10,16 @@ Frontend for the Hatch that uses the [Hatch Connector](https://github.com/TEComm
 git clone https://github.com/TECommons/tec-hatch.git
 ```
 
-2. Install the dependencies
+2. Install the dependencies:
 
 ```sh
 cd tec-hatch
 yarn install
 ```
 
-3. Set up the environment variables (you can use the `.env.example` file)
+3. Set up the environment variables (you can use the `.env.example` file).
 
-4. Start the frontend
+4. Start the frontend:
 
 ```sh
 yarn start
