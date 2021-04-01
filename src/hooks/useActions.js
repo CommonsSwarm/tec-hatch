@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
-import BigNumber from 'bignumber.js'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
+import { convertBN } from '../utils/bn-utils'
 import useTxExecution from './useTxExecution'
-import { transformContributorData } from '../utils/data-transform-utils'
 
-const TX_GAS_LIMIT = 850000
-const PRE_TX_GAS_LIMIT = 50000
+// const TX_GAS_LIMIT = 850000
+const TX_GAS_LIMIT = 9000000
+const PRE_TX_GAS_LIMIT = 200000
 
 const useActions = () => {
   const { ethers } = useWallet()
@@ -18,12 +18,7 @@ const useActions = () => {
     txCurrentIndex,
   } = useTxExecution()
   const signer = useMemo(() => ethers?.getSigner(), [ethers])
-  const {
-    hatchConnector,
-    config: {
-      hatchConfig: { contributionToken, token },
-    },
-  } = useAppState()
+  const { hatchConnector } = useAppState()
   const {
     onTxsFetched,
     onTxSigning,
@@ -102,40 +97,25 @@ const useActions = () => {
     [hatchConnector, executeAction]
   )
 
-  const getAccountTokenBalance = useCallback(
+  const getContributionTokenBalance = useCallback(
     async entity => {
-      const balance = await hatchConnector.tokenBalance(entity)
-      /**
-       * Connector uses ethers' lower-version BigNumber.js
-       * library which returns a BigNumber with a hex field only
-       */
-      return new BigNumber(balance.toHexString(), 16)
+      return convertBN(await hatchConnector.contributionTokenBalance(entity))
     },
     [hatchConnector]
   )
 
   const getAllowedContributionAmount = useCallback(
     async entity => {
-      const allowedAmount = await hatchConnector.getAllowedContributionAmount(
-        entity
-      )
-
-      return new BigNumber(allowedAmount.toHexString(), 16)
+      return convertBN(await hatchConnector.allowedContributionAmount(entity))
     },
     [hatchConnector]
   )
 
-  const getContributor = useCallback(
+  const getAwardedTokensAmount = useCallback(
     async entity => {
-      try {
-        const contributor = await hatchConnector.contributor(entity)
-
-        return transformContributorData(contributor, contributionToken, token)
-      } catch (err) {
-        return null
-      }
+      return convertBN(await hatchConnector.awardedTokenAmount(entity))
     },
-    [hatchConnector, contributionToken, token]
+    [hatchConnector]
   )
 
   return {
@@ -143,9 +123,9 @@ const useActions = () => {
     closeHatch,
     contribute,
     refund,
-    getAccountTokenBalance,
+    getContributionTokenBalance,
     getAllowedContributionAmount,
-    getContributor,
+    getAwardedTokensAmount,
     txsData: {
       txStatus,
       preTxStatus,
