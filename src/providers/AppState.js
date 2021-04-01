@@ -1,10 +1,10 @@
 import React, { createContext, useContext } from 'react'
 import useOrgData from '../hooks/useOrgData.js'
+import usePanelState from '../hooks/usePanelState'
 
 const AppStateContext = createContext()
 
 export const AppStateProvider = ({ children }) => {
-  // test
   const {
     config,
     errors,
@@ -14,7 +14,8 @@ export const AppStateProvider = ({ children }) => {
     organization,
     loadingAppData,
   } = useOrgData()
-
+  const contributionPanel = usePanelState()
+  const refundPanel = usePanelState()
   const appLoading = !errors && loadingAppData
 
   return (
@@ -27,6 +28,8 @@ export const AppStateProvider = ({ children }) => {
         organization,
         isLoading: appLoading,
         hatchConnector,
+        contributionPanel,
+        refundPanel,
       }}
     >
       {children}
