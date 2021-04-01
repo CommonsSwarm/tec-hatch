@@ -6,13 +6,13 @@ Frontend for the Hatch that uses the [Hatch Connector](https://github.com/TEComm
 
 1. Clone the repo:
 
-```
+```sh
 git clone https://github.com/TECommons/tec-hatch.git
 ```
 
 2. Install the dependencies
 
-```
+```sh
 cd tec-hatch
 yarn install
 ```
@@ -21,7 +21,7 @@ yarn install
 
 4. Start the frontend
 
-```
+```sh
 yarn start
 ```
 
