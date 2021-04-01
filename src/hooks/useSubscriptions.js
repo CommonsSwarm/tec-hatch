@@ -5,45 +5,29 @@ import {
   transformContributionData,
   transformContributorData,
 } from '../utils/data-transform-utils'
-import { useContract } from './useContract'
-import hatchAbi from '../abis/Hatch.json'
-import { Hatch } from '../constants'
 
 export const useConfigSubscription = hatchConnector => {
   const [config, setConfig] = useState(null)
-  const hatchAddress = hatchConnector?.address
-  const hatch = useContract(hatchAddress, hatchAbi, true)
   const rawConfigRef = useRef(null)
   const configSubscription = useRef(null)
 
-  const onConfigHandler = useCallback(
-    async (err, config) => {
-      if (err || !config) {
-        console.error(err)
-        return
-      }
+  const onConfigHandler = useCallback(async (err, config) => {
+    if (err || !config) {
+      console.error(err)
+      return
+    }
 
-      /**
-       * Need to fetch hatch state because contract state
-       * variable is not updated when hatch period is over.
-       */
-      const intState = await hatch.methods.state().call()
+    const rawConfig = JSON.stringify(config)
 
-      config.hatchConfig.state = Hatch.intState[intState]
+    if (rawConfigRef && rawConfigRef.current === rawConfig) {
+      return
+    }
 
-      const rawConfig = JSON.stringify(config)
+    rawConfigRef.current = rawConfig
+    const transformedConfig = transformConfigData(config)
 
-      if (rawConfigRef && rawConfigRef.current === rawConfig) {
-        return
-      }
-
-      rawConfigRef.current = rawConfig
-      const transformedConfig = transformConfigData(config)
-
-      setConfig(transformedConfig)
-    },
-    [hatch]
-  )
+    setConfig(transformedConfig)
+  }, [])
 
   useEffect(() => {
     if (!hatchConnector) {
@@ -113,32 +97,26 @@ export const useContributorsSubscription = ({
   return contributors
 }
 
-export const useContributorSubscription = ({
-  contributor: contributorAccount,
-}) => {
-  const {
-    hatchConnector,
-    config: {
-      hatchConfig: { contributionToken, token },
-    },
-  } = useAppState()
+export const useContributorSubscription = contributorAccount => {
+  const { hatchConnector, config } = useAppState()
+  const { contributionToken, token } = config?.hatchConfig || {}
   const [contributor, setContributor] = useState(null)
+  const [loading, setLoading] = useState(true)
+
   const contributorSubscription = useRef(null)
   const rawContributorRef = useRef(null)
 
   const onContributorHandler = useCallback(
-    (err, contributor) => {
+    async (err, contributor) => {
       if (err || !contributor) {
         setContributor(null)
+        setLoading(false)
         return
       }
 
       const rawContributor = JSON.stringify(contributor)
 
-      if (
-        rawContributorRef.current &&
-        rawContributor === rawContributorRef.current
-      ) {
+      if (rawContributorRef && rawContributor === rawContributorRef.current) {
         return
       }
 
@@ -147,9 +125,10 @@ export const useContributorSubscription = ({
         contributionToken,
         token
       )
-      rawContributorRef.current = transformedContributor
+      rawContributorRef.current = rawContributor
 
       setContributor(transformedContributor)
+      setLoading(false)
     },
     [contributionToken, token]
   )
@@ -157,6 +136,8 @@ export const useContributorSubscription = ({
   useEffect(() => {
     if (!hatchConnector || !contributorAccount) {
       setContributor(null)
+      rawContributorRef.current = null
+
       return
     }
 
@@ -169,7 +150,7 @@ export const useContributorSubscription = ({
     }
   }, [hatchConnector, contributorAccount, onContributorHandler])
 
-  return contributor
+  return [contributor, loading]
 }
 
 export const useContributionsSubscription = ({
