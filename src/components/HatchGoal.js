@@ -1,27 +1,27 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
 // import CircleGraph from '../components/CircleGraph'
-import { HatchViewContext } from '../context'
 import { Hatch } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useAppState } from '../providers/AppState'
+import { useWallet } from '../providers/Wallet'
 
 export default React.memo(() => {
   const theme = useTheme()
+  const { account } = useWallet()
   const {
     config: {
       hatchConfig: {
-        contributionToken: { symbol, decimals },
+        contributionToken: { symbol: collateralSymbol, decimals },
+        token: { symbol: tokenSymbol },
         minGoal,
         totalRaised,
         state,
       },
     },
+    contributionPanel: { requestOpen: requestContributionOpen },
+    refundPanel: { requestOpen: requestRefundOpen },
   } = useAppState()
-  const { setRefundPanel, setHatchPanel } = useContext(HatchViewContext)
-  // *****************************
-  // misc
-  // *****************************
   // const circleColor = {
   //   [Hatch.state.PENDING]: color('#ecedf1'),
   //   [Hatch.state.FUNDING]: theme.accent,
@@ -41,7 +41,10 @@ export default React.memo(() => {
           title={`${formatBigNumber(
             totalRaised,
             decimals
-          )} ${symbol} of ${formatBigNumber(minGoal, decimals)} ${symbol}`}
+          )} ${collateralSymbol} of ${formatBigNumber(
+            minGoal,
+            decimals
+          )} ${collateralSymbol}`}
           css={`
             max-width: 100%;
             overflow: hidden;
@@ -57,7 +60,7 @@ export default React.memo(() => {
           >
             {formatBigNumber(totalRaised, decimals)}
           </span>{' '}
-          {symbol} of{' '}
+          {collateralSymbol} of{' '}
           <span
             css={`
               color: ${theme.surfaceContent};
@@ -65,7 +68,7 @@ export default React.memo(() => {
           >
             {formatBigNumber(minGoal, decimals)}
           </span>{' '}
-          {symbol}
+          {collateralSymbol}
         </p>
         {state === Hatch.state.FUNDING && (
           <div
@@ -75,8 +78,9 @@ export default React.memo(() => {
           >
             <Button
               mode="normal"
-              label="Buy hatch shares"
-              onClick={() => setHatchPanel(true)}
+              label={`Mint ${tokenSymbol}`}
+              onClick={requestContributionOpen}
+              disabled={!account}
             />
           </div>
         )}
@@ -110,7 +114,7 @@ export default React.memo(() => {
                 margin-top: ${2 * GU}px;
                 width: 100%;
               `}
-              onClick={() => setRefundPanel(true)}
+              onClick={requestRefundOpen}
             >
               Refund hatch shares
             </Button>
