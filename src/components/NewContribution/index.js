@@ -1,20 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { SidePanel } from '@tecommons/ui'
-import { HatchViewContext } from '../../context'
 import Contribution from './Contribution'
+import { useAppState } from '../../providers/AppState'
 
 export default () => {
-  // *****************************
-  // context state
-  // *****************************
-  const { hatchPanel, setHatchPanel } = useContext(HatchViewContext)
+  const {
+    contributionPanel: { visible, requestClose },
+  } = useAppState()
 
   return (
-    <SidePanel
-      title="New Contribution"
-      opened={hatchPanel}
-      onClose={() => setHatchPanel(false)}
-    >
+    <SidePanel title="New Contribution" opened={visible} onClose={requestClose}>
       <Contribution />
     </SidePanel>
   )
