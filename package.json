@@ -12,9 +12,8 @@
     "start": "npm run sync-assets && react-app-rewired start"
   },
   "dependencies": {
-    "@aragon/connect": "^0.8.0-alpha.6",
     "@aragon/connect-react": "^0.8.0-alpha.6",
-    "@tecommons/connect-hatch": "^2.0.2",
+    "@tecommons/connect-hatch": "^2.1.2",
     "@tecommons/ui": "^1.0.8",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
