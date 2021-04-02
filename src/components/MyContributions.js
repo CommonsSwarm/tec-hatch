@@ -8,21 +8,27 @@ const calculatePercentage = (amount, total) => {
   if (amount.eq(0) && total.eq(0)) {
     return 0
   }
-  const percentage = amount.div(total).multipliedBy(100)
 
-  return Number(Number(percentage.toString()).toFixed(2))
+  const percentage = amount
+    .div(total)
+    .multipliedBy(100)
+    .toNumber()
+
+  /**
+   * Distribution component receives percentages
+   * as numbers
+   */
+  return Number(percentage.toFixed(2))
 }
 
 const MyContributions = ({ user }) => {
   const {
     config: {
-      hatchConfig: {
-        token: { symbol, decimals },
-      },
+      hatchConfig: { token, contributionToken },
     },
   } = useAppState()
   const { contributorData, awardedTokenAmount, loading } = user
-  const { formattedTotalValue, totalAmount } = contributorData || {}
+  const { totalValue, totalAmount } = contributorData || {}
   const distributionColors = ['#5DADE2', '#F7DC6F']
   let totalTokens = new BigNumber(0)
   let mintedTokensPct = new BigNumber(0)
@@ -41,25 +47,25 @@ const MyContributions = ({ user }) => {
           css={`
             display: flex;
             justify-content: center;
-            font-size: 30px;
           `}
         >
           <LoadingRing mode="half-circle" />
         </div>
       ) : (
         <>
-          <ContributionItem title="Contributions" value={formattedTotalValue} />
+          <TokenItem
+            label="Contributions"
+            amount={totalValue}
+            token={contributionToken}
+          />
           <Distribution
             colors={distributionColors}
             heading={
-              <ContributionItem
-                title="Tokens"
-                value={`${formatBigNumber(totalTokens, decimals)} ${symbol}`}
-              />
+              <TokenItem label="Tokens" amount={totalTokens} token={token} />
             }
             items={[
-              { item: 'Minted', percentage: mintedTokensPct },
-              { item: 'Rewarded', percentage: awardedTokensPct },
+              { item: 'Acquired', percentage: mintedTokensPct },
+              { item: 'IH Rewarded', percentage: awardedTokensPct },
             ]}
           />
         </>
@@ -68,7 +74,9 @@ const MyContributions = ({ user }) => {
   )
 }
 
-const ContributionItem = ({ title, value }) => {
+const TokenItem = ({ label, amount, token }) => {
+  const { decimals, symbol } = token
+
   return (
     <div
       css={`
@@ -79,17 +87,20 @@ const ContributionItem = ({ title, value }) => {
     >
       <div
         css={`
+          flex-grow: 4;
           ${textStyle('body1')}
         `}
       >
-        <strong>{title}</strong>
+        <strong>{label}</strong>
       </div>
       <div
         css={`
           text-align: right;
+          width: 50%;
+          ${textStyle('body3')}
         `}
       >
-        {value}
+        {`${formatBigNumber(amount, decimals)} ${symbol}`}
       </div>
     </div>
   )
