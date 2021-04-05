@@ -1,4 +1,4 @@
-const ORG_ADDRESS = process.env.REACT_APP_ORG_ADDRESS
+const ORG_ADDRESS = process.env.REACT_APP_ORG_ADDRESS.toLowerCase()
 const CONNECTOR_TYPE = process.env.REACT_APP_CONNECTOR_TYPE
 const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
   ? process.env.REACT_APP_CHAIN_ID
