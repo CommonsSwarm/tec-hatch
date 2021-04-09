@@ -26,7 +26,7 @@ import TopContributors from '../components/TopContributors'
 import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
 import MyContributions from '../components/MyContributions'
-import GoalReachedAnimation from '../components/ConfettiPopup'
+import GoalReachedAnimation from '../components/GoalReachedAnimation'
 
 const TOP_CONTRIBUTORS_COUNT = 10
 

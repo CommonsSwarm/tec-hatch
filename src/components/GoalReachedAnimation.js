@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import Confetti from 'react-confetti'
 import { GU, RootPortal, useTheme, useViewport } from '@tecommons/ui'
 import { useTransition, animated } from 'react-spring'
 import { Hatch } from '../constants'
-import Confetti from 'react-confetti'
 
 const GoalReachedAnimation = ({ hatchState }) => {
   const { width, height } = useViewport()
@@ -12,12 +12,18 @@ const GoalReachedAnimation = ({ hatchState }) => {
 
   const screenTransitions = useTransition(show, null, {
     from: { opacity: 0, transform: 'translate3d(0,-40px,0)' },
-    enter: { opacity: 1, transform: 'translate3d(0, 0px,0)' },
+    enter: {
+      opacity: 1,
+      transform: 'translate3d(0, 0px,0)',
+    },
     leave: { opacity: 0, transform: 'translate3d(0, 40px,0)' },
   })
 
   useEffect(() => {
-    if (hatchState !== Hatch.state.GOALREACHED) {
+    if (
+      hatchState !== Hatch.state.GOALREACHED &&
+      hatchState !== Hatch.state.CLOSED
+    ) {
       return
     }
 
