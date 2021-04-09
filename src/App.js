@@ -16,7 +16,12 @@ export default () => {
       <Connect>
         <AppStateProvider>
           <UserStateProvider>
-            <Main theme="dark" assetsUrl="/aragon-ui" layout={false}>
+            <Main
+              theme="dark"
+              assetsUrl="/aragon-ui"
+              layout={false}
+              scrollView={false}
+            >
               <ToastHub>
                 <MainView>
                   <Hatch />

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
-// import CircleGraph from '../components/CircleGraph'
 import { Hatch } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useAppState } from '../providers/AppState'
@@ -22,13 +21,6 @@ export default React.memo(() => {
     contributionPanel: { requestOpen: requestContributionOpen },
     refundPanel: { requestOpen: requestRefundOpen },
   } = useAppState()
-  // const circleColor = {
-  //   [Hatch.state.PENDING]: color('#ecedf1'),
-  //   [Hatch.state.FUNDING]: theme.accent,
-  //   [Hatch.state.GOALREACHED]: theme.positive,
-  //   [Hatch.state.REFUNDING]: theme.negative,
-  //   [Hatch.state.CLOSED]: color('#21c1e7'),
-  // }
 
   return (
     <Box heading="Fundraising Goal">

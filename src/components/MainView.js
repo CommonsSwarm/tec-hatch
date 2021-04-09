@@ -1,6 +1,5 @@
 import React from 'react'
 import { ScrollView, SyncIndicator, Layout } from '@tecommons/ui'
-
 import Header from './Header/Header'
 import { useAppState } from '../providers/AppState'
 
@@ -8,27 +7,27 @@ const MainView = ({ children }) => {
   const { isLoading } = useAppState()
 
   return (
-    <div
-      css={`
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-      `}
-    >
+    <ScrollView>
       <div
         css={`
-          flex-shrink: 0;
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
         `}
       >
-        <Header />
-      </div>
-      <Layout>
-        <ScrollView>
+        <div
+          css={`
+            flex-shrink: 0;
+          `}
+        >
+          <Header />
+        </div>
+        <Layout>
           <SyncIndicator visible={isLoading} />
           <Layout>{!isLoading && children}</Layout>
-        </ScrollView>
-      </Layout>
-    </div>
+        </Layout>
+      </div>
+    </ScrollView>
   )
 }
 
