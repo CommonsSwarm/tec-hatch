@@ -1,19 +1,18 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { SidePanel } from '@tecommons/ui'
-import { PresaleViewContext } from '../../context'
 import Refund from './Refund'
+import { useAppState } from '../../providers/AppState'
 
 export default () => {
-  // *****************************
-  // context state
-  // *****************************
-  const { refundPanel, setRefundPanel } = useContext(PresaleViewContext)
+  const {
+    refundPanel: { visible, requestClose },
+  } = useAppState()
 
   return (
     <SidePanel
       title="Refund Hatch Shares"
-      opened={refundPanel}
-      onClose={() => setRefundPanel(false)}
+      opened={visible}
+      onClose={() => requestClose(false)}
     >
       <Refund />
     </SidePanel>

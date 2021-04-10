@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Button, Info, GU, LoadingRing, DropDown } from '@tecommons/ui'
 import Information from './Information'
@@ -6,7 +6,6 @@ import { formatBigNumber } from '../../utils/bn-utils'
 import { useWallet } from '../../providers/Wallet'
 import useActions from '../../hooks/useActions'
 import { useAppState } from '../../providers/AppState'
-import { PresaleViewContext } from '../../context'
 import { useContributionsSubscription } from '../../hooks/useSubscriptions'
 import { TxStatuses } from '../../constants'
 
@@ -17,12 +16,12 @@ const Refund = () => {
   const { refund, txsData } = useActions()
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: { symbol, decimals },
       },
     },
+    refundPanel: { requestClose },
   } = useAppState()
-  const { setRefundPanel } = useContext(PresaleViewContext)
   const { txStatus, preTxStatus } = txsData
   const contributions = useContributionsSubscription({
     contributor: account,
@@ -52,10 +51,10 @@ const Refund = () => {
       txStatus === TX_ERROR ||
       (preTxStatus === PRE_TX_FINISHED && txStatus === TX_MINING)
     ) {
-      setRefundPanel(false)
+      requestClose()
     }
     return () => {}
-  }, [preTxStatus, txStatus, setRefundPanel])
+  }, [preTxStatus, txStatus, requestClose])
 
   return (
     <div

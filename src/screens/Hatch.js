@@ -1,70 +1,66 @@
 import React from 'react'
 import styled from 'styled-components'
-import ReactPlayer from 'react-player/vimeo'
+import ReactPlayer from 'react-player/youtube'
 import {
   Box,
   Button,
-  Countdown,
+  Timer,
   BREAKPOINTS,
   GU,
-  Text,
   useTheme,
   Split,
   unselectable,
   Tag,
   LoadingRing,
+  Header,
 } from '@tecommons/ui'
 import addMilliseconds from 'date-fns/addMilliseconds'
-import PresaleGoal from '../components/PresaleGoal'
-import { Presale } from '../constants'
-import { useWallet } from '../providers/Wallet'
+import { Hatch } from '../constants'
 import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
+import { useUserState } from '../providers/UserState'
+import { useContributorsSubscription } from '../hooks/useSubscriptions'
+import HatchGoal from '../components/HatchGoal'
 import TECInfo from '../components/TECInfo'
-import {
-  useContributorsSubscription,
-  useContributorSubscription,
-} from '../hooks/useSubscriptions'
 import TopContributors from '../components/TopContributors'
+import NewContribution from '../components/NewContribution'
+import NewRefund from '../components/NewRefund'
+import MyContributions from '../components/MyContributions'
+import GoalReachedAnimation from '../components/GoalReachedAnimation'
 
 const TOP_CONTRIBUTORS_COUNT = 10
 
 export default () => {
   const theme = useTheme()
-  const { account: connectedAccount } = useWallet()
   const {
     openHatch,
     txsData: { txStatus },
   } = useActions()
   const {
     config: {
-      presaleConfig: { period, openDate, state },
+      hatchConfig: { period, openDate, state },
     },
   } = useAppState()
+  const connectedUser = useUserState()
   const contributors = useContributorsSubscription({
     count: TOP_CONTRIBUTORS_COUNT,
     orderBy: 'totalValue',
     orderDirection: 'desc',
   })
-  const connectedContributor = useContributorSubscription({
-    contributor: connectedAccount,
-  })
-  const presaleEnded =
-    state !== Presale.state.PENDING && state !== Presale.state.FUNDING
-  const noOpenDate = state === Presale.state.PENDING && openDate === 0
+  const connectedAccount = connectedUser.account
+  const hatchEnded =
+    state !== Hatch.state.PENDING && state !== Hatch.state.FUNDING
+  const noOpenDate = state === Hatch.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
-  const videoUrl = 'https://vimeo.com/112836958'
+  const videoUrl = 'https://youtu.be/sgoTeOYnv0g?t=612'
 
-  /**
-   * Calls the `presale.open` smart contract function on button click
-   * @returns {void}
-   */
-  const handleOpenPresale = () => {
+  const handleOpenHatch = () => {
     openHatch(connectedAccount)
   }
 
   return (
     <>
+      <Header primary="Token Engineering Commons Hatch" />
       <Container theme={theme}>
         <Split
           primary={
@@ -87,14 +83,14 @@ export default () => {
           }
           secondary={
             <div>
-              <PresaleGoal />
+              <HatchGoal />
               <Box heading="Fundraising Period">
                 {noOpenDate && (
                   <Button
                     wide
                     mode="strong"
                     label="Open hatch"
-                    onClick={handleOpenPresale}
+                    onClick={handleOpenHatch}
                     disabled={!connectedAccount || !!txStatus}
                   >
                     <AlignedText>
@@ -103,7 +99,7 @@ export default () => {
                     </AlignedText>
                   </Button>
                 )}
-                {presaleEnded && (
+                {hatchEnded && (
                   <p
                     css={`
                       font-size: 16px;
@@ -112,7 +108,7 @@ export default () => {
                     Hatch closed
                   </p>
                 )}
-                {state === Presale.state.FUNDING && (
+                {state === Hatch.state.FUNDING && (
                   <p
                     css={`
                       font-size: 16px;
@@ -121,9 +117,9 @@ export default () => {
                     Time remaining
                   </p>
                 )}
-                {!noOpenDate && !presaleEnded && (
+                {!noOpenDate && !hatchEnded && (
                   <>
-                    <Countdown
+                    <Timer
                       css={`
                         margin-top: ${1 * GU}px;
                       `}
@@ -138,40 +134,10 @@ export default () => {
                   </>
                 )}
               </Box>
-              {connectedContributor && (
-                <Box heading="My Contributions">
-                  <div
-                    css={`
-                      display: flex;
-                      justify-content: space-between;
-                    `}
-                  >
-                    <p
-                      css={`
-                        font-size: 16px;
-                      `}
-                    >
-                      Contributions
-                    </p>
-                    <Text>{connectedContributor.formattedTotalValue}</Text>
-                  </div>
-                  <div
-                    css={`
-                      display: flex;
-                      justify-content: space-between;
-                    `}
-                  >
-                    <p
-                      css={`
-                        font-size: 16px;
-                      `}
-                    >
-                      Shares
-                    </p>
-                    <Text>{connectedContributor.formattedTotalAmount}</Text>
-                  </div>
-                </Box>
-              )}
+              {state === Hatch.state.FUNDING &&
+              !!connectedUser.contributorData ? (
+                <MyContributions user={connectedUser} />
+              ) : null}
               {!!contributors.length && (
                 <TopContributors contributors={contributors} />
               )}
@@ -179,6 +145,9 @@ export default () => {
           }
         />
       </Container>
+      <GoalReachedAnimation hatchState={state} />
+      <NewContribution />
+      <NewRefund />
     </>
   )
 }

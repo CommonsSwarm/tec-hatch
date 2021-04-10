@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Text } from '@tecommons/ui'
 import styled from 'styled-components'
-import { PresaleViewContext } from '../../context'
 import { formatBigNumber, toDecimals } from '../../utils/bn-utils'
 import { useAppState } from '../../providers/AppState'
+import { useUserState } from '../../providers/UserState'
 
 export default ({ value, onError }) => {
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: {
           symbol: contributionSymbol,
           decimals: contributionDecimals,
@@ -18,39 +18,25 @@ export default ({ value, onError }) => {
       },
     },
   } = useAppState()
-
-  // *****************************
-  // context state
-  // *****************************
-  const {
-    userPrimaryCollateralBalance,
-    userAllowedContributionAmount,
-  } = useContext(PresaleViewContext)
-
-  // *****************************
-  // internal state
-  // *****************************
+  const { allowedContributionAmount, collateralBalance } = useUserState()
   const [evaluatedPrice, setEvaluatedPrice] = useState(null)
   const [formattedValue, setFormattedValue] = useState(formatBigNumber(0, 0))
 
-  // *****************************
-  // effects
-  // *****************************
   // recalculate price when amount changed
   useEffect(() => {
     const valueBn = toDecimals(value, contributionDecimals)
-    if (userPrimaryCollateralBalance.lt(valueBn)) {
-      // cannot buy more than your own balance
+    if (collateralBalance.lt(valueBn)) {
+      // cannot mint more than your own balance
       setFormattedValue(formatBigNumber(valueBn, contributionDecimals))
       setEvaluatedPrice(null)
       onError(false, `Your ${contributionSymbol} balance is not sufficient`)
-    } else if (userAllowedContributionAmount.lt(valueBn)) {
+    } else if (allowedContributionAmount.lt(valueBn)) {
       setFormattedValue(formatBigNumber(valueBn, contributionDecimals))
       setEvaluatedPrice(null)
       onError(
         false,
         `You can contribute a maximum of ${formatBigNumber(
-          userAllowedContributionAmount,
+          allowedContributionAmount,
           contributionDecimals
         )} ${contributionSymbol}`
       )
@@ -72,8 +58,8 @@ export default ({ value, onError }) => {
     contributionSymbol,
     exchangeRate,
     onError,
-    userPrimaryCollateralBalance,
-    userAllowedContributionAmount,
+    collateralBalance,
+    allowedContributionAmount,
   ])
 
   return (

@@ -1,34 +1,26 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
-// import CircleGraph from '../components/CircleGraph'
-import { PresaleViewContext } from '../context'
-import { Presale } from '../constants'
+import { Hatch } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useAppState } from '../providers/AppState'
+import { useWallet } from '../providers/Wallet'
 
 export default React.memo(() => {
   const theme = useTheme()
+  const { account } = useWallet()
   const {
     config: {
-      presaleConfig: {
-        contributionToken: { symbol, decimals },
+      hatchConfig: {
+        contributionToken: { symbol: collateralSymbol, decimals },
+        token: { symbol: tokenSymbol },
         minGoal,
         totalRaised,
         state,
       },
     },
+    contributionPanel: { requestOpen: requestContributionOpen },
+    refundPanel: { requestOpen: requestRefundOpen },
   } = useAppState()
-  const { setRefundPanel, setPresalePanel } = useContext(PresaleViewContext)
-  // *****************************
-  // misc
-  // *****************************
-  // const circleColor = {
-  //   [Presale.state.PENDING]: color('#ecedf1'),
-  //   [Presale.state.FUNDING]: theme.accent,
-  //   [Presale.state.GOALREACHED]: theme.positive,
-  //   [Presale.state.REFUNDING]: theme.negative,
-  //   [Presale.state.CLOSED]: color('#21c1e7'),
-  // }
 
   return (
     <Box heading="Fundraising Goal">
@@ -41,7 +33,10 @@ export default React.memo(() => {
           title={`${formatBigNumber(
             totalRaised,
             decimals
-          )} ${symbol} of ${formatBigNumber(minGoal, decimals)} ${symbol}`}
+          )} ${collateralSymbol} of ${formatBigNumber(
+            minGoal,
+            decimals
+          )} ${collateralSymbol}`}
           css={`
             max-width: 100%;
             overflow: hidden;
@@ -57,7 +52,7 @@ export default React.memo(() => {
           >
             {formatBigNumber(totalRaised, decimals)}
           </span>{' '}
-          {symbol} of{' '}
+          {collateralSymbol} of{' '}
           <span
             css={`
               color: ${theme.surfaceContent};
@@ -65,9 +60,9 @@ export default React.memo(() => {
           >
             {formatBigNumber(minGoal, decimals)}
           </span>{' '}
-          {symbol}
+          {collateralSymbol}
         </p>
-        {state === Presale.state.FUNDING && (
+        {state === Hatch.state.FUNDING && (
           <div
             css={`
               margin-top: ${2 * GU}px;
@@ -75,12 +70,13 @@ export default React.memo(() => {
           >
             <Button
               mode="normal"
-              label="Buy hatch shares"
-              onClick={() => setPresalePanel(true)}
+              label={`Mint ${tokenSymbol}`}
+              onClick={requestContributionOpen}
+              disabled={!account}
             />
           </div>
         )}
-        {state === Presale.state.GOALREACHED && (
+        {state === Hatch.state.GOALREACHED && (
           <>
             <p
               css={`
@@ -93,7 +89,7 @@ export default React.memo(() => {
             </p>
           </>
         )}
-        {state === Presale.state.REFUNDING && (
+        {state === Hatch.state.REFUNDING && (
           <>
             <p
               css={`
@@ -110,7 +106,7 @@ export default React.memo(() => {
                 margin-top: ${2 * GU}px;
                 width: 100%;
               `}
-              onClick={() => setRefundPanel(true)}
+              onClick={requestRefundOpen}
             >
               Refund hatch shares
             </Button>

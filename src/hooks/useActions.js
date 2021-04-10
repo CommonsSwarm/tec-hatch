@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
-import BigNumber from 'bignumber.js'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
+import { convertBN } from '../utils/bn-utils'
 import useTxExecution from './useTxExecution'
-import { transformContributorData } from '../utils/data-transform-utils'
 
-const TX_GAS_LIMIT = 850000
-const PRE_TX_GAS_LIMIT = 50000
+// const TX_GAS_LIMIT = 850000
+const TX_GAS_LIMIT = 9000000
+const PRE_TX_GAS_LIMIT = 200000
 
 const useActions = () => {
   const { ethers } = useWallet()
@@ -18,12 +18,7 @@ const useActions = () => {
     txCurrentIndex,
   } = useTxExecution()
   const signer = useMemo(() => ethers?.getSigner(), [ethers])
-  const {
-    presaleConnector,
-    config: {
-      presaleConfig: { contributionToken, token },
-    },
-  } = useAppState()
+  const { hatchConnector } = useAppState()
   const {
     onTxsFetched,
     onTxSigning,
@@ -68,77 +63,59 @@ const useActions = () => {
 
   const openHatch = useCallback(
     async signerAddress => {
-      const intent = await presaleConnector.open(signerAddress)
+      const intent = await hatchConnector.open(signerAddress)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const closeHatch = useCallback(
     async signerAddress => {
-      const intent = await presaleConnector.close(signerAddress)
+      const intent = await hatchConnector.close(signerAddress)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const contribute = useCallback(
     async (contributor, value) => {
-      const intent = await presaleConnector.contribute(contributor, value)
+      const intent = await hatchConnector.contribute(contributor, value)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
   const refund = useCallback(
     async (contributor, vestedPurchaseId) => {
-      const intent = await presaleConnector.refund(
-        contributor,
-        vestedPurchaseId
-      )
+      const intent = await hatchConnector.refund(contributor, vestedPurchaseId)
 
       executeAction(intent)
     },
-    [presaleConnector, executeAction]
+    [hatchConnector, executeAction]
   )
 
-  const getAccountTokenBalance = useCallback(
+  const getContributionTokenBalance = useCallback(
     async entity => {
-      const balance = await presaleConnector.tokenBalance(entity)
-      /**
-       * Connector uses ethers' lower-version BigNumber.js
-       * library which returns a BigNumber with a hex field only
-       */
-      return new BigNumber(balance.toHexString(), 16)
+      return convertBN(await hatchConnector.contributionTokenBalance(entity))
     },
-    [presaleConnector]
+    [hatchConnector]
   )
 
   const getAllowedContributionAmount = useCallback(
     async entity => {
-      const allowedAmount = await presaleConnector.getAllowedContributionAmount(
-        entity
-      )
-
-      return new BigNumber(allowedAmount.toHexString(), 16)
+      return convertBN(await hatchConnector.allowedContributionAmount(entity))
     },
-    [presaleConnector]
+    [hatchConnector]
   )
 
-  const getContributor = useCallback(
+  const getAwardedTokensAmount = useCallback(
     async entity => {
-      try {
-        const contributor = await presaleConnector.contributor(entity)
-
-        return transformContributorData(contributor, contributionToken, token)
-      } catch (err) {
-        return null
-      }
+      return convertBN(await hatchConnector.awardedTokenAmount(entity))
     },
-    [presaleConnector, contributionToken, token]
+    [hatchConnector]
   )
 
   return {
@@ -146,9 +123,9 @@ const useActions = () => {
     closeHatch,
     contribute,
     refund,
-    getAccountTokenBalance,
+    getContributionTokenBalance,
     getAllowedContributionAmount,
-    getContributor,
+    getAwardedTokensAmount,
     txsData: {
       txStatus,
       preTxStatus,

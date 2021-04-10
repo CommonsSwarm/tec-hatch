@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "author": "TECommons",
-  "repository": "github:1Hive/marketplace-app",
+  "repository": "github:TECommons/tec-hatch",
   "bugs": "https://github.com/TECommons/tec-hatch/issues",
   "license": "(GPL-3.0-or-later OR MIT)",
   "scripts": {
@@ -12,9 +12,8 @@
     "start": "npm run sync-assets && react-app-rewired start"
   },
   "dependencies": {
-    "@aragon/connect": "^0.8.0-alpha.6",
     "@aragon/connect-react": "^0.8.0-alpha.6",
-    "@tecommons/connect-hatch": "^2.0.1",
+    "@tecommons/connect-hatch": "^2.1.3",
     "@tecommons/ui": "^1.0.8",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
@@ -28,6 +27,7 @@
     "plotly.js-finance-dist": "^1.51.2",
     "prop-types": "^15.7.2",
     "react": "^16.3.1",
+    "react-confetti": "^6.0.1",
     "react-dom": "^16.3.1",
     "react-player": "^2.7.2",
     "react-plotly.js": "^2.4.0",

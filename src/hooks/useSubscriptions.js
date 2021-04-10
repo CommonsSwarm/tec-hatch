@@ -5,57 +5,39 @@ import {
   transformContributionData,
   transformContributorData,
 } from '../utils/data-transform-utils'
-import { useContract } from './useContract'
-import presaleAbi from '../abi/Presale.json'
-import { Presale } from '../constants'
 
-export const useConfigSubscription = presaleConnector => {
+export const useConfigSubscription = hatchConnector => {
   const [config, setConfig] = useState(null)
-  const presaleAddress = presaleConnector?.address
-  const presale = useContract(presaleAddress, presaleAbi, true)
   const rawConfigRef = useRef(null)
   const configSubscription = useRef(null)
 
-  const onConfigHandler = useCallback(
-    async (err, config) => {
-      if (err || !config) {
-        console.error(err)
-        return
-      }
-
-      /**
-       * Need to fetch hatch state because contract state
-       * variable is not updated when hatch period is over.
-       */
-      const intState = await presale.methods.state().call()
-
-      config.presaleConfig.state = Presale.intState[intState]
-
-      const rawConfig = JSON.stringify(config)
-
-      if (rawConfigRef && rawConfigRef.current === rawConfig) {
-        return
-      }
-
-      rawConfigRef.current = rawConfig
-      const transformedConfig = transformConfigData(config)
-
-      setConfig(transformedConfig)
-    },
-    [presale]
-  )
-
-  useEffect(() => {
-    if (!presaleConnector) {
+  const onConfigHandler = useCallback(async (err, config) => {
+    if (err || !config) {
+      console.error(err)
       return
     }
 
-    configSubscription.current = presaleConnector.onGeneralConfig(
-      onConfigHandler
-    )
+    const rawConfig = JSON.stringify(config)
+
+    if (rawConfigRef && rawConfigRef.current === rawConfig) {
+      return
+    }
+
+    rawConfigRef.current = rawConfig
+    const transformedConfig = transformConfigData(config)
+
+    setConfig(transformedConfig)
+  }, [])
+
+  useEffect(() => {
+    if (!hatchConnector) {
+      return
+    }
+
+    configSubscription.current = hatchConnector.onGeneralConfig(onConfigHandler)
 
     return () => configSubscription.current.unsubscribe()
-  }, [presaleConnector, onConfigHandler])
+  }, [hatchConnector, onConfigHandler])
 
   return config
 }
@@ -67,9 +49,9 @@ export const useContributorsSubscription = ({
   orderDirection = 'asc',
 } = {}) => {
   const {
-    presaleConnector,
+    hatchConnector,
     config: {
-      presaleConfig: { contributionToken, token },
+      hatchConfig: { contributionToken, token },
     },
   } = useAppState()
   const [contributors, setContributors] = useState([])
@@ -92,11 +74,11 @@ export const useContributorsSubscription = ({
   )
 
   useEffect(() => {
-    if (!presaleConnector) {
+    if (!hatchConnector) {
       return
     }
 
-    contributorsSubscription.current = presaleConnector.onContributors(
+    contributorsSubscription.current = hatchConnector.onContributors(
       { first: count, skip, orderBy, orderDirection },
       onContributorsHandler
     )
@@ -104,7 +86,7 @@ export const useContributorsSubscription = ({
       contributorsSubscription.current.unsubscribe()
     }
   }, [
-    presaleConnector,
+    hatchConnector,
     onContributorsHandler,
     count,
     skip,
@@ -115,32 +97,26 @@ export const useContributorsSubscription = ({
   return contributors
 }
 
-export const useContributorSubscription = ({
-  contributor: contributorAccount,
-}) => {
-  const {
-    presaleConnector,
-    config: {
-      presaleConfig: { contributionToken, token },
-    },
-  } = useAppState()
+export const useContributorSubscription = contributorAccount => {
+  const { hatchConnector, config } = useAppState()
+  const { contributionToken, token } = config?.hatchConfig || {}
   const [contributor, setContributor] = useState(null)
+  const [loading, setLoading] = useState(true)
+
   const contributorSubscription = useRef(null)
   const rawContributorRef = useRef(null)
 
   const onContributorHandler = useCallback(
-    (err, contributor) => {
+    async (err, contributor) => {
       if (err || !contributor) {
         setContributor(null)
+        setLoading(false)
         return
       }
 
       const rawContributor = JSON.stringify(contributor)
 
-      if (
-        rawContributorRef.current &&
-        rawContributor === rawContributorRef.current
-      ) {
+      if (rawContributorRef && rawContributor === rawContributorRef.current) {
         return
       }
 
@@ -149,29 +125,32 @@ export const useContributorSubscription = ({
         contributionToken,
         token
       )
-      rawContributorRef.current = transformedContributor
+      rawContributorRef.current = rawContributor
 
       setContributor(transformedContributor)
+      setLoading(false)
     },
     [contributionToken, token]
   )
 
   useEffect(() => {
-    if (!presaleConnector || !contributorAccount) {
+    if (!hatchConnector || !contributorAccount) {
       setContributor(null)
+      rawContributorRef.current = null
+
       return
     }
 
-    contributorSubscription.current = presaleConnector.onContributor(
+    contributorSubscription.current = hatchConnector.onContributor(
       contributorAccount,
       onContributorHandler
     )
     return () => {
       contributorSubscription.current.unsubscribe()
     }
-  }, [presaleConnector, contributorAccount, onContributorHandler])
+  }, [hatchConnector, contributorAccount, onContributorHandler])
 
-  return contributor
+  return [contributor, loading]
 }
 
 export const useContributionsSubscription = ({
@@ -181,7 +160,7 @@ export const useContributionsSubscription = ({
   orderBy = 'value',
   orderDirection = 'desc',
 } = {}) => {
-  const { presaleConnector } = useAppState()
+  const { hatchConnector } = useAppState()
   const [contributions, setContributions] = useState([])
 
   const contributionsSubscription = useRef(null)
@@ -199,11 +178,11 @@ export const useContributionsSubscription = ({
   }, [])
 
   useEffect(() => {
-    if (!presaleConnector || !contributor) {
+    if (!hatchConnector || !contributor) {
       setContributions([])
       return
     }
-    contributionsSubscription.current = presaleConnector.onContributions(
+    contributionsSubscription.current = hatchConnector.onContributions(
       { contributor, first: count, skip, orderBy, orderDirection },
       onContributionsHandler
     )
@@ -211,7 +190,7 @@ export const useContributionsSubscription = ({
       contributionsSubscription.current.unsubscribe()
     }
   }, [
-    presaleConnector,
+    hatchConnector,
     onContributionsHandler,
     contributor,
     count,

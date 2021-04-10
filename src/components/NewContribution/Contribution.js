@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   GU,
   LoadingRing,
 } from '@tecommons/ui'
-import { PresaleViewContext } from '../../context'
 import Total from './Total'
 import {
   MaxContributionInformation,
@@ -18,11 +17,11 @@ import {
 } from './Information'
 import ValidationError from '../ValidationError'
 import { toDecimals, formatBigNumber } from '../../utils/bn-utils'
-import { useWallet } from '../../providers/Wallet'
 import useActions from '../../hooks/useActions'
 import { useAppState } from '../../providers/AppState'
 import { TX_DESCRIPTIONS, TxStatuses } from '../../constants'
 import BigNumber from 'bignumber.js'
+import { useUserState } from '../../providers/UserState'
 
 const {
   PRE_TX_FETCHING,
@@ -33,37 +32,38 @@ const {
 } = TxStatuses
 
 const Contribution = () => {
-  const { account } = useWallet()
-  const { contribute, getContributor, txsData } = useActions()
+  const {
+    account,
+    contributorData,
+    collateralBalance,
+    allowedContributionAmount,
+  } = useUserState()
+  const { contribute, txsData } = useActions()
+  const { txStatus, preTxStatus, txCounter, txCurrentIndex } = txsData
   const {
     config: {
-      presaleConfig: {
+      hatchConfig: {
         contributionToken: {
           symbol: contributionSymbol,
           decimals: contributionDecimals,
         },
+        token: { symbol: tokenSymbol },
       },
-      presaleOracleConfig: {
+      hatchOracleConfig: {
         scoreToken: { symbol: scoreSymbol },
       },
     },
+    contributionPanel: { visible, requestClose },
   } = useAppState()
-  const {
-    presalePanel,
-    setPresalePanel,
-    userPrimaryCollateralBalance,
-    userAllowedContributionAmount,
-  } = useContext(PresaleViewContext)
   const [value, setValue] = useState('')
   const [valid, setValid] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
-  const { txStatus, preTxStatus, txCounter, txCurrentIndex } = txsData
 
   const valueInput = useRef(null)
 
   // handle reset when opening
   useEffect(() => {
-    if (presalePanel) {
+    if (visible) {
       // reset to default values
       setValue('')
       setValid(false)
@@ -73,25 +73,24 @@ const Contribution = () => {
       // be skipped by the browser.
       valueInput && setTimeout(() => valueInput.current.focus(), 300)
     }
-  }, [presalePanel])
+  }, [visible])
 
   useEffect(() => {
     if (
       txStatus === TX_ERROR ||
       (preTxStatus === PRE_TX_FINISHED && txStatus === TX_MINING)
     ) {
-      setPresalePanel(false)
+      requestClose()
     }
     return () => {}
-  }, [preTxStatus, txStatus, setPresalePanel])
+  }, [preTxStatus, txStatus, requestClose])
 
   useEffect(() => {
-    async function checkAccountBalances(account) {
-      const contributor = await getContributor(account)
-      const totalContribution = contributor
-        ? contributor.totalValue
+    async function checkBalances() {
+      const totalContribution = contributorData
+        ? contributorData.totalValue
         : new BigNumber(0)
-      if (userAllowedContributionAmount.eq(new BigNumber(0))) {
+      if (allowedContributionAmount.eq(new BigNumber(0))) {
         if (totalContribution.eq(new BigNumber(0))) {
           validate(
             false,
@@ -107,11 +106,11 @@ const Contribution = () => {
     }
 
     if (account) {
-      checkAccountBalances(account)
+      checkBalances(account)
     }
 
     return () => {}
-  }, [account, getContributor, scoreSymbol, userAllowedContributionAmount])
+  }, [account, contributorData, allowedContributionAmount, scoreSymbol])
 
   const handleValueUpdate = event => {
     setValue(event.target.value)
@@ -140,7 +139,7 @@ const Contribution = () => {
           `}
         >
           Your balance:{' '}
-          {formatBigNumber(userPrimaryCollateralBalance, contributionDecimals)}{' '}
+          {formatBigNumber(collateralBalance, contributionDecimals)}{' '}
           {contributionSymbol}
         </p>
         <ValueField key="collateral">
@@ -151,7 +150,7 @@ const Contribution = () => {
                 <>
                   (Maximum Allowed{' '}
                   {formatBigNumber(
-                    userAllowedContributionAmount,
+                    allowedContributionAmount,
                     contributionDecimals
                   )}{' '}
                   {contributionSymbol})
@@ -193,10 +192,10 @@ const Contribution = () => {
                 `Pretransactions (${txCurrentIndex} of ${txCounter - 1}): ${
                   TX_DESCRIPTIONS[txStatus]
                 }`}
-              {preTxStatus === PRE_TX_FINISHED && 'Buy hatch shares'}
+              {preTxStatus === PRE_TX_FINISHED && `Mint ${tokenSymbol} Tokens`}
             </PreparingTxWrapper>
           ) : (
-            'Buy hatch shares'
+            `Mint ${tokenSymbol} Tokens`
           )}
         </Button>
       </ButtonWrapper>
