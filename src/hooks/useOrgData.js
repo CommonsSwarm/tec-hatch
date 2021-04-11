@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useApp, useApps, useOrganization } from '@aragon/connect-react'
+import { useApp, useApps, useOrganization } from '@1hive/connect-react'
 
 import connectHatch from '@tecommons/connect-hatch'
 import { useConfigSubscription } from './useSubscriptions'

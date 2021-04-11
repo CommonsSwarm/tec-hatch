@@ -14,12 +14,10 @@ git clone https://github.com/TECommons/tec-hatch.git
 
 ```sh
 cd tec-hatch
-yarn install
+yarn
 ```
 
-3. Set up the environment variables (you can use the `.env.example` file).
-
-4. Start the frontend:
+3. Start the frontend:
 
 ```sh
 yarn start
