@@ -34,7 +34,6 @@ const useActions = () => {
     onTxError,
   } = txHandlers
 
-  console.log(redemptions)
   const executeAction = useCallback(
     async ({ transactions = [] } = {}) => {
       const txLength = transactions.length
