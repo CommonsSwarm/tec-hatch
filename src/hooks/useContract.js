@@ -1,30 +1,21 @@
+import {
+  Contract as EthersContract,
+  providers as EthersProviders,
+} from 'ethers'
 import { useMemo } from 'react'
-import Web3 from 'web3'
 import { getNetwork } from '../networks'
 import { useWallet } from '../providers/Wallet'
 
-const contractsCache = new Map()
+const ethEndpoint = getNetwork().defaultEthNode
+const DEFAULT_PROVIDER = new EthersProviders.JsonRpcProvider(ethEndpoint)
 
-export const useContract = (address, abi, readOnly = false) => {
-  const { web3: walletWeb3 } = useWallet()
-  const { defaultEthNode } = getNetwork()
+export const useContract = (address, abi, signer) => {
+  const { account } = useWallet()
 
-  // TODO: See if this works
-  const defaultWeb3 = useMemo(() => new Web3(defaultEthNode), [defaultEthNode])
-
-  const web3 = readOnly ? defaultWeb3 : walletWeb3
-
-  if (!address || !web3) {
-    return
-  }
-
-  if (contractsCache.has(address)) {
-    return contractsCache.get(address)
-  }
-
-  const contract = new web3.eth.Contract(abi, address)
-
-  contractsCache.set(address, contract)
-
-  return contract
+  return useMemo(() => {
+    if (!address || !signer || !account) {
+      return null
+    }
+    return new EthersContract(address, abi, signer ?? DEFAULT_PROVIDER)
+  }, [account, address, abi, signer])
 }

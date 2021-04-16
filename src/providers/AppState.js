@@ -10,12 +10,14 @@ export const AppStateProvider = ({ children }) => {
     errors,
     hatchConnector,
     hatchApp,
-    installedApps,
+    redemptionsApp,
     organization,
     loadingAppData,
   } = useOrgData()
   const contributionPanel = usePanelState()
   const refundPanel = usePanelState()
+  const redeemPanel = usePanelState()
+
   const appLoading = !errors && loadingAppData
 
   return (
@@ -23,13 +25,14 @@ export const AppStateProvider = ({ children }) => {
       value={{
         config,
         errors: { orgErrors: errors },
-        installedApps,
         hatchApp,
+        redemptionsApp,
         organization,
         isLoading: appLoading,
         hatchConnector,
         contributionPanel,
         refundPanel,
+        redeemPanel,
       }}
     >
       {children}

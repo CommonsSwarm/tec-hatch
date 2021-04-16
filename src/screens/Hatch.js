@@ -27,6 +27,7 @@ import NewContribution from '../components/NewContribution'
 import NewRefund from '../components/NewRefund'
 import MyContributions from '../components/MyContributions'
 import GoalReachedAnimation from '../components/GoalReachedAnimation'
+import RedeemTokens from '../components/RedeemTokens/'
 
 const TOP_CONTRIBUTORS_COUNT = 10
 
@@ -148,6 +149,7 @@ export default () => {
       <GoalReachedAnimation hatchState={state} />
       <NewContribution />
       <NewRefund />
+      <RedeemTokens />
     </>
   )
 }

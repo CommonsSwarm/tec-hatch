@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useApp, useApps, useOrganization } from '@1hive/connect-react'
+import { useApp, useOrganization } from '@1hive/connect-react'
 
 import connectHatch from '@tecommons/connect-hatch'
 import { useConfigSubscription } from './useSubscriptions'
@@ -10,8 +10,8 @@ const STAGING = process.env.REACT_APP_STAGING ?? false
 const useOrgData = () => {
   const [hatchConnector, setHatchConnector] = useState(null)
   const [organization, orgStatus] = useOrganization()
-  const [apps, appsStatus] = useApps()
-  const [hatchApp] = useApp(APP_NAME)
+  const [hatchApp, hatchStatus] = useApp(APP_NAME)
+  const [redemptionsApp, redemptionsStatus] = useApp('redemptions')
 
   useEffect(() => {
     if (!hatchApp) {
@@ -44,16 +44,20 @@ const useOrgData = () => {
 
   const config = useConfigSubscription(hatchConnector)
 
-  const loadingData = orgStatus.loading || appsStatus.loading || !config
+  const loadingData =
+    orgStatus.loading ||
+    hatchStatus.loading ||
+    redemptionsStatus.loading ||
+    !config
 
-  const errors = orgStatus.error || appsStatus.error
+  const errors = orgStatus.error || hatchStatus.error || redemptionsStatus.error
 
   return {
     config,
     errors,
     hatchConnector,
-    installedApps: apps,
     hatchApp,
+    redemptionsApp,
     organization,
     loadingAppData: loadingData,
   }
