@@ -5,13 +5,14 @@ import connectHatch from '@tecommons/connect-hatch'
 import { useConfigSubscription } from './useSubscriptions'
 
 const APP_NAME = process.env.REACT_APP_HATCH_APP_NAME
+const REDEMPTIONS_APP_NAME = 'redemptions'
 const STAGING = process.env.REACT_APP_STAGING ?? false
 
 const useOrgData = () => {
   const [hatchConnector, setHatchConnector] = useState(null)
   const [organization, orgStatus] = useOrganization()
   const [hatchApp, hatchStatus] = useApp(APP_NAME)
-  const [redemptionsApp, redemptionsStatus] = useApp('redemptions')
+  const [redemptionsApp, redemptionsStatus] = useApp(REDEMPTIONS_APP_NAME)
 
   useEffect(() => {
     if (!hatchApp) {

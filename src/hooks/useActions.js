@@ -2,11 +2,10 @@ import { useCallback, useMemo } from 'react'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import { convertBN } from '../utils/bn-utils'
-import { useContract } from './useContract'
 import useTxExecution from './useTxExecution'
 
 // const TX_GAS_LIMIT = 850000
-const TX_GAS_LIMIT = 9000000
+const TX_GAS_LIMIT = 900000
 const PRE_TX_GAS_LIMIT = 200000
 
 const useActions = () => {
@@ -20,11 +19,6 @@ const useActions = () => {
   } = useTxExecution()
   const signer = useMemo(() => ethers?.getSigner(), [ethers])
   const { hatchConnector, redemptionsApp } = useAppState()
-  const redemptions = useContract(
-    redemptionsApp?.address,
-    redemptionsApp?.abi,
-    signer
-  )
 
   const {
     onTxsFetched,
@@ -106,10 +100,12 @@ const useActions = () => {
 
   const redeem = useCallback(
     async amount => {
-      const txResponse = await redemptions.redeem(amount)
-      await txResponse.wait()
+      const intent = await redemptionsApp.intent('redeem', [amount], {
+        actAs: await signer.getAddress(),
+      })
+      executeAction(intent)
     },
-    [redemptions]
+    [signer, redemptionsApp, executeAction]
   )
 
   const getContributionTokenBalance = useCallback(
