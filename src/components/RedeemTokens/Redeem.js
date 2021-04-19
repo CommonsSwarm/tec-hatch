@@ -25,7 +25,7 @@ const MAX_INPUT_DECIMAL_BASE = 6
 //   return tokens.map(t => safeDiv(amount * t.amount, totalSupply))
 // }
 
-const RedeemTokens = ({ totalSupply = 1000, tokens }) => {
+const RedeemTokens = ({ tokens }) => {
   const {
     config: {
       hatchConfig: { token, contributionToken },
@@ -46,8 +46,6 @@ const RedeemTokens = ({ totalSupply = 1000, tokens }) => {
 
   // Format BN
   const formattedBalance = fromDecimals(totalAmount, decimals).toString()
-  // const formattedSupply = toDecimals(totalSupply, decimals).toString()
-  const formattedSupply = '1000'
 
   // Use state
   const [{ value, max, progress }, setAmount, setProgress] = useAmount(
@@ -91,7 +89,7 @@ const RedeemTokens = ({ totalSupply = 1000, tokens }) => {
         <TokenInfo>
           You have{' '}
           <Text weight="bold">
-            {formattedBalance} out of a total of {formattedSupply} {symbol}{' '}
+            {formattedBalance} {symbol}{' '}
           </Text>{' '}
           tokens for redemption
         </TokenInfo>
@@ -121,7 +119,7 @@ const RedeemTokens = ({ totalSupply = 1000, tokens }) => {
           <Info>No eligible assets in the vault</Info>
         )} */}
         <Button mode="strong" wide type="submit" disabled={value <= 0}>
-          Redeem Tokens
+          Redeem {symbol} Tokens
         </Button>
       </form>
     </div>

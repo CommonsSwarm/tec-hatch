@@ -135,8 +135,7 @@ export default () => {
                   </>
                 )}
               </Box>
-              {state === Hatch.state.FUNDING &&
-              !!connectedUser.contributorData ? (
+              {connectedUser.contributorData ? (
                 <MyContributions user={connectedUser} />
               ) : null}
               {!!contributors.length && (
