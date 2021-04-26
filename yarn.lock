@@ -1206,6 +1206,16 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@commonsswarm/connect-hatch@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@commonsswarm/connect-hatch/-/connect-hatch-0.0.1.tgz#f9e1b73641bcb5165ae116aec2ae50504761a575"
+  integrity sha512-f+s3azGAC7mBbQiAGb1Wyb+YF96BkcEItmZJOSdOICzkNl/FnKt0PJ9fDPUrJz2Jq7csJUMBTTO2oUDK9vCw1w==
+  dependencies:
+    "@1hive/connect-core" "^0.8.5"
+    "@1hive/connect-thegraph" "^0.8.5"
+    ethers "^5.0.23"
+    graphql-tag "^2.10.3"
+
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
@@ -1966,14 +1976,6 @@
     "@svgr/plugin-jsx" "^4.3.3"
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
-
-"@tecommons/connect-hatch@file:.yalc/@tecommons/connect-hatch":
-  version "2.1.4"
-  dependencies:
-    "@1hive/connect-core" "^0.8.5"
-    "@1hive/connect-thegraph" "^0.8.5"
-    ethers "^5.0.23"
-    graphql-tag "^2.10.3"
 
 "@tecommons/ui@^1.0.8":
   version "1.0.8"

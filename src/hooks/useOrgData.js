@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useApp, useOrganization } from '@1hive/connect-react'
 
-import connectHatch from '@tecommons/connect-hatch'
+import connectHatch from '@commonsswarm/connect-hatch'
 import { useConfigSubscription } from './useSubscriptions'
 
-const APP_NAME = process.env.REACT_APP_HATCH_APP_NAME
 const REDEMPTIONS_APP_NAME = 'redemptions'
+const APP_NAME = process.env.REACT_APP_HATCH_APP_NAME
 const STAGING = process.env.REACT_APP_STAGING ?? false
 
 const useOrgData = () => {
