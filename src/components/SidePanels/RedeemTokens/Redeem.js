@@ -1,42 +1,44 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import {
   Text,
   TextInput,
-  Button,
   Slider,
   breakpoint,
   Field,
+  useSidePanelFocusOnReady,
 } from '@tecommons/ui'
-// import RedeemTokenList from '../RedeemTokenList'
 import { InfoMessage } from './Message'
 
-import { fromDecimals, toDecimals } from '../../utils/bn-utils'
-import { safeDiv, round } from '../../utils/math-utils'
-import { useUserState } from '../../providers/UserState'
-import { useAppState } from '../../providers/AppState'
-import useActions from '../../hooks/useActions'
+import {
+  formatBigNumber,
+  fromDecimals,
+  toDecimals,
+} from '../../../utils/bn-utils'
+import { safeDiv, round } from '../../../utils/math-utils'
+import { useUserState } from '../../../providers/UserState'
+import { useAppState } from '../../../providers/AppState'
+import useActions from '../../../hooks/useActions'
+import TxButton from '../../TxButton'
 
 const MAX_INPUT_DECIMAL_BASE = 6
 
-// HELPERS
-// function getTokenExchange(tokens, amount, totalSupply) {
-//   return tokens.map(t => safeDiv(amount * t.amount, totalSupply))
-// }
-
-const RedeemTokens = ({ tokens }) => {
+const RedeemTokens = () => {
   const {
     config: {
       hatchConfig: { token, contributionToken },
     },
-    redeemPanel: { visible: panelOpened },
+    redeemPanel: { requestClose },
   } = useAppState()
   const { symbol, decimals } = token
-  const { symbol: cTokenSymbol } = contributionToken
+  const {
+    symbol: contributionSymbol,
+    decimals: contributionDecimals,
+  } = contributionToken
   const { contributorData } = useUserState()
-  const { redeem } = useActions()
+  const { redeem, txsData } = useActions(requestClose)
   const { totalAmount } = contributorData || {}
+
   // Get metrics
   const rounding = Math.min(MAX_INPUT_DECIMAL_BASE, decimals)
   const minTokenStep = fromDecimals(
@@ -52,28 +54,16 @@ const RedeemTokens = ({ tokens }) => {
     formattedBalance.replace(',', ''),
     rounding
   )
+  const evaluatedPrice = formatBigNumber(value, contributionDecimals)
 
   // Focus input
-  const inputRef = useRef(null)
-  useEffect(() => {
-    if (panelOpened) {
-      inputRef.current.focus()
-    }
-  }, [panelOpened])
+  const inputRef = useSidePanelFocusOnReady()
 
-  const handleFormSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault()
 
     redeem(toDecimals(value, decimals).toFixed())
   }
-
-  // Filter tokens with 0 balance and get exchange
-  // const tokensWithBalance = tokens ? tokens.filter(t => !t.amount.isZero()) : []
-  // const youGet = getTokenExchange(
-  //   tokensWithBalance,
-  //   value,
-  //   totalSupply / Math.pow(10, decimals)
-  // )
 
   return (
     <div
@@ -81,10 +71,10 @@ const RedeemTokens = ({ tokens }) => {
         margin-top: 1rem;
       `}
     >
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleSubmit}>
         <InfoMessage
           title="Redemption action"
-          text={`This action will burn ${value} ${symbol} tokens in exchange for ${cTokenSymbol} tokens`}
+          text={`This action will burn ${value} ${symbol} tokens in exchange for ${contributionSymbol} tokens`}
         />
         <TokenInfo>
           You have{' '}
@@ -112,15 +102,18 @@ const RedeemTokens = ({ tokens }) => {
             />
             <Text size="large">{symbol}</Text>
           </InputWrapper>
+          <div css="display: flex; justify-content: flex-end;">
+            {evaluatedPrice && (
+              <AmountField color="grey">~{evaluatedPrice}</AmountField>
+            )}
+            {evaluatedPrice && <Text color="grey">{contributionSymbol}</Text>}
+          </div>
         </Wrapper>
-        {/* {tokensWithBalance.length > 0 ? (
-          <RedeemTokenList tokens={tokensWithBalance} youGet={youGet} />
-        ) : (
-          <Info>No eligible assets in the vault</Info>
-        )} */}
-        <Button mode="strong" wide type="submit" disabled={value <= 0}>
-          Redeem {symbol} Tokens
-        </Button>
+        <TxButton
+          txsData={txsData}
+          disabled={value <= 0}
+          label={`Redeem ${symbol} Tokens`}
+        />
       </form>
     </div>
   )
@@ -181,15 +174,12 @@ const useAmount = (balance, rounding) => {
   return [amount, handleAmountChange, handleSliderChange]
 }
 
-export default RedeemTokens
-
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
   padding: 20px 0px;
 `
-
 const SliderWrapper = styled(Field)`
   flex-basis: 50%;
   > :first-child > :nth-child(2) {
@@ -213,13 +203,11 @@ const InputWrapper = styled.div`
     width: 75%;
   }
 `
-
-// const Info = styled.div`
-//   padding: 20px;
-//   margin-bottom: 20px;
-//   text-align: center;
-// `
-
+const AmountField = styled(Text)`
+  margin-right: 10px;
+`
 const TokenInfo = styled.div`
   padding: 20px 0;
 `
+
+export default RedeemTokens

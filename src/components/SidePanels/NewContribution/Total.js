@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Text } from '@tecommons/ui'
 import styled from 'styled-components'
-import { formatBigNumber, toDecimals } from '../../utils/bn-utils'
-import { useAppState } from '../../providers/AppState'
-import { useUserState } from '../../providers/UserState'
+import { formatBigNumber, toDecimals } from '../../../utils/bn-utils'
+import { useAppState } from '../../../providers/AppState'
+import { useUserState } from '../../../providers/UserState'
 
 export default ({ value, onError }) => {
   const {

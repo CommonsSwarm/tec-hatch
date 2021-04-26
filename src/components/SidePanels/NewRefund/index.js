@@ -1,20 +1,20 @@
 import React from 'react'
 import { SidePanel } from '@tecommons/ui'
-import Redeem from './Redeem'
-import { useAppState } from '../../providers/AppState'
+import Refund from './Refund'
+import { useAppState } from '../../../providers/AppState'
 
 export default () => {
   const {
-    redeemPanel: { visible, requestClose },
+    refundPanel: { visible, requestClose },
   } = useAppState()
 
   return (
     <SidePanel
-      title="Redeem Tokens"
+      title="Refund Hatch Shares"
       opened={visible}
       onClose={() => requestClose(false)}
     >
-      <Redeem />
+      <Refund />
     </SidePanel>
   )
 }

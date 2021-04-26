@@ -4,11 +4,10 @@ import { useWallet } from '../providers/Wallet'
 import { convertBN } from '../utils/bn-utils'
 import useTxExecution from './useTxExecution'
 
-// const TX_GAS_LIMIT = 850000
 const TX_GAS_LIMIT = 900000
 const PRE_TX_GAS_LIMIT = 200000
 
-const useActions = () => {
+const useActions = (onClose = () => {}) => {
   const { ethers } = useWallet()
   const {
     txHandlers,
@@ -49,6 +48,7 @@ const useActions = () => {
           })
 
           onTxSigned(txResponse, i, txLength)
+          onClose()
 
           const txReceipt = await txResponse.wait()
 
@@ -56,10 +56,19 @@ const useActions = () => {
         }
       } catch (err) {
         console.error(err)
+        onClose()
         onTxError(err)
       }
     },
-    [signer, onTxsFetched, onTxSigning, onTxSigned, onTxSuccess, onTxError]
+    [
+      signer,
+      onTxsFetched,
+      onTxSigning,
+      onTxSigned,
+      onTxSuccess,
+      onTxError,
+      onClose,
+    ]
   )
 
   const openHatch = useCallback(

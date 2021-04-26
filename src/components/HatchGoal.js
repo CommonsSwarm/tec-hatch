@@ -93,7 +93,6 @@ export default React.memo(() => {
             </p>
             <Button
               wide
-              mode="strong"
               label="Refund Hatch Tokens"
               css={`
                 margin-top: ${2 * GU}px;
@@ -103,15 +102,12 @@ export default React.memo(() => {
           </>
         )}
         {state === Hatch.state.CLOSED && (
-          <>
-            <Button
-              wide
-              mode="strong"
-              label="Redeem Tokens"
-              disabled={!account}
-              onClick={requestRedeemOpen}
-            />
-          </>
+          <Button
+            wide
+            label="Redeem Tokens"
+            disabled={!account}
+            onClick={requestRedeemOpen}
+          />
         )}
       </div>
     </Box>
