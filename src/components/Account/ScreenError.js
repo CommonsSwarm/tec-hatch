@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link, textStyle, useTheme } from '@tecommons/ui'
 import { UnsupportedChainError } from 'use-wallet'
-import { getNetworkType } from '../../networks'
+import { addEthereumChain, getNetworkType } from '../../networks'
 import connectionError from './assets/connection-error.png'
 
 const AccountModuleErrorScreen = ({ error, onBack }) => {
@@ -11,6 +11,7 @@ const AccountModuleErrorScreen = ({ error, onBack }) => {
 
   const [title, secondary] = useMemo(() => {
     if (error instanceof UnsupportedChainError) {
+      addEthereumChain()
       return [
         'Wrong network',
         `Please select the ${getNetworkType()} network in your wallet and try again.`,
