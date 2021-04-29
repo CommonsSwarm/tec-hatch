@@ -4,11 +4,10 @@ import { useWallet } from '../providers/Wallet'
 import { convertBN } from '../utils/bn-utils'
 import useTxExecution from './useTxExecution'
 
-// const TX_GAS_LIMIT = 850000
-const TX_GAS_LIMIT = 9000000
+const TX_GAS_LIMIT = 900000
 const PRE_TX_GAS_LIMIT = 200000
 
-const useActions = () => {
+const useActions = (onClose = () => {}) => {
   const { ethers } = useWallet()
   const {
     txHandlers,
@@ -18,7 +17,8 @@ const useActions = () => {
     txCurrentIndex,
   } = useTxExecution()
   const signer = useMemo(() => ethers?.getSigner(), [ethers])
-  const { hatchConnector } = useAppState()
+  const { hatchConnector, redemptionsApp } = useAppState()
+
   const {
     onTxsFetched,
     onTxSigning,
@@ -48,6 +48,7 @@ const useActions = () => {
           })
 
           onTxSigned(txResponse, i, txLength)
+          onClose()
 
           const txReceipt = await txResponse.wait()
 
@@ -55,10 +56,19 @@ const useActions = () => {
         }
       } catch (err) {
         console.error(err)
+        onClose()
         onTxError(err)
       }
     },
-    [signer, onTxsFetched, onTxSigning, onTxSigned, onTxSuccess, onTxError]
+    [
+      signer,
+      onTxsFetched,
+      onTxSigning,
+      onTxSigned,
+      onTxSuccess,
+      onTxError,
+      onClose,
+    ]
   )
 
   const openHatch = useCallback(
@@ -97,6 +107,16 @@ const useActions = () => {
     [hatchConnector, executeAction]
   )
 
+  const redeem = useCallback(
+    async amount => {
+      const intent = await redemptionsApp.intent('redeem', [amount], {
+        actAs: await signer.getAddress(),
+      })
+      executeAction(intent)
+    },
+    [signer, redemptionsApp, executeAction]
+  )
+
   const getContributionTokenBalance = useCallback(
     async entity => {
       return convertBN(await hatchConnector.contributionTokenBalance(entity))
@@ -118,14 +138,25 @@ const useActions = () => {
     [hatchConnector]
   )
 
+  const getReserveTokenBalance = useCallback(async () => {
+    return convertBN(await hatchConnector.reserveTokenBalance())
+  }, [hatchConnector])
+
+  const getTokenTotalSupply = useCallback(async token => {
+    return convertBN(await token.totalSupply())
+  }, [])
+
   return {
     openHatch,
     closeHatch,
     contribute,
     refund,
+    redeem,
     getContributionTokenBalance,
     getAllowedContributionAmount,
     getAwardedTokensAmount,
+    getTokenTotalSupply,
+    getReserveTokenBalance,
     txsData: {
       txStatus,
       preTxStatus,

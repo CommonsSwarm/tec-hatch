@@ -14,19 +14,23 @@ import {
   LoadingRing,
   Header,
 } from '@tecommons/ui'
+import HatchGoal from '../components/HatchGoal'
+import TECInfo from '../components/TECInfo'
+import TopContributors from '../components/TopContributors'
+import {
+  NewContribution,
+  NewRefund,
+  RedeemTokens,
+} from '../components/SidePanels'
+import MyContributions from '../components/MyContributions'
+import GoalReachedAnimation from '../components/GoalReachedAnimation'
+
 import addMilliseconds from 'date-fns/addMilliseconds'
 import { Hatch } from '../constants'
 import useActions from '../hooks/useActions'
 import { useAppState } from '../providers/AppState'
 import { useUserState } from '../providers/UserState'
 import { useContributorsSubscription } from '../hooks/useSubscriptions'
-import HatchGoal from '../components/HatchGoal'
-import TECInfo from '../components/TECInfo'
-import TopContributors from '../components/TopContributors'
-import NewContribution from '../components/NewContribution'
-import NewRefund from '../components/NewRefund'
-import MyContributions from '../components/MyContributions'
-import GoalReachedAnimation from '../components/GoalReachedAnimation'
 
 const TOP_CONTRIBUTORS_COUNT = 10
 
@@ -134,8 +138,7 @@ export default () => {
                   </>
                 )}
               </Box>
-              {state === Hatch.state.FUNDING &&
-              !!connectedUser.contributorData ? (
+              {connectedUser.contributorData ? (
                 <MyContributions user={connectedUser} />
               ) : null}
               {!!contributors.length && (
@@ -148,6 +151,7 @@ export default () => {
       <GoalReachedAnimation hatchState={state} />
       <NewContribution />
       <NewRefund />
+      <RedeemTokens />
     </>
   )
 }

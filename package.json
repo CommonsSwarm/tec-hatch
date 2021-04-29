@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@1hive/connect-react": "^0.8.5",
-    "@tecommons/connect-hatch": "^2.1.3",
+    "@commonsswarm/connect-hatch": "^0.0.2",
     "@tecommons/ui": "^1.0.8",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
@@ -36,7 +36,6 @@
     "rxjs": "^6.5.2",
     "styled-components": ">=4.0.0",
     "use-wallet": "^0.5.0",
-    "web3": "^1.3.0",
     "web3-utils": "^1.2.1"
   },
   "devDependencies": {

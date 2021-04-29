@@ -109,7 +109,7 @@ export const UserStateProvider = ({ children }) => {
 
       setLoadingTokenData(false)
     } catch (err) {
-      console.error('Error fetching token data: ', err)
+      console.error('Error fetching user token data: ', err)
     }
   }, Polling.DURATION)
 

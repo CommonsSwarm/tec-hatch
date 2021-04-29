@@ -6,6 +6,7 @@ import { secondsToMilliseconds } from './date-utils'
 export const transformConfigData = config => {
   const hatchConfig = config.hatchConfig
   const hatchOracleConfig = config.hatchOracleConfig
+  const PPM = new BigNumber(hatchConfig.PPM)
 
   return {
     ...config,
@@ -22,9 +23,11 @@ export const transformConfigData = config => {
         hatchConfig.vestingCompleteDate
       ),
       state: hatchConfig.state.toUpperCase(),
-      exchangeRate: new BigNumber(hatchConfig.exchangeRate).div(
-        new BigNumber(hatchConfig.PPM)
-      ),
+      exchangeRate: new BigNumber(hatchConfig.exchangeRate).div(PPM),
+      fundingForBeneficiaryPct: new BigNumber(
+        hatchConfig.fundingForBeneficiaryPct
+      ).div(PPM),
+      supplyOfferedPct: new BigNumber(hatchConfig.supplyOfferedPct).div(PPM),
       minGoal: new BigNumber(hatchConfig.minGoal),
       maxGoal: new BigNumber(hatchConfig.maxGoal),
       totalRaised: new BigNumber(hatchConfig.totalRaised),

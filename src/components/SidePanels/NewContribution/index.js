@@ -1,7 +1,7 @@
 import React from 'react'
 import { SidePanel } from '@tecommons/ui'
 import Contribution from './Contribution'
-import { useAppState } from '../../providers/AppState'
+import { useAppState } from '../../../providers/AppState'
 
 export default () => {
   const {

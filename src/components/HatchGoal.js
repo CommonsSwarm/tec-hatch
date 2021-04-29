@@ -20,6 +20,7 @@ export default React.memo(() => {
     },
     contributionPanel: { requestOpen: requestContributionOpen },
     refundPanel: { requestOpen: requestRefundOpen },
+    redeemPanel: { requestOpen: requestRedeemOpen },
   } = useAppState()
 
   return (
@@ -43,6 +44,7 @@ export default React.memo(() => {
             text-overflow: ellipsis;
             white-space: nowrap;
             color: ${theme.surfaceContentSecondary};
+            margin-bottom: ${2 * GU}px;
           `}
         >
           <span
@@ -63,25 +65,20 @@ export default React.memo(() => {
           {collateralSymbol}
         </p>
         {state === Hatch.state.FUNDING && (
-          <div
-            css={`
-              margin-top: ${2 * GU}px;
-            `}
-          >
+          <>
             <Button
               mode="normal"
               label={`Mint ${tokenSymbol}`}
               onClick={requestContributionOpen}
               disabled={!account}
             />
-          </div>
+          </>
         )}
         {state === Hatch.state.GOALREACHED && (
           <>
             <p
               css={`
                 white-space: nowrap;
-                margin-top: ${2 * GU}px;
                 color: ${theme.surfaceContent};
               `}
             >
@@ -91,26 +88,26 @@ export default React.memo(() => {
         )}
         {state === Hatch.state.REFUNDING && (
           <>
-            <p
-              css={`
-                margin-top: ${2 * GU}px;
-              `}
-            >
+            <p>
               Unfortunately, the goal set for this hatch has not been reached.
             </p>
             <Button
               wide
-              mode="strong"
               label="Refund Hatch Tokens"
               css={`
                 margin-top: ${2 * GU}px;
-                width: 100%;
               `}
               onClick={requestRefundOpen}
-            >
-              Refund hatch shares
-            </Button>
+            />
           </>
+        )}
+        {state === Hatch.state.CLOSED && (
+          <Button
+            wide
+            label="Redeem Tokens"
+            disabled={!account}
+            onClick={requestRedeemOpen}
+          />
         )}
       </div>
     </Box>
