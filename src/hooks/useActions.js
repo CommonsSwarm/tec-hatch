@@ -138,6 +138,14 @@ const useActions = (onClose = () => {}) => {
     [hatchConnector]
   )
 
+  const getReserveTokenBalance = useCallback(async () => {
+    return convertBN(await hatchConnector.reserveTokenBalance())
+  }, [hatchConnector])
+
+  const getTokenTotalSupply = useCallback(async token => {
+    return convertBN(await token.totalSupply())
+  }, [])
+
   return {
     openHatch,
     closeHatch,
@@ -147,6 +155,8 @@ const useActions = (onClose = () => {}) => {
     getContributionTokenBalance,
     getAllowedContributionAmount,
     getAwardedTokensAmount,
+    getTokenTotalSupply,
+    getReserveTokenBalance,
     txsData: {
       txStatus,
       preTxStatus,

@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@1hive/connect-react": "^0.8.5",
-    "@commonsswarm/connect-hatch": "^0.0.1",
+    "@commonsswarm/connect-hatch": "^0.0.2",
     "@tecommons/ui": "^1.0.8",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",

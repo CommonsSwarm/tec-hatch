@@ -1206,10 +1206,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@commonsswarm/connect-hatch@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@commonsswarm/connect-hatch/-/connect-hatch-0.0.1.tgz#f9e1b73641bcb5165ae116aec2ae50504761a575"
-  integrity sha512-f+s3azGAC7mBbQiAGb1Wyb+YF96BkcEItmZJOSdOICzkNl/FnKt0PJ9fDPUrJz2Jq7csJUMBTTO2oUDK9vCw1w==
+"@commonsswarm/connect-hatch@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@commonsswarm/connect-hatch/-/connect-hatch-0.0.2.tgz#3509c42b619dc688e1936071dd8d8f9da32f7e0b"
+  integrity sha512-YbeBVi3MUHRi4opmvFy4Xz5PhFe7OusaIIzQbjiuv39BSXU/0deJKm0XT8XLV6jIyBGSh3c9bnrKO71owp0fGw==
   dependencies:
     "@1hive/connect-core" "^0.8.5"
     "@1hive/connect-thegraph" "^0.8.5"

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
-  Text,
   TextInput,
   Slider,
   breakpoint,
   Field,
   useSidePanelFocusOnReady,
+  textStyle,
 } from '@tecommons/ui'
 import { InfoMessage } from './Message'
 
@@ -20,10 +20,14 @@ import { useUserState } from '../../../providers/UserState'
 import { useAppState } from '../../../providers/AppState'
 import useActions from '../../../hooks/useActions'
 import TxButton from '../../TxButton'
+import BigNumber from 'bignumber.js'
+import { useInterval } from '../../../hooks/useInterval'
+import { Polling } from '../../../constants'
 
-const MAX_INPUT_DECIMAL_BASE = 6
+const MAX_INPUT_DECIMAL_BASE = 2
 
 const RedeemTokens = () => {
+  const inputRef = useSidePanelFocusOnReady()
   const {
     config: {
       hatchConfig: { token, contributionToken },
@@ -36,33 +40,86 @@ const RedeemTokens = () => {
     decimals: contributionDecimals,
   } = contributionToken
   const { contributorData } = useUserState()
-  const { redeem, txsData } = useActions(requestClose)
+  const {
+    redeem,
+    getTokenTotalSupply,
+    getReserveTokenBalance,
+    txsData,
+  } = useActions(requestClose)
   const { totalAmount } = contributorData || {}
 
   // Get metrics
   const rounding = Math.min(MAX_INPUT_DECIMAL_BASE, decimals)
-  const minTokenStep = fromDecimals(
-    '1',
-    Math.min(MAX_INPUT_DECIMAL_BASE, decimals)
-  )
+  const minTokenStep = fromDecimals('1', rounding)
 
-  // Format BN
-  const formattedBalance = fromDecimals(totalAmount, decimals).toString()
-
+  const formattedBalance = formatBigNumber(totalAmount, decimals)
   // Use state
+  const [totalSupply, setTotalSupply] = useState(new BigNumber(0))
+  const [reserveTokenBalance, setReserveTokenBalance] = useState(
+    new BigNumber(0)
+  )
   const [{ value, max, progress }, setAmount, setProgress] = useAmount(
     formattedBalance.replace(',', ''),
     rounding
   )
-  const evaluatedPrice = formatBigNumber(value, contributionDecimals)
 
-  // Focus input
-  const inputRef = useSidePanelFocusOnReady()
+  const decimalValue = toDecimals(value, decimals)
+  const exchangeValue = decimalValue.times(reserveTokenBalance.div(totalSupply))
+
+  const fetchRedeemTokenData = useCallback(
+    (token, contributionToken) =>
+      Promise.all([
+        getTokenTotalSupply(token),
+        getReserveTokenBalance(contributionToken),
+      ]),
+
+    [getTokenTotalSupply, getReserveTokenBalance]
+  )
+
+  useEffect(() => {
+    const setUpRedeemTokenData = async () => {
+      if (!token || !contributionToken) {
+        return
+      }
+
+      const [
+        newTotalSupply,
+        newReserveTokenBalance,
+      ] = await fetchRedeemTokenData(token, contributionToken)
+
+      setTotalSupply(newTotalSupply)
+      setReserveTokenBalance(newReserveTokenBalance)
+    }
+
+    setUpRedeemTokenData()
+  }, [token, contributionToken, fetchRedeemTokenData])
+
+  useInterval(async () => {
+    if (!token || !contributionToken) {
+      return
+    }
+
+    try {
+      const [
+        newTotalSupply,
+        newReserveTokenBalance,
+      ] = await fetchRedeemTokenData(token, contributionToken)
+
+      if (!newTotalSupply.eq(totalSupply)) {
+        setTotalSupply(newTotalSupply)
+      }
+      if (!newReserveTokenBalance.eq(reserveTokenBalance)) {
+        setReserveTokenBalance(reserveTokenBalance)
+      }
+    } catch (err) {
+      console.error(`Error fetching redeem token data: ${err}`)
+    }
+  }, Polling.DURATION)
 
   const handleSubmit = event => {
     event.preventDefault()
 
-    redeem(toDecimals(value, decimals).toFixed())
+    redeem(decimalValue.toFixed())
   }
 
   return (
@@ -74,41 +131,81 @@ const RedeemTokens = () => {
       <form onSubmit={handleSubmit}>
         <InfoMessage
           title="Redemption action"
-          text={`This action will burn ${value} ${symbol} tokens in exchange for ${contributionSymbol} tokens`}
+          text={`This action will burn ${formatBigNumber(
+            decimalValue,
+            decimals
+          )} ${symbol} tokens in exchange for ${contributionSymbol} tokens`}
         />
         <TokenInfo>
           You have{' '}
-          <Text weight="bold">
+          <span
+            css={`
+              font-weight: bold;
+            `}
+          >
             {formattedBalance} {symbol}{' '}
-          </Text>{' '}
+          </span>{' '}
           tokens for redemption
         </TokenInfo>
-        <Wrapper>
-          <SliderWrapper label="Amount to burn">
-            <Slider value={progress} onUpdate={setProgress} />
-          </SliderWrapper>
-          <InputWrapper>
-            <TextInput
-              type="number"
-              name="amount"
-              wide={false}
-              value={value}
-              max={max}
-              min="0"
-              step={minTokenStep}
-              onChange={setAmount}
-              required
-              ref={inputRef}
-            />
-            <Text size="large">{symbol}</Text>
-          </InputWrapper>
-          <div css="display: flex; justify-content: flex-end;">
-            {evaluatedPrice && (
-              <AmountField color="grey">~{evaluatedPrice}</AmountField>
-            )}
-            {evaluatedPrice && <Text color="grey">{contributionSymbol}</Text>}
+        <div
+          css={`
+            margin-bottom: 20px;
+            padding: 20px 0px;
+          `}
+        >
+          <div
+            css={`
+              display: flex;
+              align-items: center;
+            `}
+          >
+            <SliderWrapper label="Amount to burn">
+              <Slider value={progress} onUpdate={setProgress} />
+            </SliderWrapper>
+            <InputWrapper>
+              <TextInput
+                type="number"
+                name="amount"
+                wide={false}
+                value={value}
+                max={max}
+                min="0"
+                step={minTokenStep}
+                onChange={setAmount}
+                required
+                ref={inputRef}
+              />
+              <div
+                css={`
+                  ${textStyle('body2')}
+                `}
+              >
+                {symbol}
+              </div>
+            </InputWrapper>
           </div>
-        </Wrapper>
+          <div
+            css={`
+              display: flex;
+              justify-content: flex-end;
+            `}
+          >
+            {exchangeValue && (
+              <>
+                <AmountField color="grey">
+                  ~{formatBigNumber(exchangeValue, contributionDecimals)}
+                </AmountField>
+                <span
+                  css={`
+                    color: grey;
+                  `}
+                >
+                  {contributionSymbol}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
         <TxButton
           txsData={txsData}
           disabled={value <= 0}
@@ -140,7 +237,7 @@ const useAmount = (balance, rounding) => {
   // Change amount handler
   const handleAmountChange = useCallback(
     event => {
-      const newValue = Math.min(event.target.value, balance)
+      const newValue = round(Math.min(event.target.value, balance), rounding)
       const newProgress = safeDiv(newValue, balance)
 
       setAmount(prevState => ({
@@ -149,7 +246,7 @@ const useAmount = (balance, rounding) => {
         progress: newProgress,
       }))
     },
-    [balance]
+    [balance, rounding]
   )
 
   // Change progress handler
@@ -174,12 +271,6 @@ const useAmount = (balance, rounding) => {
   return [amount, handleAmountChange, handleSliderChange]
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 20px 0px;
-`
 const SliderWrapper = styled(Field)`
   flex-basis: 50%;
   > :first-child > :nth-child(2) {
@@ -203,8 +294,9 @@ const InputWrapper = styled.div`
     width: 75%;
   }
 `
-const AmountField = styled(Text)`
+const AmountField = styled.div`
   margin-right: 10px;
+  color: grey;
 `
 const TokenInfo = styled.div`
   padding: 20px 0;
