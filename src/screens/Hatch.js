@@ -9,7 +9,6 @@ import {
   GU,
   useTheme,
   Split,
-  unselectable,
   Tag,
   LoadingRing,
   Header,
@@ -88,7 +87,7 @@ export default () => {
           secondary={
             <div>
               <HatchGoal />
-              <Box heading="Fundraising Period">
+              <Box heading="Hatch Period">
                 {noOpenDate && (
                   <Button
                     wide
@@ -164,42 +163,6 @@ const AlignedText = styled.div`
 
 const Container = styled.div`
   display: flex;
-
-  a {
-    color: #3e7bf6;
-  }
-
-  .circle {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-
-    .progress-text {
-      display: inherit;
-    }
-
-    & > div {
-      margin-bottom: ${2 * GU}px;
-    }
-  }
-
-  .filter-item {
-    display: flex;
-    align-items: center;
-  }
-
-  .filter-label {
-    display: block;
-    margin-right: 8px;
-    font-variant: small-caps;
-    text-transform: lowercase;
-    color: ${props => props.theme.contentSecondary};
-    font-weight: 600;
-    white-space: nowrap;
-    ${unselectable};
-  }
 
   @media only screen and (max-width: ${BREAKPOINTS.large}px) {
     flex-direction: column;
