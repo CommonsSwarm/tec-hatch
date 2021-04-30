@@ -1,8 +1,9 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
-import { Box, Distribution, GU, LoadingRing, textStyle } from '@commonsswarm/ui'
+import { Box, Distribution, LoadingRing } from '@commonsswarm/ui'
+import TokenField from './TokenField'
+
 import { useAppState } from '../providers/AppState'
-import { formatBigNumber } from '../utils/bn-utils'
 
 const calculatePercentage = (amount, total) => {
   if (amount.eq(0) && total.eq(0)) {
@@ -53,7 +54,7 @@ const MyContributions = ({ user }) => {
         </div>
       ) : (
         <>
-          <TokenItem
+          <TokenField
             label="Contributions"
             amount={totalValue}
             token={contributionToken}
@@ -61,7 +62,7 @@ const MyContributions = ({ user }) => {
           <Distribution
             colors={distributionColors}
             heading={
-              <TokenItem label="Tokens" amount={totalTokens} token={token} />
+              <TokenField label="Tokens" amount={totalTokens} token={token} />
             }
             items={[
               { item: 'Acquired', percentage: mintedTokensPct },
@@ -71,38 +72,6 @@ const MyContributions = ({ user }) => {
         </>
       )}
     </Box>
-  )
-}
-
-const TokenItem = ({ label, amount, token }) => {
-  const { decimals, symbol } = token
-
-  return (
-    <div
-      css={`
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: ${0.5 * GU}px;
-      `}
-    >
-      <div
-        css={`
-          flex-grow: 4;
-          ${textStyle('body1')}
-        `}
-      >
-        <strong>{label}</strong>
-      </div>
-      <div
-        css={`
-          text-align: right;
-          width: 50%;
-          ${textStyle('body3')}
-        `}
-      >
-        {`${formatBigNumber(amount, decimals)} ${symbol}`}
-      </div>
-    </div>
   )
 }
 

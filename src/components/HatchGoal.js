@@ -1,9 +1,12 @@
 import React from 'react'
-import { Box, Button, CircleGraph, useTheme, GU } from '@commonsswarm/ui'
+import styled from 'styled-components'
+import { Box, Button, useTheme, GU } from '@commonsswarm/ui'
 import { Hatch } from '../constants'
-import { formatBigNumber } from '../utils/bn-utils'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
+
+import CircleGraphGoals from './CircleGraphGoals'
+import TokenField from './TokenField'
 
 export default React.memo(() => {
   const theme = useTheme()
@@ -11,9 +14,10 @@ export default React.memo(() => {
   const {
     config: {
       hatchConfig: {
-        contributionToken: { symbol: collateralSymbol, decimals },
+        contributionToken,
         token: { symbol: tokenSymbol },
         minGoal,
+        maxGoal,
         totalRaised,
         state,
       },
@@ -22,94 +26,91 @@ export default React.memo(() => {
     refundPanel: { requestOpen: requestRefundOpen },
     redeemPanel: { requestOpen: requestRedeemOpen },
   } = useAppState()
+  // TODO: small workaround. Replace for targetGoal coming from subgraph.
+  const targetGoal = minGoal.plus(minGoal)
 
   return (
-    <Box heading="Fundraising Goal">
-      <div className="circle">
-        <CircleGraph
-          value={totalRaised.div(minGoal).toNumber()}
-          size={20.5 * GU}
+    <Box heading="Hatch Goal">
+      <Wrapper>
+        <CircleGraphGoals
+          totalRaised={totalRaised}
+          minGoal={minGoal}
+          targetGoal={targetGoal}
+          maxGoal={maxGoal}
+          token={contributionToken}
         />
-        <p
-          title={`${formatBigNumber(
-            totalRaised,
-            decimals
-          )} ${collateralSymbol} of ${formatBigNumber(
-            minGoal,
-            decimals
-          )} ${collateralSymbol}`}
+        <div
           css={`
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            color: ${theme.surfaceContentSecondary};
-            margin-bottom: ${2 * GU}px;
+            width: 100%;
+            border: 1px solid;
+            color: ${theme.surfaceUnder};
+          `}
+        />
+        <TokenField
+          label="Total Raised"
+          token={contributionToken}
+          amount={totalRaised}
+        />
+        <div
+          css={`
+            display: flex;
+            justify-content: center;
+            align-items: center;
           `}
         >
-          <span
-            css={`
-              color: ${theme.surfaceContent};
-            `}
-          >
-            {formatBigNumber(totalRaised, decimals)}
-          </span>{' '}
-          {collateralSymbol} of{' '}
-          <span
-            css={`
-              color: ${theme.surfaceContent};
-            `}
-          >
-            {formatBigNumber(minGoal, decimals)}
-          </span>{' '}
-          {collateralSymbol}
-        </p>
-        {state === Hatch.state.FUNDING && (
-          <>
-            <Button
-              mode="normal"
-              label={`Mint ${tokenSymbol}`}
-              onClick={requestContributionOpen}
-              disabled={!account}
-            />
-          </>
-        )}
-        {state === Hatch.state.GOALREACHED && (
-          <>
-            <p
-              css={`
-                white-space: nowrap;
-                color: ${theme.surfaceContent};
-              `}
-            >
-              <strong>Hatch goal completed! 🎉</strong>
-            </p>
-          </>
-        )}
-        {state === Hatch.state.REFUNDING && (
-          <>
-            <p>
-              Unfortunately, the goal set for this hatch has not been reached.
-            </p>
+          {state === Hatch.state.FUNDING && (
+            <>
+              <Button
+                mode="normal"
+                label={`Mint ${tokenSymbol}`}
+                onClick={requestContributionOpen}
+                disabled={!account}
+              />
+            </>
+          )}
+          {state === Hatch.state.GOALREACHED && (
+            <>
+              <p
+                css={`
+                  white-space: nowrap;
+                  color: ${theme.surfaceContent};
+                `}
+              >
+                <strong>Hatch goal completed! 🎉</strong>
+              </p>
+            </>
+          )}
+          {state === Hatch.state.REFUNDING && (
+            <>
+              <p>
+                Unfortunately, the goal set for this hatch has not been reached.
+              </p>
+              <Button
+                wide
+                label="Refund Hatch Tokens"
+                css={`
+                  margin-top: ${2 * GU}px;
+                `}
+                onClick={requestRefundOpen}
+              />
+            </>
+          )}
+          {state === Hatch.state.CLOSED && (
             <Button
               wide
-              label="Refund Hatch Tokens"
-              css={`
-                margin-top: ${2 * GU}px;
-              `}
-              onClick={requestRefundOpen}
+              label="Redeem Tokens"
+              disabled={!account}
+              onClick={requestRedeemOpen}
             />
-          </>
-        )}
-        {state === Hatch.state.CLOSED && (
-          <Button
-            wide
-            label="Redeem Tokens"
-            disabled={!account}
-            onClick={requestRedeemOpen}
-          />
-        )}
-      </div>
+          )}
+        </div>
+      </Wrapper>
     </Box>
   )
 })
+
+const Wrapper = styled.div`
+  & > div {
+    margin-bottom: ${2 * GU}px;
+  }
+`
