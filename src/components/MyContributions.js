@@ -1,6 +1,6 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
-import { Box, Distribution, GU, LoadingRing, textStyle } from '@tecommons/ui'
+import { Box, Distribution, GU, LoadingRing, textStyle } from '@commonsswarm/ui'
 import { useAppState } from '../providers/AppState'
 import { formatBigNumber } from '../utils/bn-utils'
 

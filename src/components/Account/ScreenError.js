@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { GU, Link, textStyle, useTheme } from '@tecommons/ui'
+import { GU, Link, textStyle, useTheme } from '@commonsswarm/ui'
 import { UnsupportedChainError } from 'use-wallet'
 import { getNetworkType } from '../../networks'
 import connectionError from './assets/connection-error.png'

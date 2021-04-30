@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconCheck, IconCross, IconClock, GU } from '@tecommons/ui'
+import { IconCheck, IconCross, IconClock, GU } from '@commonsswarm/ui'
 
 const BaseSnackbar = ({ icon, message }) => (
   <span

@@ -1,5 +1,5 @@
 import React from 'react'
-import { SidePanel } from '@tecommons/ui'
+import { SidePanel } from '@commonsswarm/ui'
 import Redeem from './Redeem'
 import { useAppState } from '../../../providers/AppState'
 

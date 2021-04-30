@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Info, GU, DropDown } from '@tecommons/ui'
+import { Info, GU, DropDown } from '@commonsswarm/ui'
 import Information from './Information'
 import TxButton from '../../TxButton'
 

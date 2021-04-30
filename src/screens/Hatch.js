@@ -13,7 +13,7 @@ import {
   Tag,
   LoadingRing,
   Header,
-} from '@tecommons/ui'
+} from '@commonsswarm/ui'
 import HatchGoal from '../components/HatchGoal'
 import TECInfo from '../components/TECInfo'
 import TopContributors from '../components/TopContributors'

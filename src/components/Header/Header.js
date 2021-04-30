@@ -1,5 +1,5 @@
 import React from 'react'
-import { GU, Link, useTheme, useViewport } from '@tecommons/ui'
+import { GU, Link, useTheme, useViewport } from '@commonsswarm/ui'
 import AccountModule from '../Account/AccountModule'
 import { useWallet } from '../../providers/Wallet'
 import TECLogo from '../../assets/TECLogo.png'

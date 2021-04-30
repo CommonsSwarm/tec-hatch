@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Box, GU, IdentityBadge, textStyle } from '@tecommons/ui'
+import { Box, GU, IdentityBadge, textStyle } from '@commonsswarm/ui'
 
 const TopContributors = ({ contributors = [] }) => {
   return (

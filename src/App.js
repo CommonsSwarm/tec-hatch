@@ -1,5 +1,5 @@
 import React from 'react'
-import { Main, ToastHub } from '@tecommons/ui'
+import { Main, ToastHub } from '@commonsswarm/ui'
 import { WalletProvider } from './providers/Wallet'
 import { AppStateProvider } from './providers/AppState'
 import { UserStateProvider } from './providers/UserState'

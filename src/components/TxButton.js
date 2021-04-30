@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, GU, LoadingRing } from '@tecommons/ui'
+import { Button, GU, LoadingRing } from '@commonsswarm/ui'
 
 import { TX_DESCRIPTIONS } from '../constants'
 

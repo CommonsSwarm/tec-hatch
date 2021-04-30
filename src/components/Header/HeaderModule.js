@@ -1,5 +1,11 @@
 import React from 'react'
-import { ButtonBase, GU, IconDown, useTheme, useViewport } from '@tecommons/ui'
+import {
+  ButtonBase,
+  GU,
+  IconDown,
+  useTheme,
+  useViewport,
+} from '@commonsswarm/ui'
 
 const HeaderModule = ({ content, hasPopover = true, icon, onClick }) => {
   const { above } = useViewport()

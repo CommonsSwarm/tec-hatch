@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text } from '@tecommons/ui'
+import { Text } from '@commonsswarm/ui'
 import styled from 'styled-components'
 import { formatBigNumber, toDecimals } from '../../../utils/bn-utils'
 import { useAppState } from '../../../providers/AppState'
