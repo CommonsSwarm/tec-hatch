@@ -1,5 +1,5 @@
 import React from 'react'
-import { Info, IconCross, useTheme, textStyle } from '@tecommons/ui'
+import { Info, IconCross, useTheme, textStyle } from '@commonsswarm/ui'
 
 export const InfoMessage = ({ title, text }) => (
   <div style={{ marginBottom: '1rem' }}>

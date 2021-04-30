@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
-import { GU, RootPortal, useTheme, useViewport } from '@tecommons/ui'
+import { GU, RootPortal, useTheme, useViewport } from '@commonsswarm/ui'
 import { useTransition, animated } from 'react-spring'
 import { Hatch } from '../constants'
 

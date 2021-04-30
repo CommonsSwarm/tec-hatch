@@ -7,7 +7,7 @@ import {
   Field,
   useSidePanelFocusOnReady,
   textStyle,
-} from '@tecommons/ui'
+} from '@commonsswarm/ui'
 import { InfoMessage } from './Message'
 
 import {

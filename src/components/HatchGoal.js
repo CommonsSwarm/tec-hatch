@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, CircleGraph, useTheme, GU } from '@tecommons/ui'
+import { Box, Button, CircleGraph, useTheme, GU } from '@commonsswarm/ui'
 import { Hatch } from '../constants'
 import { formatBigNumber } from '../utils/bn-utils'
 import { useAppState } from '../providers/AppState'

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Text, TextInput, theme, unselectable, GU } from '@tecommons/ui'
+import { Text, TextInput, theme, unselectable, GU } from '@commonsswarm/ui'
 import Total from './Total'
 import {
   MaxContributionInformation,

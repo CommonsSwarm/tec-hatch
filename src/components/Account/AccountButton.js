@@ -7,7 +7,7 @@ import {
   shortenAddress,
   textStyle,
   useTheme,
-} from '@tecommons/ui'
+} from '@commonsswarm/ui'
 
 import HeaderModule from '../Header/HeaderModule'
 import { useWallet } from '../../providers/Wallet'
