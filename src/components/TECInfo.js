@@ -1,14 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link, GU, textStyle } from '@commonsswarm/ui'
+import { Link, GU, textStyle, useLayout } from '@commonsswarm/ui'
+import TECVision from '../assets/TECVision.jpeg'
 
 const TECInfo = () => {
-  const miroUrl = 'https://miro.medium.com/max/700/0*f1EsD1L-1_cTmTos'
+  const { layoutName } = useLayout()
   const codeOfConductUrl =
     'https://docs.google.com/document/d/1S5EoWbsFt3uQ5Wj6yyUJKyApFyjCQ-EloZAr6W55N3U/edit#'
 
   return (
-    <div>
+    <div
+      css={`
+        display: flex;
+        justify-content: center;
+        align-items: ${layoutName === 'small' ? 'center' : 'flex-start'};
+        flex-direction: column;
+        padding: 0 ${GU};
+      `}
+    >
       <Title>To·ken En·gi·neer·ing /ˈtoʊkən/ /ˌendʒɪˈnɪərɪŋ/</Title>
       <Paragraph>
         <ol>
@@ -46,13 +55,13 @@ const TECInfo = () => {
         and Values using this Miro, followed by a-sync work and voting on the
         Discord Channel.
       </Paragraph>
-      <Paragraph>
+      <Paragraph layout={layoutName}>
         <ImageWrapper>
           <img
             css={`
-              width: 65%;
+              width: 100%;
             `}
-            src={miroUrl}
+            src={TECVision}
           />
         </ImageWrapper>
       </Paragraph>
@@ -83,14 +92,14 @@ const ImageWrapper = styled.div`
 `
 const Title = styled.div`
   ${textStyle('title4')};
-  margin-top: ${4 * GU}px;
-  margin-bottom: ${4 * GU}px;
+  margin: 0 ${3.5 * GU}px;
   font-weight: 800;
 `
 
 const Paragraph = styled.div`
   margin-top: ${2 * GU}px;
   margin-bottom: ${2 * GU}px;
+  width: ${({ layout }) => (layout === 'small' ? 100 : 90)}%;
   ${textStyle('body2')};
 `
 export default TECInfo

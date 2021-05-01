@@ -75,13 +75,7 @@ export default () => {
                 url={videoUrl}
                 controls
               />
-              <div
-                css={`
-                  width: 85%;
-                `}
-              >
-                <TECInfo />
-              </div>
+              <TECInfo />
             </div>
           }
           secondary={
