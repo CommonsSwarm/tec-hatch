@@ -152,7 +152,7 @@ const Contribution = () => {
         <TxButton
           account={account}
           txsData={txsData}
-          disabled={valid}
+          disabled={!valid}
           label={`Mint ${tokenSymbol} Tokens`}
         />
       </ButtonWrapper>

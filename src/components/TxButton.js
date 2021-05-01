@@ -2,9 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button, GU, LoadingRing } from '@commonsswarm/ui'
 
-import { TX_DESCRIPTIONS } from '../constants'
+import { TX_DESCRIPTIONS, TxStatuses } from '../constants'
 
-const { PRE_TX_FETCHING, PRE_TX_PROCESSING, PRE_TX_FINISHED } = TX_DESCRIPTIONS
+const { PRE_TX_FETCHING, PRE_TX_PROCESSING, PRE_TX_FINISHED } = TxStatuses
 
 const TxButton = ({
   txsData = {},
