@@ -42,7 +42,7 @@ const AccountScreenConnected = ({ onClosePopover, wallet }) => {
         <h4
           css={`
             ${textStyle('label2')};
-            color: ${theme.contentSecondary};
+            color: ${'#a8a7a7'};
             margin-bottom: ${2 * GU}px;
           `}
         >

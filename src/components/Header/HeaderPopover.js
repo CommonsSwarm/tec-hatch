@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GU, Popover, springs } from '@commonsswarm/ui'
 import { animated, Spring } from 'react-spring/renderprops'
+import { useTheme } from 'styled-components'
 
 const AnimatedSection = animated.section
 
@@ -14,6 +15,7 @@ const HeaderPopover = ({
   visible,
   width,
 }) => {
+  const theme = useTheme()
   return (
     <Popover
       closeOnOpenerFocus
@@ -23,6 +25,7 @@ const HeaderPopover = ({
       visible={visible}
       css={`
         width: ${width}px;
+        background: ${theme.surfaceContentAuxiliar};
       `}
     >
       <Spring
