@@ -10,7 +10,7 @@ export default () => {
 
   return (
     <SidePanel
-      title="Refund Hatch Shares"
+      title="Refund Hatch Tokens"
       opened={visible}
       onClose={() => requestClose(false)}
     >

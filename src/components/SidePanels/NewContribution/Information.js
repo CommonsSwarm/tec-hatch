@@ -18,7 +18,7 @@ export const HatchInformation = () => (
   <BaseInformation>
     <Info.Action>
       If the hatch campaign fails, you can get refunded. If the hatch campaign
-      succeeds, your shares will be vested.
+      succeeds, your hatch tokens will be vested.
     </Info.Action>
   </BaseInformation>
 )
