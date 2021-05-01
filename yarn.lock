@@ -2,14 +2,6 @@
 # yarn lockfile v1
 
 
-"@1hive/connect-core@^0.8.5":
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/@1hive/connect-core/-/connect-core-0.8.6.tgz#b2fc70667409a3c2bd82395627e63d68510b6684"
-  integrity sha512-Vq4KwpdNGiuuNzwC8nExgIJpeT5fspmqo6D96X/GvaTlPWWghx7sxH9QQ9pPl9I673ftWVlZqOHA+Rafs865Tg==
-  dependencies:
-    ethers "^5.0.7"
-    radspec "^2.0.0-rc.2"
-
 "@1hive/connect-core@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@1hive/connect-core/-/connect-core-0.9.1.tgz#273acb2567ddb5aa17cbd426c5a2602121f37ad2"
@@ -37,19 +29,6 @@
   integrity sha512-l0BPaA5efHiIae36PvfQBhRtkwLRwsGDWEd8LLfQCIdw0dZXfalLrETQgbof8zbgkho8jqR5azoWptv7VsytrA==
   dependencies:
     "@1hive/connect" "^0.9.1"
-
-"@1hive/connect-thegraph@^0.8.5":
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/@1hive/connect-thegraph/-/connect-thegraph-0.8.6.tgz#2733f2e23a28f8daee56df834003b84f886fd789"
-  integrity sha512-FRdLzn0z1yoyGIj3NgaDLZvSIGk9vAbZX1pLGDC6wkM0eZ4CYAhGH+zbeqmvht0Y/ZOtqqNY0ZpWNwPIHZcy5g==
-  dependencies:
-    "@1hive/connect-core" "^0.8.5"
-    "@urql/core" "^1.11.7"
-    graphql "^15.0.0"
-    graphql-tag "^2.10.3"
-    isomorphic-unfetch "^3.0.0"
-    isomorphic-ws "^4.0.1"
-    subscriptions-transport-ws "^0.9.16"
 
 "@1hive/connect-thegraph@^0.9.1":
   version "0.9.1"
@@ -1269,20 +1248,18 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@commonsswarm/connect-hatch@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@commonsswarm/connect-hatch/-/connect-hatch-0.0.2.tgz#3509c42b619dc688e1936071dd8d8f9da32f7e0b"
-  integrity sha512-YbeBVi3MUHRi4opmvFy4Xz5PhFe7OusaIIzQbjiuv39BSXU/0deJKm0XT8XLV6jIyBGSh3c9bnrKO71owp0fGw==
+"@commonsswarm/connect-hatch@file:.yalc/@commonsswarm/connect-hatch":
+  version "0.0.3"
   dependencies:
-    "@1hive/connect-core" "^0.8.5"
-    "@1hive/connect-thegraph" "^0.8.5"
+    "@1hive/connect-core" "^0.9.1"
+    "@1hive/connect-thegraph" "^0.9.1"
     ethers "^5.0.23"
     graphql-tag "^2.10.3"
 
-"@commonsswarm/ui@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@commonsswarm/ui/-/ui-1.0.10.tgz#9aadaf9d631d977d64ee1def22f4923ad965d68a"
-  integrity sha512-ya+AxrGvf7Q9rzOPHcUey6l4Ls8T9u97rMWSrxvINIybp1sCj7ntk/qgAtzQZ41vrvq5Hdc8VuYVxoOGG8nVCg==
+"@commonsswarm/ui@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@commonsswarm/ui/-/ui-1.0.11.tgz#54c8996b9197054e3068abb894151960cf41d0ce"
+  integrity sha512-urQIG+nN7XO4P220UO7mpb7CrsXsEvR1wRuubvmSheBgWjggvEHDbxx6UoQYF/Rl7nL4NZBJgvhS79/0xGjJdA==
   dependencies:
     "@babel/runtime" "^7.3.1"
     airbnb-prop-types "^2.9.0"
@@ -4175,13 +4152,13 @@ browserslist@^3.2.6:
     electron-to-chromium "^1.3.47"
 
 browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.14.5, browserslist@^4.16.5, browserslist@^4.6.2, browserslist@^4.6.4, browserslist@^4.9.1:
-  version "4.16.5"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.5.tgz#952825440bca8913c62d0021334cbe928ef062ae"
-  integrity sha512-C2HAjrM1AI/djrpAUU/tr4pml1DqLIzJKSLDBXBrNErl9ZCCTXdhwxdJjYc16953+mBWf7Lw+uUJgpgb8cN71A==
+  version "4.16.6"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.6.tgz#d7901277a5a88e554ed305b183ec9b0c08f66fa2"
+  integrity sha512-Wspk/PqO+4W9qp5iUTJsa1B/QrYn1keNCcEP5OvP7WBwT4KaDly0uONYmC6Xa3Z5IqnUgS0KcgLYu1l74x0ZXQ==
   dependencies:
-    caniuse-lite "^1.0.30001214"
+    caniuse-lite "^1.0.30001219"
     colorette "^1.2.2"
-    electron-to-chromium "^1.3.719"
+    electron-to-chromium "^1.3.723"
     escalade "^3.1.1"
     node-releases "^1.1.71"
 
@@ -4429,7 +4406,7 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001214:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001219:
   version "1.0.30001219"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001219.tgz#5bfa5d0519f41f993618bd318f606a4c4c16156b"
   integrity sha512-c0yixVG4v9KBc/tQ2rlbB3A/bgBFRvl8h8M4IeUbqCca4gsiCfvtaheUssbnux/Mb66Vjz7x8yYjDgYcNQOhyQ==
@@ -5697,10 +5674,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.47, electron-to-chromium@^1.3.719:
-  version "1.3.723"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.723.tgz#52769a75635342a4db29af5f1e40bd3dad02c877"
-  integrity sha512-L+WXyXI7c7+G1V8ANzRsPI5giiimLAUDC6Zs1ojHHPhYXb3k/iTABFmWjivEtsWrRQymjnO66/rO2ZTABGdmWg==
+electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.47, electron-to-chromium@^1.3.723:
+  version "1.3.725"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.725.tgz#04fc83f9189169aff50f0a00c6b4090b910cba85"
+  integrity sha512-2BbeAESz7kc6KBzs7WVrMc1BY5waUphk4D4DX5dSQXJhsc3tP5ZFaiyuL0AB7vUKzDYpIeYwTYlEfxyjsGUrhw==
 
 elliptic@6.5.2:
   version "6.5.2"
@@ -6691,7 +6668,7 @@ ethers@4.0.47:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.0, ethers@^5.0.23, ethers@^5.0.7:
+ethers@^5.0.0, ethers@^5.0.23:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.1.4.tgz#8ae973705ed962f8f41dc59693704002a38dd18b"
   integrity sha512-EAPQ/fgGRu0PoR/VNFnHTMOtG/IZ0AItdW55C9T8ffmVu0rnyllZL404eBF66elJehOLz2kxnUrhXpE7TCpW7g==

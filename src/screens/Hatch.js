@@ -139,6 +139,7 @@ export default () => {
               )}
             </div>
           }
+          secondaryWidth={`${40 * GU}px`}
         />
       </Container>
       <GoalReachedAnimation hatchState={state} />
