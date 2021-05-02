@@ -1,7 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { CircleGraph, GU, textStyle, unselectable } from '@commonsswarm/ui'
+import {
+  CircleGraph,
+  GU,
+  textStyle,
+  unselectable,
+  useLayout,
+} from '@commonsswarm/ui'
 import { formatBigNumber } from '../utils/bn-utils'
+
+const MEDIUM_LAYOUT_RATIO = 1.7
 
 const CircleGraphGoals = ({
   mainCircleSize = 164,
@@ -12,38 +20,47 @@ const CircleGraphGoals = ({
   maxGoal,
   token,
 }) => {
+  const { layoutName } = useLayout()
+  const mainSize =
+    layoutName === 'medium'
+      ? mainCircleSize * MEDIUM_LAYOUT_RATIO
+      : mainCircleSize
+  const secondarySize =
+    layoutName === 'medium'
+      ? secondaryCircleSizes * MEDIUM_LAYOUT_RATIO
+      : secondaryCircleSizes
   const targetGoalPct = totalRaised.div(targetGoal).toNumber()
   const minGoalPct = totalRaised.div(minGoal).toNumber()
   const maxGoalPct = totalRaised.div(maxGoal).toNumber()
 
   return (
-    <div>
+    <Wrapper>
       <MainCircleWrapper>
         <CircleGraphGoal
           label="target"
           value={targetGoalPct}
-          size={mainCircleSize}
+          size={mainSize}
           goal={targetGoal}
           token={token}
         />
       </MainCircleWrapper>
-      <SecondaryCircleWrapper>
+      <SecondaryCircleWrapper layout={layoutName}>
         <CircleGraphGoal
           label="min"
           value={minGoalPct}
-          size={secondaryCircleSizes}
+          size={secondarySize}
           goal={minGoal}
           token={token}
         />
         <CircleGraphGoal
           label="max"
           value={maxGoalPct}
-          size={secondaryCircleSizes}
+          size={secondarySize}
           goal={maxGoal}
           token={token}
         />
       </SecondaryCircleWrapper>
-    </div>
+    </Wrapper>
   )
 }
 
@@ -75,6 +92,12 @@ const CircleGraphGoal = ({
   </div>
 )
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
 const CircleLabel = styled.div`
   margin-top: ${GU}px;
   color: ${({ theme }) => theme.surfaceIcon};
@@ -90,6 +113,7 @@ const MainCircleWrapper = styled.div`
   margin-bottom: ${0.5 * GU}px;
 `
 const SecondaryCircleWrapper = styled.div`
+  width: ${({ layout }) => (layout === 'medium' ? 75 : 100)}%;
   display: flex;
   justify-content: space-between;
   margin: 0 -${GU}px;
