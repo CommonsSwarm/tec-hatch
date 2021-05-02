@@ -1,10 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Confetti from 'react-confetti'
 import { GU, RootPortal, useTheme, useViewport } from '@commonsswarm/ui'
 import { useTransition, animated } from 'react-spring'
-import { Hatch } from '../constants'
+import { useAppState } from '../providers/AppState'
 
-const GoalReachedAnimation = ({ hatchState }) => {
+function getConfettiConfig(amount, minGoal, targetGoal, maxGoal) {
+  if (amount.gte(minGoal) && amount.lt(targetGoal)) {
+    return { goalTarget: 'MIN', confettiPieces: 800 }
+  } else if (amount.gte(targetGoal) && amount.lt(maxGoal)) {
+    return { goalTarget: 'TARGET', confettiPieces: 1600 }
+  } else if (amount.eq(maxGoal)) {
+    return { goalTarget: 'MAX', confettiPieces: 3200 }
+  } else {
+    return { goalTarget: '', confettiPieces: 3200 }
+  }
+}
+
+const GoalReachedAnimation = () => {
+  const {
+    config: {
+      hatchConfig: { totalRaised, minGoal, targetGoal, maxGoal },
+    },
+  } = useAppState()
+  const { goalTarget, confettiPieces } = useMemo(
+    () => getConfettiConfig(totalRaised, minGoal, targetGoal, maxGoal),
+    [totalRaised, minGoal, targetGoal, maxGoal]
+  )
+
   const { width, height } = useViewport()
   const theme = useTheme()
 
@@ -20,16 +42,13 @@ const GoalReachedAnimation = ({ hatchState }) => {
   })
 
   useEffect(() => {
-    if (
-      hatchState !== Hatch.state.GOALREACHED &&
-      hatchState !== Hatch.state.CLOSED
-    ) {
+    if (!goalTarget) {
       return
     }
 
     // Wait half-second for hatch screen to render completely.
     setTimeout(() => setShow(true), 1000)
-  }, [hatchState])
+  }, [goalTarget])
 
   return (
     <RootPortal>
@@ -54,13 +73,15 @@ const GoalReachedAnimation = ({ hatchState }) => {
             <Confetti
               width={width}
               height={height}
-              numberOfPieces={2000}
+              numberOfPieces={confettiPieces}
               gravity={0.5}
               friction={1.01}
               recycle={false}
               onConfettiComplete={() => setShow(false)}
             />
-            <animated.div style={props}>WE REACHED THE GOAL! 🙌</animated.div>
+            <animated.div style={props}>
+              WE REACHED THE {goalTarget} GOAL! 🙌
+            </animated.div>
           </animated.div>
         ) : null
       )}

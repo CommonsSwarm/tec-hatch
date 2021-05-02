@@ -22,7 +22,7 @@ import {
   RedeemTokens,
 } from '../components/SidePanels'
 import MyContributions from '../components/MyContributions'
-import GoalReachedAnimation from '../components/GoalReachedAnimation'
+import GoalReachedAnimation from '../components/ConfettiAnimation'
 
 import addMilliseconds from 'date-fns/addMilliseconds'
 import { Hatch } from '../constants'
@@ -142,7 +142,7 @@ export default () => {
           secondaryWidth={`${40 * GU}px`}
         />
       </Container>
-      <GoalReachedAnimation hatchState={state} />
+      <GoalReachedAnimation />
       <NewContribution />
       <NewRefund />
       <RedeemTokens />
