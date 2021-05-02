@@ -12,6 +12,8 @@ import {
   Tag,
   LoadingRing,
   Header,
+  useLayout,
+  textStyle,
 } from '@commonsswarm/ui'
 import HatchGoal from '../components/HatchGoal'
 import TECInfo from '../components/TECInfo'
@@ -35,6 +37,7 @@ const TOP_CONTRIBUTORS_COUNT = 10
 
 export default () => {
   const theme = useTheme()
+  const { layoutName } = useLayout()
   const {
     openHatch,
     txsData: { txStatus },
@@ -63,7 +66,16 @@ export default () => {
 
   return (
     <>
-      <Header primary="Token Engineering Commons Hatch" />
+      <Header>
+        <div
+          css={`
+            padding: ${layoutName === 'small' ? 2 * GU : 0}px;
+            ${textStyle(layoutName === 'small' ? 'title4' : 'title2')};
+          `}
+        >
+          Token Engineering Commons Hatch
+        </div>
+      </Header>
       <Container theme={theme}>
         <Split
           primary={
