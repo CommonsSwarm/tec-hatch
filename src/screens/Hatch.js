@@ -80,13 +80,28 @@ export default () => {
         <Split
           primary={
             <div>
-              <ReactPlayer
-                style={{ marginBottom: 4 * GU }}
-                width="100%"
-                height="460px"
-                url={videoUrl}
-                controls
-              />
+              <div
+                css={`
+                  position: relative;
+                  height: 0;
+                  overflow: hidden;
+                  padding-top: 30px;
+                  padding-bottom: 56.25%;
+                  margin-bottom: ${4 * GU}px;
+                `}
+              >
+                <ReactPlayer
+                  css={`
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                  `}
+                  width="100%"
+                  height="100%"
+                  url={videoUrl}
+                  controls
+                />
+              </div>
               <TECInfo />
             </div>
           }
