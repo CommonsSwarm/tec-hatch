@@ -17,6 +17,7 @@ export default React.memo(() => {
         contributionToken,
         token: { symbol: tokenSymbol },
         minGoal,
+        targetGoal,
         maxGoal,
         totalRaised,
         state,
@@ -26,8 +27,6 @@ export default React.memo(() => {
     refundPanel: { requestOpen: requestRefundOpen },
     redeemPanel: { requestOpen: requestRedeemOpen },
   } = useAppState()
-  // TODO: small workaround. Replace for targetGoal coming from subgraph.
-  const targetGoal = minGoal.plus(minGoal)
 
   return (
     <Box heading="Hatch Goal">
@@ -63,8 +62,9 @@ export default React.memo(() => {
           {state === Hatch.state.FUNDING && (
             <>
               <Button
+                wide
                 mode="normal"
-                label={`Mint ${tokenSymbol} Tokens`}
+                label={`Mint ${tokenSymbol}`}
                 onClick={requestContributionOpen}
                 disabled={!account}
               />
