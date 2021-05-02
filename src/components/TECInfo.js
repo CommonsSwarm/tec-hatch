@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link, GU, textStyle, useLayout } from '@commonsswarm/ui'
-import TECVision from '../assets/TECVision.jpeg'
 
 const TECInfo = () => {
   const { layoutName } = useLayout()
@@ -19,51 +18,35 @@ const TECInfo = () => {
       `}
     >
       <Title>To·ken En·gi·neer·ing /ˈtoʊkən/ /ˌendʒɪˈnɪərɪŋ/</Title>
+      {/* Including list items directly because we don't want the left spacing
+      provided by the <ol> tag element */}
       <Paragraph>
-        <ol>
-          <li>
-            An emerging engineering discipline focused on holistic systems
-            design and the theory, practice and tools used to design and verify
-            tokenized ecosystems i.e. cryptoeconomic systems and their
-            simulation using tools like cadCAD.
-          </li>
-          <li>
-            A discipline of responsibility; adhering to the highest principles
-            of ethical conduct (from ethical engineering).
-          </li>
-          <li>
-            A community pushing forward the field of token engineering in theory
-            and practice. (See more Modeling Crypto Protocols as Complex
-            Systems, TE Process).
-          </li>
-        </ol>
+        1. An emerging engineering discipline focused on holistic systems design
+        and the theory, practice and tools used to design and verify tokenized
+        ecosystems i.e. cryptoeconomic systems and their simulation using tools
+        like cadCAD.
+      </Paragraph>
+      <Paragraph>
+        2. A discipline of responsibility; adhering to the highest principles of
+        ethical conduct (from ethical engineering).
+      </Paragraph>
+      <Paragraph>
+        3. A community pushing forward the field of token engineering in theory
+        and practice. (See more Modeling Crypto Protocols as Complex Systems, TE
+        Process).
       </Paragraph>
       <Title>Com·mons /ˈkɒmənz/</Title>
       <Paragraph>
-        <ol>
-          <li>
-            Resources that groups of people (communities, organizations) create
-            and manage for individual and collective benefit. These resources
-            are held collectively, not owned privately (see Fractar Ownership,
-            Wiki and Automating Ostrom).
-          </li>
-        </ol>
+        1. Resources that groups of people (communities, organizations) create
+        and manage for individual and collective benefit. These resources are
+        held collectively, not owned privately (see Fractar Ownership, Wiki and
+        Automating Ostrom).
       </Paragraph>
       <Title>Vision &amp; Mission</Title>
       <Paragraph>
         A few co-creative sessions were held to identify the TEC Vision, Mission
         and Values using this Miro, followed by a-sync work and voting on the
         Discord Channel.
-      </Paragraph>
-      <Paragraph layout={layoutName}>
-        <ImageWrapper>
-          <img
-            css={`
-              width: 100%;
-            `}
-            src={TECVision}
-          />
-        </ImageWrapper>
       </Paragraph>
       <Title>Values</Title>
       <Paragraph>
@@ -83,22 +66,25 @@ const TECInfo = () => {
   )
 }
 
-const ImageWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: ${4 * GU}px;
-  margin-bottom: ${4 * GU}px;
-`
-const Title = styled.div`
-  ${textStyle('title4')};
-  margin: 0 ${3.5 * GU}px;
-  font-weight: 800;
-`
+const Title = ({ children }) => {
+  const { layoutName } = useLayout()
+
+  return (
+    <div
+      css={`
+        ${textStyle('title4')};
+        align-self: flex-start;
+        margin: ${2 * GU}px ${layoutName === 'small' ? 1.5 * GU : 0}px;
+        font-weight: bold;
+      `}
+    >
+      {children}
+    </div>
+  )
+}
 
 const Paragraph = styled.div`
-  margin-top: ${2 * GU}px;
-  margin-bottom: ${2 * GU}px;
+  margin: ${1 * GU}px 0;
   width: ${({ layout }) => (layout === 'small' ? 100 : 90)}%;
   ${textStyle('body2')};
 `
