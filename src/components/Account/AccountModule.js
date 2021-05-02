@@ -13,6 +13,7 @@ import HeaderPopover from '../Header/HeaderPopover'
 import { useAppState } from '../../providers/AppState'
 
 import { getUseWalletProviders } from '../../utils/web3-utils'
+import { useTheme } from 'styled-components'
 
 const AnimatedDiv = animated.div
 
@@ -39,6 +40,7 @@ const SCREENS = [
 ]
 
 const AccountModule = ({ compact }) => {
+  const theme = useTheme()
   const buttonRef = useRef()
   const wallet = useWallet()
   const [opened, setOpened] = useState(false)
@@ -157,6 +159,7 @@ const AccountModule = ({ compact }) => {
         align-items: center;
         justify-content: space-around;
         outline: 0;
+        background: ${theme.background};
       `}
     >
       {screen.id === 'connected' ? (

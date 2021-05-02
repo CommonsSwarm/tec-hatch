@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@1hive/connect-react": "^0.9.1",
-    "@commonsswarm/connect-hatch": "^0.0.2",
-    "@commonsswarm/ui": "^1.0.10",
+    "@commonsswarm/connect-hatch": "^0.0.3",
+    "@commonsswarm/ui": "^1.0.12",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
     "date-fns": "^2.0.1",

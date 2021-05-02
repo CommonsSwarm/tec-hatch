@@ -69,6 +69,7 @@ export const UserStateProvider = ({ children }) => {
           allowedAmount,
           awardedAmount,
         ] = await getUserTokenData(account)
+
         setCollateralBalance(collateralAmount)
         setAllowedContributionAmount(allowedAmount)
         setAwardedTokenAmount(awardedAmount)

@@ -17,9 +17,9 @@ const HeaderModule = ({ content, hasPopover = true, icon, onClick }) => {
       css={`
         height: 100%;
         padding: ${1 * GU}px;
-        background: ${theme.surface};
+        background: ${theme.surfaceContentAuxiliar};
         &:active {
-          background: ${theme.surfacePressed};
+          background: ${theme.surfaceContentAuxiliar.alpha(0.5)};
         }
       `}
     >

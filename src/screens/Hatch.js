@@ -12,6 +12,8 @@ import {
   Tag,
   LoadingRing,
   Header,
+  useLayout,
+  textStyle,
 } from '@commonsswarm/ui'
 import HatchGoal from '../components/HatchGoal'
 import TECInfo from '../components/TECInfo'
@@ -22,7 +24,7 @@ import {
   RedeemTokens,
 } from '../components/SidePanels'
 import MyContributions from '../components/MyContributions'
-import GoalReachedAnimation from '../components/GoalReachedAnimation'
+import GoalReachedAnimation from '../components/ConfettiAnimation'
 
 import addMilliseconds from 'date-fns/addMilliseconds'
 import { Hatch } from '../constants'
@@ -35,6 +37,7 @@ const TOP_CONTRIBUTORS_COUNT = 10
 
 export default () => {
   const theme = useTheme()
+  const { layoutName } = useLayout()
   const {
     openHatch,
     txsData: { txStatus },
@@ -63,25 +66,43 @@ export default () => {
 
   return (
     <>
-      <Header primary="Token Engineering Commons Hatch" />
+      <Header>
+        <div
+          css={`
+            padding: ${layoutName === 'small' ? 2 * GU : 0}px;
+            ${textStyle(layoutName === 'small' ? 'title4' : 'title2')};
+          `}
+        >
+          Token Engineering Commons Hatch
+        </div>
+      </Header>
       <Container theme={theme}>
         <Split
           primary={
             <div>
-              <ReactPlayer
-                style={{ marginBottom: 4 * GU }}
-                width="100%"
-                height="460px"
-                url={videoUrl}
-                controls
-              />
               <div
                 css={`
-                  width: 85%;
+                  position: relative;
+                  height: 0;
+                  overflow: hidden;
+                  padding-top: 30px;
+                  padding-bottom: 56.25%;
+                  margin-bottom: ${4 * GU}px;
                 `}
               >
-                <TECInfo />
+                <ReactPlayer
+                  css={`
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                  `}
+                  width="100%"
+                  height="100%"
+                  url={videoUrl}
+                  controls
+                />
               </div>
+              <TECInfo />
             </div>
           }
           secondary={
@@ -145,9 +166,10 @@ export default () => {
               )}
             </div>
           }
+          secondaryWidth={`${40 * GU}px`}
         />
       </Container>
-      <GoalReachedAnimation hatchState={state} />
+      <GoalReachedAnimation />
       <NewContribution />
       <NewRefund />
       <RedeemTokens />

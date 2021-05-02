@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { toChecksumAddress } from '../utils/web3-utils'
-import { formatBigNumber } from './bn-utils'
+import { formatBigNumber, toDecimals } from './bn-utils'
 import { secondsToMilliseconds } from './date-utils'
+
+const TARGET_GOAL = process.env.REACT_APP_TARGET_GOAL
 
 export const transformConfigData = config => {
   const hatchConfig = config.hatchConfig
@@ -29,6 +31,10 @@ export const transformConfigData = config => {
       ).div(PPM),
       supplyOfferedPct: new BigNumber(hatchConfig.supplyOfferedPct).div(PPM),
       minGoal: new BigNumber(hatchConfig.minGoal),
+      targetGoal: toDecimals(
+        TARGET_GOAL,
+        hatchConfig.contributionToken.decimals
+      ),
       maxGoal: new BigNumber(hatchConfig.maxGoal),
       totalRaised: new BigNumber(hatchConfig.totalRaised),
     },

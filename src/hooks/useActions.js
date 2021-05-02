@@ -5,7 +5,7 @@ import { convertBN } from '../utils/bn-utils'
 import useTxExecution from './useTxExecution'
 
 const TX_GAS_LIMIT = 900000
-const PRE_TX_GAS_LIMIT = 200000
+const PRE_TX_GAS_LIMIT = 700000
 
 const useActions = (onClose = () => {}) => {
   const { ethers } = useWallet()
@@ -48,7 +48,11 @@ const useActions = (onClose = () => {}) => {
           })
 
           onTxSigned(txResponse, i, txLength)
-          onClose()
+
+          // If we've signed the last tx then call the close function.
+          if (i === txLength - 1) {
+            onClose()
+          }
 
           const txReceipt = await txResponse.wait()
 

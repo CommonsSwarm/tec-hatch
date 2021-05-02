@@ -1,9 +1,11 @@
 import React from 'react'
-import { GU, Link, useTheme, useViewport } from '@commonsswarm/ui'
+import { GU, useTheme, useViewport } from '@commonsswarm/ui'
 import AccountModule from '../Account/AccountModule'
 import { useWallet } from '../../providers/Wallet'
 import TECLogo from '../../assets/TECLogo.png'
+import TECName from '../../assets/TECName.svg'
 
+const HEADER_HEIGHT = 13 * GU
 const Header = () => {
   const theme = useTheme()
   const { account } = useWallet()
@@ -15,14 +17,14 @@ const Header = () => {
       css={`
         position: relative;
         z-index: 3;
-        background: #1d212b;
+        background: ${theme.surfaceContentAuxiliar};
         box-shadow: rgba(0, 0, 0, 0.05) 0 2px 3px;
       `}
     >
       <div
         css={`
-          height: ${8 * GU}px;
-          margin: 0 ${3 * GU}px;
+          height: ${HEADER_HEIGHT}px;
+          margin-right: ${3 * GU}px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -34,9 +36,19 @@ const Header = () => {
             align-items: center;
           `}
         >
-          <Link href="#/home" external={false}>
-            <img src={TECLogo} height={layoutSmall ? 40 : 70} alt="TEC logo" />
-          </Link>
+          <img
+            src={TECLogo}
+            height={HEADER_HEIGHT}
+            width={130}
+            alt="TEC logo"
+          />
+          <img
+            src={TECName}
+            alt="TEC name"
+            css={`
+              margin-left: ${3 * GU}px;
+            `}
+          />
           {!below('large') && (
             <nav
               css={`
@@ -62,7 +74,6 @@ const Header = () => {
               <div
                 css={`
                   width: 0.5px;
-                  height: ${3.5 * GU}px;
                   border-left: 0.5px solid ${theme.border};
                 `}
               />

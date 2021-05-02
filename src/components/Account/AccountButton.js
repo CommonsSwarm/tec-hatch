@@ -28,8 +28,8 @@ const AccountButton = ({ onClick }) => {
               right: -3px;
               width: 10px;
               height: 10px;
-              background: ${theme.positive};
-              border: 2px solid ${theme.surface};
+              background: ${theme.positiveSurfaceContent};
+              border: 2px solid ${theme.surfaceContentAuxiliar};
               border-radius: 50%;
             `}
           />
