@@ -1,5 +1,5 @@
 import React from 'react'
-import { GU, Link, useTheme, useViewport } from '@commonsswarm/ui'
+import { GU, useTheme, useViewport } from '@commonsswarm/ui'
 import AccountModule from '../Account/AccountModule'
 import { useWallet } from '../../providers/Wallet'
 import TECLogo from '../../assets/TECLogo.png'
@@ -36,14 +36,12 @@ const Header = () => {
             align-items: center;
           `}
         >
-          <Link href="#/home" external={false}>
-            <img
-              src={TECLogo}
-              height={HEADER_HEIGHT + 5}
-              width={130}
-              alt="TEC logo"
-            />
-          </Link>
+          <img
+            src={TECLogo}
+            height={HEADER_HEIGHT}
+            width={130}
+            alt="TEC logo"
+          />
           <img
             src={TECName}
             alt="TEC name"
