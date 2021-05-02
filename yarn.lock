@@ -1248,8 +1248,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@commonsswarm/connect-hatch@file:.yalc/@commonsswarm/connect-hatch":
+"@commonsswarm/connect-hatch@^0.0.3":
   version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@commonsswarm/connect-hatch/-/connect-hatch-0.0.3.tgz#9f0a3119076517ee4898d0fcf55517f3e5bd8fe5"
+  integrity sha512-Hqs/j9usalE5O5hleMe3/UjUPOEkNqsYf7R5/WVngek2mUr92MQsNQy7zd58naPzZdXIhdaAE6QO9+QljMHLmg==
   dependencies:
     "@1hive/connect-core" "^0.9.1"
     "@1hive/connect-thegraph" "^0.9.1"
@@ -1257,9 +1259,9 @@
     graphql-tag "^2.10.3"
 
 "@commonsswarm/ui@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@commonsswarm/ui/-/ui-1.0.11.tgz#54c8996b9197054e3068abb894151960cf41d0ce"
-  integrity sha512-urQIG+nN7XO4P220UO7mpb7CrsXsEvR1wRuubvmSheBgWjggvEHDbxx6UoQYF/Rl7nL4NZBJgvhS79/0xGjJdA==
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@commonsswarm/ui/-/ui-1.0.12.tgz#22686568a9c7b8eaec7a695896e9a8e18573e546"
+  integrity sha512-5bDoU830lzfGn2gi+WBHpGTA8efqS7VEWU50qyMnkRKQ9Dy+8HdnWs4eTJL/F9Qjm0EVN1VdjuZe6RqU9uFxLw==
   dependencies:
     "@babel/runtime" "^7.3.1"
     airbnb-prop-types "^2.9.0"
@@ -4407,9 +4409,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001219:
-  version "1.0.30001219"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001219.tgz#5bfa5d0519f41f993618bd318f606a4c4c16156b"
-  integrity sha512-c0yixVG4v9KBc/tQ2rlbB3A/bgBFRvl8h8M4IeUbqCca4gsiCfvtaheUssbnux/Mb66Vjz7x8yYjDgYcNQOhyQ==
+  version "1.0.30001220"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001220.tgz#c080e1c8eefb99f6cc9685da6313840bdbaf4c36"
+  integrity sha512-pjC2T4DIDyGAKTL4dMvGUQaMUHRmhvPpAgNNTa14jaBWHu+bLQgvpFqElxh9L4829Fdx0PlKiMp3wnYldRtECA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
