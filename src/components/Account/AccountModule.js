@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useWallet } from 'use-wallet'
+import { UnsupportedChainError, useWallet } from 'use-wallet'
 import { Button, GU, IconConnect, springs } from '@commonsswarm/ui'
 import { Transition, animated } from 'react-spring/renderprops'
 
@@ -27,6 +27,10 @@ const SCREENS = [
   },
   {
     id: 'connecting',
+    height: 38 * GU,
+  },
+  {
+    id: 'switching',
     height: 38 * GU,
   },
   {
@@ -113,7 +117,13 @@ const AccountModule = ({ compact }) => {
 
   const { screenIndex, direction } = useMemo(() => {
     const screenId = (() => {
-      if (activationError) return 'error'
+      if (activationError) {
+        if (activationError instanceof UnsupportedChainError) {
+          return 'switching'
+        } else {
+          return 'error'
+        }
+      }
       if (activatingDelayed) return 'connecting'
       if (account) return 'connected'
       return 'providers'
@@ -221,6 +231,14 @@ const AccountModule = ({ compact }) => {
               >
                 {(() => {
                   if (screen.id === 'connecting') {
+                    return (
+                      <ScreenConnecting
+                        providerId={activating}
+                        onCancel={handleCancelConnection}
+                      />
+                    )
+                  }
+                  if (screen.id === 'switching') {
                     return (
                       <ScreenConnecting
                         providerId={activating}

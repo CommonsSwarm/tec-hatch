@@ -14,7 +14,7 @@ const AccountModuleErrorScreen = ({ error, onBack }) => {
       addEthereumChain()
       return [
         'Wrong network',
-        `Please select the ${getNetworkType()} network in your wallet and try again.`,
+        `Please switch to the ${getNetworkType()} network  and try again.`,
       ]
     }
     return [
