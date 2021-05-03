@@ -24,7 +24,7 @@ export const AppStateProvider = ({ children }) => {
     <AppStateContext.Provider
       value={{
         config,
-        errors: { orgErrors: errors },
+        errors,
         hatchApp,
         redemptionsApp,
         organization,

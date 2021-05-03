@@ -5,10 +5,11 @@ import { ThemeProvider as SCThemeProvider } from 'styled-components'
 import Header from './Header/Header'
 
 import { useAppState } from '../providers/AppState'
+import ErrorModal from './ErrorModal'
 
 const MainView = ({ children }) => {
   const theme = useTheme()
-  const { isLoading } = useAppState()
+  const { isLoading, errors } = useAppState()
 
   return (
     <SCThemeProvider theme={theme}>
@@ -30,6 +31,7 @@ const MainView = ({ children }) => {
           <Layout>
             <SyncIndicator visible={isLoading} />
             <Layout>{!isLoading && children}</Layout>
+            <ErrorModal visible={!!errors} />
           </Layout>
         </div>
       </ScrollView>
