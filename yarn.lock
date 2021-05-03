@@ -1258,7 +1258,7 @@
     ethers "^5.0.23"
     graphql-tag "^2.10.3"
 
-"@commonsswarm/ui@^1.0.11":
+"@commonsswarm/ui@^1.0.12":
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/@commonsswarm/ui/-/ui-1.0.12.tgz#22686568a9c7b8eaec7a695896e9a8e18573e546"
   integrity sha512-5bDoU830lzfGn2gi+WBHpGTA8efqS7VEWU50qyMnkRKQ9Dy+8HdnWs4eTJL/F9Qjm0EVN1VdjuZe6RqU9uFxLw==
