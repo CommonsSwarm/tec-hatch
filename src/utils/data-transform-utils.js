@@ -3,12 +3,20 @@ import { toChecksumAddress } from '../utils/web3-utils'
 import { formatBigNumber, toDecimals } from './bn-utils'
 import { secondsToMilliseconds } from './date-utils'
 
-const TARGET_GOAL = process.env.REACT_APP_TARGET_GOAL
+const TARGET_GOAL = process.env.REACT_TARGET_GOAL
 
 export const transformConfigData = config => {
   const hatchConfig = config.hatchConfig
   const hatchOracleConfig = config.hatchOracleConfig
   const PPM = new BigNumber(hatchConfig.PPM)
+  const minGoal = new BigNumber(hatchConfig.minGoal)
+  const maxGoal = new BigNumber(hatchConfig.maxGoal)
+  const targetGoal = TARGET_GOAL
+    ? toDecimals(TARGET_GOAL, hatchConfig.contributionToken.decimals)
+    : maxGoal
+        .minus(minGoal)
+        .dividedToIntegerBy(toDecimals(2, 18))
+        .times(toDecimals(1, 18))
 
   return {
     ...config,
@@ -30,12 +38,9 @@ export const transformConfigData = config => {
         hatchConfig.fundingForBeneficiaryPct
       ).div(PPM),
       supplyOfferedPct: new BigNumber(hatchConfig.supplyOfferedPct).div(PPM),
-      minGoal: new BigNumber(hatchConfig.minGoal),
-      targetGoal: toDecimals(
-        TARGET_GOAL,
-        hatchConfig.contributionToken.decimals
-      ),
-      maxGoal: new BigNumber(hatchConfig.maxGoal),
+      minGoal,
+      targetGoal,
+      maxGoal,
       totalRaised: new BigNumber(hatchConfig.totalRaised),
     },
     hatchOracleConfig: {
