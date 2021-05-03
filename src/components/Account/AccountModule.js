@@ -14,6 +14,7 @@ import { useAppState } from '../../providers/AppState'
 
 import { getUseWalletProviders } from '../../utils/web3-utils'
 import { useTheme } from 'styled-components'
+import { addEthereumChain } from '../../networks'
 
 const AnimatedDiv = animated.div
 
@@ -69,6 +70,7 @@ const AccountModule = ({ compact }) => {
   const activate = useCallback(
     async providerId => {
       try {
+        await addEthereumChain()
         await wallet.activate(providerId)
       } catch (error) {
         setActivationError(error)

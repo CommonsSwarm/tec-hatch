@@ -25,13 +25,13 @@ const networks = {
     ensRegistry: '0xaafca6b0c89521752e559650206d7c925fd0e530',
     name: 'xDai',
     type: 'xdai',
-    defaultEthNode: 'https://xdai.poanetwork.dev/',
+    defaultEthNode: 'https://xdai.1hive.org/',
     org: { address: ORG_ADDRESS, connectorType: CONNECTOR_TYPE },
     ipfsGateway: 'https://ipfs.eth.aragon.network/ipfs',
     eip3085: {
-      chainId: '0x84',
+      chainId: '0x64',
       chainName: 'xDai',
-      rpcUrls: ['https://xdai.poanetwork.dev/'],
+      rpcUrls: ['https://xdai.1hive.org/'],
       iconUrls: [
         'https://gblobscdn.gitbook.com/spaces%2F-Lpi9AHj62wscNlQjI-l%2Favatar.png',
       ],
@@ -64,6 +64,9 @@ export const getNetwork = chainId => {
 
 export const addEthereumChain = () => {
   const { eip3085 } = getNetwork()
+  if (!eip3085) {
+    return Promise.resolve(null) // Network is not custom
+  }
   return window?.ethereum?.request({
     method: 'wallet_addEthereumChain',
     params: [eip3085],
