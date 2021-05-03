@@ -4,15 +4,17 @@ import { GU, RootPortal, useTheme, useViewport } from '@commonsswarm/ui'
 import { useTransition, animated } from 'react-spring'
 import { useAppState } from '../providers/AppState'
 
+const MINIMUM_CONFETTI_PIECES = 800
+
 function getConfettiConfig(amount, minGoal, targetGoal, maxGoal) {
   if (amount.gte(minGoal) && amount.lt(targetGoal)) {
-    return { goalTarget: 'MIN', confettiPieces: 800 }
+    return { goalTarget: 'MIN', confettiPieces: MINIMUM_CONFETTI_PIECES }
   } else if (amount.gte(targetGoal) && amount.lt(maxGoal)) {
-    return { goalTarget: 'TARGET', confettiPieces: 1600 }
+    return { goalTarget: 'TARGET', confettiPieces: MINIMUM_CONFETTI_PIECES * 2 }
   } else if (amount.eq(maxGoal)) {
-    return { goalTarget: 'MAX', confettiPieces: 3200 }
+    return { goalTarget: 'MAX', confettiPieces: MINIMUM_CONFETTI_PIECES * 4 }
   } else {
-    return { goalTarget: '', confettiPieces: 3200 }
+    return {}
   }
 }
 
@@ -79,7 +81,12 @@ const GoalReachedAnimation = () => {
               recycle={false}
               onConfettiComplete={() => setShow(false)}
             />
-            <animated.div style={props}>
+            <animated.div
+              style={props}
+              css={`
+                text-align: center;
+              `}
+            >
               WE REACHED THE {goalTarget} GOAL! 🙌
             </animated.div>
           </animated.div>
