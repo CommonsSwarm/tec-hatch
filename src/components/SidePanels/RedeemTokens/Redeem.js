@@ -46,8 +46,9 @@ const RedeemTokens = () => {
     getReserveTokenBalance,
     txsData,
   } = useActions(requestClose)
-  const { totalAmount } = contributorData || {}
+  const { totalAmount = 0 } = contributorData || {}
 
+  console.log(totalAmount)
   // Get metrics
   const rounding = Math.min(MAX_INPUT_DECIMAL_BASE, decimals)
   const minTokenStep = fromDecimals('1', rounding)
