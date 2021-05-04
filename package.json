@@ -9,11 +9,12 @@
   "scripts": {
     "build": "npm run sync-assets && react-app-rewired build",
     "sync-assets": "copy-aragon-ui-assets ./public",
-    "start": "npm run sync-assets && react-app-rewired start"
+    "start": "npm run sync-assets && react-app-rewired start",
+    "start:local-connector": "yalc update && yarn run start"
   },
   "dependencies": {
     "@1hive/connect-react": "^0.9.1",
-    "@commonsswarm/connect-hatch": "^0.0.3",
+    "@commonsswarm/connect-hatch": "^0.0.4",
     "@commonsswarm/ui": "^1.0.12",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
