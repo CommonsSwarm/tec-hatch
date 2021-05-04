@@ -123,13 +123,22 @@ export default () => {
                     </AlignedText>
                   </Button>
                 )}
-                {hatchEnded && (
+                {state === Hatch.state.CLOSED && hatchEnded && (
                   <p
                     css={`
                       font-size: 16px;
                     `}
                   >
                     Hatch closed
+                  </p>
+                )}
+                {state === Hatch.state.GOALREACHED && (
+                  <p
+                    css={`
+                      font-size: 16px;
+                    `}
+                  >
+                    Hatch ended
                   </p>
                 )}
                 {state === Hatch.state.FUNDING && (
