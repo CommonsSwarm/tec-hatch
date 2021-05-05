@@ -70,3 +70,11 @@ export const formatBigNumber = (
 export const convertBN = bn => {
   return new BigNumber(bn.toHexString(), 16)
 }
+
+export const safeDiv = (x, y) => {
+  if (y.eq(0)) {
+    return new BigNumber(0)
+  } else {
+    return x.div(y)
+  }
+}

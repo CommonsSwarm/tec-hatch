@@ -14,6 +14,7 @@ import {
   formatBigNumber,
   fromDecimals,
   toDecimals,
+  safeDiv as safeBNDiv,
 } from '../../../utils/bn-utils'
 import { safeDiv, round } from '../../../utils/math-utils'
 import { useUserState } from '../../../providers/UserState'
@@ -48,7 +49,6 @@ const RedeemTokens = () => {
   } = useActions(requestClose)
   const { totalAmount = 0 } = contributorData || {}
 
-  console.log(totalAmount)
   // Get metrics
   const rounding = Math.min(MAX_INPUT_DECIMAL_BASE, decimals)
   const minTokenStep = fromDecimals('1', rounding)
@@ -59,13 +59,16 @@ const RedeemTokens = () => {
   const [reserveTokenBalance, setReserveTokenBalance] = useState(
     new BigNumber(0)
   )
+  const [loading, setLoading] = useState(true)
   const [{ value, max, progress }, setAmount, setProgress] = useAmount(
     formattedBalance.replace(',', ''),
     rounding
   )
 
   const decimalValue = toDecimals(value, decimals)
-  const exchangeValue = decimalValue.times(reserveTokenBalance.div(totalSupply))
+  const exchangeValue = decimalValue.times(
+    safeBNDiv(reserveTokenBalance, totalSupply)
+  )
 
   const fetchRedeemTokenData = useCallback(
     (token, contributionToken) =>
@@ -90,6 +93,8 @@ const RedeemTokens = () => {
 
       setTotalSupply(newTotalSupply)
       setReserveTokenBalance(newReserveTokenBalance)
+
+      setLoading(false)
     }
 
     setUpRedeemTokenData()
@@ -112,6 +117,8 @@ const RedeemTokens = () => {
       if (!newReserveTokenBalance.eq(reserveTokenBalance)) {
         setReserveTokenBalance(reserveTokenBalance)
       }
+
+      setLoading(false)
     } catch (err) {
       console.error(`Error fetching redeem token data: ${err}`)
     }
@@ -131,7 +138,7 @@ const RedeemTokens = () => {
     >
       <form onSubmit={handleSubmit}>
         <InfoMessage
-          title="Redemption action"
+          title="Rage quit action"
           text={`This action will burn ${formatBigNumber(
             decimalValue,
             decimals
@@ -146,7 +153,7 @@ const RedeemTokens = () => {
           >
             {formattedBalance} {symbol}{' '}
           </span>{' '}
-          tokens for redemption
+          tokens for redemption.
         </TokenInfo>
         <div
           css={`
@@ -191,20 +198,20 @@ const RedeemTokens = () => {
               justify-content: flex-end;
             `}
           >
-            {exchangeValue && (
-              <>
-                <AmountField color="grey">
-                  ~{formatBigNumber(exchangeValue, contributionDecimals)}
-                </AmountField>
-                <span
-                  css={`
-                    color: grey;
-                  `}
-                >
-                  {contributionSymbol}
-                </span>
-              </>
-            )}
+            <AmountField color="grey">
+              {loading ? (
+                <>-</>
+              ) : (
+                `~${formatBigNumber(exchangeValue, contributionDecimals)}`
+              )}
+            </AmountField>
+            <span
+              css={`
+                color: grey;
+              `}
+            >
+              {contributionSymbol}
+            </span>
           </div>
         </div>
         <TxButton
