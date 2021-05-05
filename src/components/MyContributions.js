@@ -22,20 +22,20 @@ const calculatePercentage = (amount, total) => {
   return Number(percentage.toFixed(2))
 }
 
-const MyContributions = ({ user }) => {
+const MyContributions = React.memo(({ user }) => {
   const {
     config: {
       hatchConfig: { token, contributionToken },
     },
   } = useAppState()
-  const { contributorData, awardedTokenAmount, loading } = user
+  const { contributorData, awardedTokenAmount, loading: userLoading } = user
   const { totalValue, totalAmount } = contributorData || {}
   const distributionColors = ['#5DADE2', '#F7DC6F']
   let totalTokens = new BigNumber(0)
   let mintedTokensPct = new BigNumber(0)
   let awardedTokensPct = new BigNumber(0)
 
-  if (!loading) {
+  if (!userLoading) {
     totalTokens = totalAmount.plus(awardedTokenAmount)
     mintedTokensPct = calculatePercentage(totalAmount, totalTokens)
     awardedTokensPct = calculatePercentage(awardedTokenAmount, totalTokens)
@@ -43,7 +43,7 @@ const MyContributions = ({ user }) => {
 
   return (
     <Box heading="My Contributions">
-      {loading ? (
+      {userLoading ? (
         <div
           css={`
             display: flex;
@@ -59,20 +59,24 @@ const MyContributions = ({ user }) => {
             amount={totalValue}
             token={contributionToken}
           />
-          <Distribution
-            colors={distributionColors}
-            heading={
-              <TokenField label="Tokens" amount={totalTokens} token={token} />
-            }
-            items={[
-              { item: 'Acquired', percentage: mintedTokensPct },
-              { item: 'IH Rewarded', percentage: awardedTokensPct },
-            ]}
-          />
+          {!userLoading && awardedTokenAmount.gt(0) ? (
+            <Distribution
+              colors={distributionColors}
+              heading={
+                <TokenField label="Tokens" amount={totalTokens} token={token} />
+              }
+              items={[
+                { item: 'Acquired', percentage: mintedTokensPct },
+                { item: 'IH Rewarded', percentage: awardedTokensPct },
+              ]}
+            />
+          ) : (
+            <TokenField label="Tokens" amount={totalTokens} token={token} />
+          )}
         </>
       )}
     </Box>
   )
-}
+})
 
 export default MyContributions

@@ -106,10 +106,15 @@ export const useContributorSubscription = contributorAccount => {
   const contributorSubscription = useRef(null)
   const rawContributorRef = useRef(null)
 
+  const clearContributor = () => {
+    setContributor(null)
+    rawContributorRef.current = null
+  }
+
   const onContributorHandler = useCallback(
     async (err, contributor) => {
       if (err || !contributor) {
-        setContributor(null)
+        clearContributor()
         setLoading(false)
         return
       }

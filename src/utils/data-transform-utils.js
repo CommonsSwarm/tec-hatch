@@ -3,7 +3,7 @@ import { toChecksumAddress } from '../utils/web3-utils'
 import { formatBigNumber, toDecimals } from './bn-utils'
 import { secondsToMilliseconds } from './date-utils'
 
-const TARGET_GOAL = process.env.REACT_TARGET_GOAL
+const TARGET_GOAL = process.env.REACT_APP_TARGET_GOAL
 
 export const transformConfigData = config => {
   const hatchConfig = config.hatchConfig
@@ -11,6 +11,7 @@ export const transformConfigData = config => {
   const PPM = new BigNumber(hatchConfig.PPM)
   const minGoal = new BigNumber(hatchConfig.minGoal)
   const maxGoal = new BigNumber(hatchConfig.maxGoal)
+
   const targetGoal = TARGET_GOAL
     ? toDecimals(TARGET_GOAL, hatchConfig.contributionToken.decimals)
     : maxGoal
