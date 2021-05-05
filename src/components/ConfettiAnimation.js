@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Confetti from 'react-confetti'
-import { GU, RootPortal, useTheme, useViewport } from '@commonsswarm/ui'
+import {
+  GU,
+  RootPortal,
+  useTheme,
+  useViewport,
+  useLayout,
+} from '@commonsswarm/ui'
 import { useTransition, animated } from 'react-spring'
 import { useAppState } from '../providers/AppState'
 
@@ -19,6 +25,7 @@ function getConfettiConfig(amount, minGoal, targetGoal, maxGoal) {
 }
 
 const GoalReachedAnimation = () => {
+  const { layoutName } = useLayout()
   const {
     config: {
       hatchConfig: { totalRaised, minGoal, targetGoal, maxGoal },
@@ -75,7 +82,9 @@ const GoalReachedAnimation = () => {
             <Confetti
               width={width}
               height={height}
-              numberOfPieces={confettiPieces}
+              numberOfPieces={
+                layoutName === 'large' ? confettiPieces : confettiPieces / 3
+              }
               gravity={0.5}
               friction={1.01}
               recycle={false}
