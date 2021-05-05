@@ -1,7 +1,7 @@
 import { TxStatuses } from './transaction-statuses'
 
 const {
-  TX_FETCHING,
+  TX_PREPARING,
   TX_SIGNING,
   TX_MINING,
   TX_SUCCESS,
@@ -10,7 +10,7 @@ const {
 } = TxStatuses
 
 export const TX_DESCRIPTIONS = {
-  [TX_FETCHING]: 'Loading...',
+  [TX_PREPARING]: 'Loading...',
   [TX_SIGNING]: 'Signing...',
   [TX_MINING]: 'Pending...',
   [TX_SUCCESS]: 'Confirmed',

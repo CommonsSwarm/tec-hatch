@@ -9,6 +9,7 @@ import {
 import { TxStatuses } from '../constants'
 
 const {
+  TX_PREPARING,
   TX_SIGNING,
   TX_MINING,
   TX_SUCCESS,
@@ -36,6 +37,12 @@ const useTxExecution = () => {
 
     return () => {}
   }, [txStatus])
+
+  const onTxPreparing = useCallback(() => {
+    if (mounted()) {
+      setTxStatus(TX_PREPARING)
+    }
+  }, [mounted])
 
   const onTxsFetched = useCallback(
     txLength => {
@@ -110,6 +117,7 @@ const useTxExecution = () => {
     txCounter,
     txCurrentIndex,
     txHandlers: {
+      onTxPreparing,
       onTxsFetched,
       onTxSigning,
       onTxSigned,

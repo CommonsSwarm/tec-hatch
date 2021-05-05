@@ -1,4 +1,5 @@
 // Transaction statuses
+const TX_PREPARING = Symbol('TX_PREPARING')
 const TX_SIGNING = Symbol('TX_SIGNING')
 const TX_MINING = Symbol('TX_MINING')
 const TX_SUCCESS = Symbol('TX_SUCCESS')
@@ -10,6 +11,7 @@ const PRE_TX_PROCESSING = Symbol('PRE_TX_PROCESSING')
 const PRE_TX_FINISHED = Symbol('PRE_TX_FINISHED')
 
 const stringStatuses = {
+  [TX_PREPARING]: 'TX_PREPARING',
   [TX_SIGNING]: 'TX_SIGNING',
   [TX_MINING]: 'TX_MINING',
   [TX_SUCCESS]: 'TX_SUCCESS',
@@ -20,6 +22,7 @@ const stringStatuses = {
 }
 
 export const TxStatuses = {
+  TX_PREPARING,
   TX_SIGNING,
   TX_MINING,
   TX_SUCCESS,

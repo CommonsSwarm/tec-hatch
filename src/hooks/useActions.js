@@ -4,8 +4,9 @@ import { useWallet } from '../providers/Wallet'
 import { convertBN } from '../utils/bn-utils'
 import useTxExecution from './useTxExecution'
 
-const TX_GAS_LIMIT = 900000
-const PRE_TX_GAS_LIMIT = 700000
+const TX_GAS_LIMIT = 1500000
+const PRE_TX_GAS_LIMIT = 1500000
+const TX_GAS_PRICE = 5000000000
 
 const useActions = (onClose = () => {}) => {
   const { ethers } = useWallet()
@@ -20,6 +21,7 @@ const useActions = (onClose = () => {}) => {
   const { hatchConnector, redemptionsApp } = useAppState()
 
   const {
+    onTxPreparing,
     onTxsFetched,
     onTxSigning,
     onTxSigned,
@@ -45,6 +47,7 @@ const useActions = (onClose = () => {}) => {
           const txResponse = await signer.sendTransaction({
             ...tx,
             gasLimit: i < txLength - 1 ? PRE_TX_GAS_LIMIT : TX_GAS_LIMIT,
+            gasPrice: TX_GAS_PRICE,
           })
 
           onTxSigned(txResponse, i, txLength)
@@ -77,48 +80,58 @@ const useActions = (onClose = () => {}) => {
 
   const openHatch = useCallback(
     async signerAddress => {
+      onTxPreparing()
+
       const intent = await hatchConnector.open(signerAddress)
 
       executeAction(intent)
     },
-    [hatchConnector, executeAction]
+    [hatchConnector, executeAction, onTxPreparing]
   )
 
   const closeHatch = useCallback(
     async signerAddress => {
+      onTxPreparing()
+
       const intent = await hatchConnector.close(signerAddress)
 
       executeAction(intent)
     },
-    [hatchConnector, executeAction]
+    [hatchConnector, executeAction, onTxPreparing]
   )
 
   const contribute = useCallback(
     async (contributor, value) => {
+      onTxPreparing()
+
       const intent = await hatchConnector.contribute(contributor, value)
 
       executeAction(intent)
     },
-    [hatchConnector, executeAction]
+    [hatchConnector, executeAction, onTxPreparing]
   )
 
   const refund = useCallback(
     async (contributor, vestedPurchaseId) => {
+      onTxPreparing()
+
       const intent = await hatchConnector.refund(contributor, vestedPurchaseId)
 
       executeAction(intent)
     },
-    [hatchConnector, executeAction]
+    [hatchConnector, executeAction, onTxPreparing]
   )
 
   const redeem = useCallback(
     async amount => {
+      onTxPreparing()
+
       const intent = await redemptionsApp.intent('redeem', [amount], {
         actAs: await signer.getAddress(),
       })
       executeAction(intent)
     },
-    [signer, redemptionsApp, executeAction]
+    [signer, redemptionsApp, executeAction, onTxPreparing]
   )
 
   const getContributionTokenBalance = useCallback(

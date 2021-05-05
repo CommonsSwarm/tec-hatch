@@ -4,7 +4,12 @@ import { Button, GU, LoadingRing } from '@commonsswarm/ui'
 
 import { TX_DESCRIPTIONS, TxStatuses } from '../constants'
 
-const { PRE_TX_FETCHING, PRE_TX_PROCESSING, PRE_TX_FINISHED } = TxStatuses
+const {
+  TX_PREPARING,
+  PRE_TX_FETCHING,
+  PRE_TX_PROCESSING,
+  PRE_TX_FINISHED,
+} = TxStatuses
 
 const TxButton = ({
   txsData = {},
@@ -21,17 +26,18 @@ const TxButton = ({
     <Button
       mode={mode}
       type={type}
-      disabled={disabled || !!preTxStatus}
+      disabled={disabled || !!preTxStatus || !!txStatus}
       wide={wide}
       onClick={onClick}
     >
-      {preTxStatus ? (
+      {preTxStatus || txStatus ? (
         <PreparingTxWrapper>
           <LoadingRing
             css={`
               margin-right: ${0.5 * GU}px;
             `}
           />{' '}
+          {txStatus === TX_PREPARING && TX_DESCRIPTIONS[txStatus]}
           {preTxStatus === PRE_TX_FETCHING && TX_DESCRIPTIONS[txStatus]}
           {preTxStatus === PRE_TX_PROCESSING &&
             `Pretransactions (${txCurrentIndex} of ${txCounter - 1}): ${
