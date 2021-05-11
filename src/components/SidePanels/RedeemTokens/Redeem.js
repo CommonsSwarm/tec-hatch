@@ -6,6 +6,7 @@ import {
   breakpoint,
   Field,
   useSidePanelFocusOnReady,
+  useTheme,
   textStyle,
 } from '@commonsswarm/ui'
 import { InfoMessage } from './Message'
@@ -24,11 +25,14 @@ import TxButton from '../../TxButton'
 import BigNumber from 'bignumber.js'
 import { useInterval } from '../../../hooks/useInterval'
 import { Polling } from '../../../constants'
+import useMounted from '../../../hooks/useMounted'
 
 const MAX_INPUT_DECIMAL_BASE = 2
 
 const RedeemTokens = () => {
+  const theme = useTheme()
   const inputRef = useSidePanelFocusOnReady()
+  const mounted = useMounted()
   const {
     config: {
       hatchConfig: { token, contributionToken },
@@ -91,14 +95,15 @@ const RedeemTokens = () => {
         newReserveTokenBalance,
       ] = await fetchRedeemTokenData(token, contributionToken)
 
-      setTotalSupply(newTotalSupply)
-      setReserveTokenBalance(newReserveTokenBalance)
-
-      setLoading(false)
+      if (mounted()) {
+        setTotalSupply(newTotalSupply)
+        setReserveTokenBalance(newReserveTokenBalance)
+        setLoading(false)
+      }
     }
 
     setUpRedeemTokenData()
-  }, [token, contributionToken, fetchRedeemTokenData])
+  }, [token, contributionToken, fetchRedeemTokenData, mounted])
 
   useInterval(async () => {
     if (!token || !contributionToken) {
@@ -196,22 +201,17 @@ const RedeemTokens = () => {
             css={`
               display: flex;
               justify-content: flex-end;
+              color: ${theme.content};
             `}
           >
-            <AmountField color="grey">
+            <AmountField>
               {loading ? (
                 <>-</>
               ) : (
                 `~${formatBigNumber(exchangeValue, contributionDecimals)}`
               )}
             </AmountField>
-            <span
-              css={`
-                color: grey;
-              `}
-            >
-              {contributionSymbol}
-            </span>
+            <span>{contributionSymbol}</span>
           </div>
         </div>
         <TxButton
@@ -304,7 +304,7 @@ const InputWrapper = styled.div`
 `
 const AmountField = styled.div`
   margin-right: 10px;
-  color: grey;
+  color: ${({ color }) => color};
 `
 const TokenInfo = styled.div`
   padding: 20px 0;
