@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Box, Button, useTheme, GU } from '@commonsswarm/ui'
+import { Box, Button, useTheme, GU, Info } from '@commonsswarm/ui'
 import { Hatch } from '../constants'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
@@ -24,7 +24,6 @@ export default React.memo(() => {
       },
     },
     contributionPanel: { requestOpen: requestContributionOpen },
-    refundPanel: { requestOpen: requestRefundOpen },
     redeemPanel: { requestOpen: requestRedeemOpen },
   } = useAppState()
 
@@ -72,29 +71,22 @@ export default React.memo(() => {
           )}
           {state === Hatch.state.GOALREACHED && (
             <>
-              <p
-                css={`
-                  white-space: nowrap;
-                  color: ${theme.surfaceContent};
-                `}
-              >
+              <Message>
                 <strong>Hatch goal completed! 🎉</strong>
-              </p>
+              </Message>
             </>
           )}
           {state === Hatch.state.REFUNDING && (
             <>
-              <p>
-                Unfortunately, the goal set for this hatch has not been reached.
-              </p>
-              <Button
-                wide
-                label={`Refund ${tokenSymbol}`}
+              <Message>Hatch goal hasn&#39;t been reached</Message>
+              <Info
                 css={`
-                  margin-top: ${2 * GU}px;
+                  margin-top: ${GU}px;
                 `}
-                onClick={requestRefundOpen}
-              />
+              >
+                All your {contributionToken.symbol} tokens will be refunded
+                shortly.
+              </Info>
             </>
           )}
           {state === Hatch.state.CLOSED && (
@@ -115,4 +107,10 @@ const Wrapper = styled.div`
   & > div {
     margin-bottom: ${2 * GU}px;
   }
+`
+
+const Message = styled.div`
+  white-space: nowrap;
+  color: ${({ theme }) => theme.surfaceContent};
+  font-weight: bold;
 `

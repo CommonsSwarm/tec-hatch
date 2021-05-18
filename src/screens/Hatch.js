@@ -18,11 +18,7 @@ import {
 import HatchGoal from '../components/HatchGoal'
 import TECInfo from '../components/TECInfo'
 import TopContributors from '../components/TopContributors'
-import {
-  NewContribution,
-  NewRefund,
-  RedeemTokens,
-} from '../components/SidePanels'
+import { NewContribution, RedeemTokens } from '../components/SidePanels'
 import MyContributions from '../components/MyContributions'
 import GoalReachedAnimation from '../components/ConfettiAnimation'
 
@@ -132,7 +128,8 @@ export default () => {
                     Hatch closed
                   </p>
                 )}
-                {state === Hatch.state.GOALREACHED && (
+                {(state === Hatch.state.GOALREACHED ||
+                  state === Hatch.state.REFUNDING) && (
                   <p
                     css={`
                       font-size: 16px;
@@ -180,7 +177,6 @@ export default () => {
       </Container>
       <GoalReachedAnimation />
       <NewContribution />
-      <NewRefund />
       <RedeemTokens />
     </>
   )
