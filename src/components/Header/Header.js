@@ -2,7 +2,7 @@ import React from 'react'
 import { GU, useTheme, useViewport } from '@commonsswarm/ui'
 import AccountModule from '../Account/AccountModule'
 import { useWallet } from '../../providers/Wallet'
-import TECLogo from '../../assets/TECLogo.png'
+import TECLogo from '../../assets/TECLogo.svg'
 import TECName from '../../assets/TECName.svg'
 
 const HEADER_HEIGHT = 13 * GU
