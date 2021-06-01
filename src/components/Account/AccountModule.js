@@ -7,14 +7,19 @@ import ScreenError from './ScreenError'
 import AccountButton from './AccountButton'
 import ScreenProviders from './ScreenProviders'
 import ScreenConnected from './ScreenConnected'
-import ScreenConnecting from './ScreenConnecting'
+import ScreenPromptingAction from './ScreenPromptingAction'
 import HeaderPopover from '../Header/HeaderPopover'
 
 import { useAppState } from '../../providers/AppState'
 
 import { getUseWalletProviders } from '../../utils/web3-utils'
 import { useTheme } from 'styled-components'
-import { addEthereumChain } from '../../networks'
+import { addEthereumChain, getNetwork } from '../../networks'
+
+import {
+  getProviderFromUseWalletId,
+  getProviderString,
+} from '../../ethereum-providers'
 
 const AnimatedDiv = animated.div
 
@@ -25,6 +30,10 @@ const SCREENS = [
       6 * GU + // header
       (12 + 1.5) * GU * Math.ceil(getUseWalletProviders().length / 2) + // buttons
       7 * GU, // footer
+  },
+  {
+    id: 'connecting-network',
+    height: 38 * GU,
   },
   {
     id: 'connecting',
@@ -47,15 +56,42 @@ const AccountModule = ({ compact }) => {
   const [opened, setOpened] = useState(false)
   const [animate, setAnimate] = useState(false)
   const [activatingDelayed, setActivatingDelayed] = useState(false)
+  const [creatingNetwork, setCreatingNetwork] = useState(false)
   const [activationError, setActivationError] = useState(null)
   const popoverFocusElement = useRef()
 
   const { account, activating } = wallet
   const { isLoading } = useAppState()
+  const network = getNetwork()
+  const provider = getProviderFromUseWalletId(activating)
 
   const clearError = useCallback(() => setActivationError(null), [])
 
   const toggle = useCallback(() => setOpened(opened => !opened), [])
+
+  const getPromptingActionDescription = screenId => {
+    switch (screenId) {
+      case 'connecting-network':
+        return {
+          actionTitle: `Connecting to ${network.name} network`,
+          actionDescription: `Create the ${network.name} network in Metamask and switch to it. You may be temporarily redirected to a new screen.`,
+        }
+      case 'connecting':
+        return {
+          actionTitle: `Connecting to ${getProviderString(
+            'your Ethereum provider',
+            provider.id
+          )}`,
+          actionDescription: `Log into ${getProviderString(
+            'your Ethereum provider',
+            provider.id
+          )}. You may be temporarily redirected to a new screen.`,
+        }
+      default: {
+        return { actionTitle: 'Performing action' }
+      }
+    }
+  }
 
   useEffect(() => {
     if (account) {
@@ -70,10 +106,13 @@ const AccountModule = ({ compact }) => {
   const activate = useCallback(
     async providerId => {
       try {
+        setCreatingNetwork(true)
         await addEthereumChain()
+        setCreatingNetwork(false)
         await wallet.activate(providerId)
       } catch (error) {
         setActivationError(error)
+        setCreatingNetwork(false)
       }
     },
     [wallet]
@@ -117,6 +156,7 @@ const AccountModule = ({ compact }) => {
     const screenId = (() => {
       if (activationError) return 'error'
       if (activatingDelayed) return 'connecting'
+      if (creatingNetwork) return 'connecting-network'
       if (account) return 'connected'
       return 'providers'
     })()
@@ -127,14 +167,22 @@ const AccountModule = ({ compact }) => {
     previousScreenIndex.current = screenIndex
 
     return { direction, screenIndex }
-  }, [account, activationError, activatingDelayed])
+  }, [account, activationError, activatingDelayed, creatingNetwork])
 
   const screen = SCREENS[screenIndex]
   const screenId = screen.id
 
+  const { actionTitle, actionDescription } = getPromptingActionDescription(
+    screenId
+  )
+
   const handlePopoverClose = useCallback(
     reject => {
-      if (screenId === 'connecting' || screenId === 'error') {
+      if (
+        screenId === 'connecting' ||
+        screenId === 'error' ||
+        screenId === 'connecting-network'
+      ) {
         // reject closing the popover
         return false
       }
@@ -222,10 +270,21 @@ const AccountModule = ({ compact }) => {
                 `}
               >
                 {(() => {
+                  if (screen.id === 'connecting-network') {
+                    return (
+                      <ScreenPromptingAction
+                        actionTitle={actionTitle}
+                        actionDescription={actionDescription}
+                        logo={network.image}
+                      />
+                    )
+                  }
                   if (screen.id === 'connecting') {
                     return (
-                      <ScreenConnecting
-                        providerId={activating}
+                      <ScreenPromptingAction
+                        actionTitle={actionTitle}
+                        actionDescription={actionDescription}
+                        logo={provider.image}
                         onCancel={handleCancelConnection}
                       />
                     )

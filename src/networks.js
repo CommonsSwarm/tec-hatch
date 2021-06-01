@@ -1,3 +1,5 @@
+import xDaiLogo from './assets/xdai-logo.svg'
+
 const ORG_ADDRESS = process.env.REACT_APP_ORG_ADDRESS.toLowerCase()
 const CONNECTOR_TYPE = process.env.REACT_APP_CONNECTOR_TYPE
 const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
@@ -25,6 +27,7 @@ const networks = {
     ensRegistry: '0xaafca6b0c89521752e559650206d7c925fd0e530',
     name: 'xDai',
     type: 'xdai',
+    image: xDaiLogo,
     defaultEthNode: 'https://xdai.1hive.org/',
     org: { address: ORG_ADDRESS, connectorType: CONNECTOR_TYPE },
     ipfsGateway: 'https://ipfs.eth.aragon.network/ipfs',
