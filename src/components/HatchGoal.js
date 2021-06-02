@@ -3,14 +3,14 @@ import styled from 'styled-components'
 import { Box, Button, useTheme, GU, Info } from '@commonsswarm/ui'
 import { Hatch } from '../constants'
 import { useAppState } from '../providers/AppState'
-import { useWallet } from '../providers/Wallet'
 
 import CircleGraphGoals from './CircleGraphGoals'
 import TokenField from './TokenField'
+import { useUserState } from '../providers/UserState'
 
 export default React.memo(() => {
   const theme = useTheme()
-  const { account } = useWallet()
+  const { account, contributorData, loading: userLoading } = useUserState()
   const {
     config: {
       hatchConfig: {
@@ -79,14 +79,19 @@ export default React.memo(() => {
           {state === Hatch.state.REFUNDING && (
             <>
               <Message>Hatch goal hasn&#39;t been reached</Message>
-              <Info
-                css={`
-                  margin-top: ${GU}px;
-                `}
-              >
-                All your {contributionToken.symbol} tokens will be refunded
-                shortly.
-              </Info>
+              {account && !userLoading && (
+                <Info
+                  css={`
+                    margin-top: ${GU}px;
+                  `}
+                >
+                  All your {contributionToken.symbol} tokens{' '}
+                  {contributorData.totalAmount.eq(0)
+                    ? 'were refunded successfully'
+                    : 'will be refunded shortly'}
+                  .
+                </Info>
+              )}
             </>
           )}
           {state === Hatch.state.CLOSED && (

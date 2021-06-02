@@ -114,7 +114,6 @@ export const useContributorSubscription = contributorAccount => {
   const onContributorHandler = useCallback(
     async (err, contributor) => {
       if (err || !contributor) {
-        clearContributor()
         setLoading(false)
         return
       }
@@ -140,9 +139,8 @@ export const useContributorSubscription = contributorAccount => {
 
   useEffect(() => {
     if (!hatchConnector || !contributorAccount) {
-      setContributor(null)
-      rawContributorRef.current = null
-
+      clearContributor()
+      setLoading(true)
       return
     }
 
