@@ -79,7 +79,7 @@ export default React.memo(() => {
           {state === Hatch.state.REFUNDING && (
             <>
               <Message>Hatch goal hasn&#39;t been reached</Message>
-              {account && !userLoading && (
+              {!userLoading && !!contributorData && (
                 <Info
                   css={`
                     margin-top: ${GU}px;
