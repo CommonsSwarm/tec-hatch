@@ -73,12 +73,12 @@ const TECInfo = () => {
       <Details label="How does the Hatch work?">
         During the Hatch period, legal members of the Trusted Seed (CSTK token
         holders) can send wxDai to mint TEC-Hatch (TECH) tokens. There is a
-        Minimum Goal that needs to be reached in order for the TEC HatchDAO to
-        be created. If that amount of wxDai is not collected, the Hatch fails
+        Minimum Goal that needs to be reached in order for the TEC hatch to be
+        successful. If that amount of wxDai is not collected, the Hatch fails
         and 100% of the funds are returned. If the Minimum Goal is reached or
-        surpassed at the end of the Hatch period, the HatchDAO is opened and
-        TECH holders will be able to vote for and ratify the Commons Upgrade
-        parameters. For more details, click{' '}
+        surpassed, one week after of the Hatch period, TECH holders will be able
+        to vote for and ratify the Commons Upgrade parameters. For more details,
+        click{' '}
         <Link href="https://forum.tecommons.org/t/the-hatch-tl-dr/272">
           here
         </Link>
@@ -103,24 +103,24 @@ const TECInfo = () => {
         be able to use their tokens to vote via{' '}
         <Link href="https://www.notion.so/Technical-Documentation-2dea29d0a3014e6db22d8f17cf93e7d1">
           Dandelion Voting
-        </Link>{' '}
-        You can read more about the HatchDAO in this{' '}
+        </Link>
+        . You can read more about the HatchDAO in this{' '}
         <Link href="https://i.imgur.com/3F0iUDm.png">infographic</Link>.
       </Details>
       <Details label="What if you want to exit the HatchDAO?">
         Participants can exit the HatchDAO by "ragequitting": effectively
-        withdrawing their funds from the Commons, minus a non-redeemable
+        withdrawing their funds from the future Commons, minus a non-redeemable
         percentage (the Hatch Tribute and the Cultural Build Tribute).
-        Ragequitting can be done any time between the HatchDAO and the Commons
-        Upgrade, provided that tokens are not actively voting on proposals. To
-        read more about ragequitting, click{' '}
+        Ragequitting can be done any time starting one week after the hatch
+        success and before the Commons Upgrade, provided that tokens are not
+        actively voting on proposals. To read more about ragequitting, click{' '}
         <Link href="https://forum.tecommons.org/t/ragequitting-ragequit-delay-and-how-they-work/130?u=chuygarcia92">
           here
         </Link>
         .
       </Details>
       <Details label="What is the Commons Upgrade?">
-        The Commons Upgrade will be the "real" Hatch of the TEC Commons. The
+        The Commons Upgrade will be the starting point of the TEC Commons. The
         whole purpose of the HatchDAO is to design the economy of the Commons
         Upgrade. The upgrade will include the launching of an Augmented Bonding
         Curve (ABC) for the TEC token, and Disputable Conviction Voting.
@@ -165,7 +165,7 @@ const Details = ({ label, children }) => {
       `}
       label={label}
     >
-      {children}
+      <Paragraph>{children}</Paragraph>
     </RawDetails>
   )
 }
