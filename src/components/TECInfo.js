@@ -1,11 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link, GU, textStyle, useLayout } from '@commonsswarm/ui'
+import {
+  Link,
+  GU,
+  textStyle,
+  useLayout,
+  Details as RawDetails,
+} from '@commonsswarm/ui'
 
 const TECInfo = () => {
   const { layoutName } = useLayout()
-  const codeOfConductUrl =
-    'https://docs.google.com/document/d/1S5EoWbsFt3uQ5Wj6yyUJKyApFyjCQ-EloZAr6W55N3U/edit#'
 
   return (
     <div
@@ -17,51 +21,119 @@ const TECInfo = () => {
         padding: 0 ${GU};
       `}
     >
-      <Title>To·ken En·gi·neer·ing /ˈtoʊkən/ /ˌendʒɪˈnɪərɪŋ/</Title>
-      {/* Including list items directly because we don't want the left spacing
-      provided by the <ol> tag element */}
+      <Title>Hatching a New Economy</Title>
       <Paragraph>
-        1. An emerging engineering discipline focused on holistic systems design
-        and the theory, practice and tools used to design and verify tokenized
-        ecosystems i.e. cryptoeconomic systems and their simulation using tools
-        like cadCAD.
+        Welcome! Our{' '}
+        <Link href="https://medium.com/token-engineering-commons/the-token-engineering-commons-hatch-your-economy-your-choice-354926284281">
+          Hatch
+        </Link>{' '}
+        is open{' '}
+        <Link href="https://medium.com/commonsstack/join-the-commons-stacks-trusted-seed-swiss-association-ed51a356cb6c">
+          active Trusted Seed members
+        </Link>{' '}
+        for and builders of the Token Engineering Commons!
       </Paragraph>
       <Paragraph>
-        2. A discipline of responsibility; adhering to the highest principles of
-        ethical conduct (from ethical engineering).
+        The vision of the <strong>Token Engineering Commons (TEC)</strong> is to
+        advance the field of token engineering by creating ethical, safe,
+        resilient and diverse economic systems to benefit societies around the
+        world.
       </Paragraph>
       <Paragraph>
-        3. A community pushing forward the field of token engineering in theory
-        and practice. (See more Modeling Crypto Protocols as Complex Systems, TE
-        Process).
+        In the short term, the goal of the TEC is to fund proposals to build out
+        token engineering public goods. In the long term, the goal is to expand
+        the frontiers of the token engineering field and have the TEC as an
+        advisory body, protecting public interest.
       </Paragraph>
-      <Title>Com·mons /ˈkɒmənz/</Title>
       <Paragraph>
-        1. Resources that groups of people (communities, organizations) create
-        and manage for individual and collective benefit. These resources are
-        held collectively, not owned privately (see Fractar Ownership, Wiki and
-        Automating Ostrom).
+        We are curating a rich community culture built on the principles of
+        integrity, trust and communication. We encourage members to be radically
+        open source and support the collective, prioritizing the advancement of
+        token engineering over short-term profits.
       </Paragraph>
-      <Title>Vision &amp; Mission</Title>
       <Paragraph>
-        A few co-creative sessions were held to identify the TEC Vision, Mission
-        and Values using this Miro, followed by a-sync work and voting on the
-        Discord Channel.
+        We believe that our{' '}
+        <Link href="https://token-engineering-commons.gitbook.io/tec-handbook/what-is-the-tec/mission-vision-and-values">
+          prosocial, human-centered perspective
+        </Link>{' '}
+        and our diverse community of experienced contributors truly has the
+        potential to revolutionize global economic systems.{' '}
+        <strong>
+          The future of token engineering is upon us, and your chance to get
+          involved is NOW.
+        </strong>
       </Paragraph>
-      <Title>Values</Title>
       <Paragraph>
-        The TEC operates from a prosocial human centered perspective. We hold
-        ourselves to high standards of safety, resilience, and integrity. We
-        encourage our members to be radically open source, non-hierarchical,
-        creative, transparent in their intentions and accountable for their
-        actions. We are value driven, (non profit driven) and will strive to
-        support token engineering projects that appreciate the value of public
-        goods and ethical, inclusive economic systems. (See also, the{' '}
-        <Link href={codeOfConductUrl} target="_blank" rel="noreferrer">
-          TEC Code of Conduct
+        We’re happy to have you here; let’s advance token engineering!
+      </Paragraph>
+      <Paragraph>
+        <strong>Welcome to the TEC Hatch.</strong>
+      </Paragraph>
+      <Title>Frequently Asked Questions</Title>
+      <Details label="How does the Hatch work?">
+        During the Hatch period, legal members of the Trusted Seed (CSTK token
+        holders) can send wxDai to mint TEC-Hatch (TECH) tokens. There is a
+        Minimum Goal that needs to be reached in order for the TEC HatchDAO to
+        be created. If that amount of wxDai is not collected, the Hatch fails
+        and 100% of the funds are returned. If the Minimum Goal is reached or
+        surpassed at the end of the Hatch period, the HatchDAO is opened and
+        TECH holders will be able to vote for and ratify the Commons Upgrade
+        parameters. For more details, click{' '}
+        <Link href="https://forum.tecommons.org/t/the-hatch-tl-dr/272">
+          here
         </Link>
-        ).
-      </Paragraph>
+        .
+      </Details>
+      <Details label="What is wxDai?">
+        wxDai is the token that Hatchers are required to send in order to
+        participate in the Hatch. wxDai is the wrapped, ERC-20 tokenized, copy
+        of the xDai stable coin that exists on the xDai network Ethereum
+        sidechain. For a step-by-step guide on how to get wxDai, check out our
+        forum post{' '}
+        <Link href="https://forum.tecommons.org/t/how-to-get-wxdai-a-bridging-story/347">
+          here
+        </Link>
+        . If you still have some questions or need further assistance for
+        getting wxDai, feel free to ask in our{' '}
+        <Link href="https://discord.gg/8eCYn5EzjZ">Discord Server</Link>.
+      </Details>
+      <Details label="How does the HatchDAO work?">
+        In the HatchDAO, builders and backers will be minted non-transferable
+        TECH tokens proportionately according to their contributions. They will
+        be able to use their tokens to vote via{' '}
+        <Link href="https://www.notion.so/Technical-Documentation-2dea29d0a3014e6db22d8f17cf93e7d1">
+          Dandelion Voting
+        </Link>{' '}
+        You can read more about the HatchDAO in this{' '}
+        <Link href="https://i.imgur.com/3F0iUDm.png">infographic</Link>.
+      </Details>
+      <Details label="What if you want to exit the HatchDAO?">
+        Participants can exit the HatchDAO by "ragequitting": effectively
+        withdrawing their funds from the Commons, minus a non-redeemable
+        percentage (the Hatch Tribute and the Cultural Build Tribute).
+        Ragequitting can be done any time between the HatchDAO and the Commons
+        Upgrade, provided that tokens are not actively voting on proposals. To
+        read more about ragequitting, click{' '}
+        <Link href="https://forum.tecommons.org/t/ragequitting-ragequit-delay-and-how-they-work/130?u=chuygarcia92">
+          here
+        </Link>
+        .
+      </Details>
+      <Details label="What is the Commons Upgrade?">
+        The Commons Upgrade will be the "real" Hatch of the TEC Commons. The
+        whole purpose of the HatchDAO is to design the economy of the Commons
+        Upgrade. The upgrade will include the launching of an Augmented Bonding
+        Curve (ABC) for the TEC token, and Disputable Conviction Voting.
+        Participants of the HatchDAO will have their TECH tokens converted into
+        TEC governance tokens, whose value is determined by the ABC. The token
+        will be transferrable and the general public will be able to buy and
+        sell TEC tokens against the bonding curve. To learn more about the
+        Commons Upgrade, click{' '}
+        <Link href="https://forum.tecommons.org/t/how-you-can-hatch-the-tec/328">
+          here
+        </Link>
+        .
+      </Details>
     </div>
   )
 }
@@ -74,7 +146,7 @@ const Title = ({ children }) => {
       css={`
         ${textStyle('title4')};
         align-self: flex-start;
-        margin: ${2 * GU}px ${layoutName === 'small' ? 1.5 * GU : 0}px;
+        margin: ${3 * GU}px ${layoutName === 'small' ? 1.5 * GU : 0}px;
         font-weight: bold;
       `}
     >
@@ -83,9 +155,25 @@ const Title = ({ children }) => {
   )
 }
 
+const Details = ({ label, children }) => {
+  const { layoutName } = useLayout()
+
+  return (
+    <RawDetails
+      css={`
+        margin: 0 ${layoutName === 'small' ? 2 * GU : 0}px;
+      `}
+      label={label}
+    >
+      {children}
+    </RawDetails>
+  )
+}
+
 const Paragraph = styled.div`
   margin: ${1 * GU}px 0;
   width: ${({ layout }) => (layout === 'small' ? 100 : 90)}%;
   ${textStyle('body2')};
 `
+
 export default TECInfo
