@@ -15,7 +15,7 @@
   "dependencies": {
     "@1hive/connect-react": "^0.9.1",
     "@commonsswarm/connect-hatch": "^0.0.4",
-    "@commonsswarm/ui": "^1.0.12",
+    "@commonsswarm/ui": "^1.0.14",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.1",
     "date-fns": "^2.0.1",
