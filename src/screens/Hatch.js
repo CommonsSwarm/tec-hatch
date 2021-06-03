@@ -54,7 +54,7 @@ export default () => {
     state !== Hatch.state.PENDING && state !== Hatch.state.FUNDING
   const noOpenDate = state === Hatch.state.PENDING && openDate === 0
   const endDate = addMilliseconds(openDate, period)
-  const videoUrl = 'https://youtu.be/sgoTeOYnv0g?t=612'
+  const videoUrl = 'https://www.youtube.com/watch?v=AbEf5T5AhYU'
 
   const handleOpenHatch = () => {
     openHatch(connectedAccount)
