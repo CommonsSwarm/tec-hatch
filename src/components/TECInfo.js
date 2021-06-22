@@ -27,7 +27,7 @@ const TECInfo = () => {
         <Link href="https://medium.com/token-engineering-commons/the-token-engineering-commons-hatch-your-economy-your-choice-354926284281">
           Hatch
         </Link>{' '}
-        is open{' '}
+        is open to{' '}
         <Link href="https://medium.com/commonsstack/join-the-commons-stacks-trusted-seed-swiss-association-ed51a356cb6c">
           active Trusted Seed members
         </Link>{' '}
