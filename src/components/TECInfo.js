@@ -21,7 +21,7 @@ const TECInfo = () => {
         padding: 0 ${GU};
       `}
     >
-      <Title>Hatching a New Economy</Title>
+      <Title>Hatching the TEC</Title>
       <Paragraph>
         Welcome! Our{' '}
         <Link href="https://medium.com/token-engineering-commons/the-token-engineering-commons-hatch-your-economy-your-choice-354926284281">
