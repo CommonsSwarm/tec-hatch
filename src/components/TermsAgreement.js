@@ -38,7 +38,7 @@ function TermsAgreement(props) {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-top: ${1 * GU}px;
+          margin-top: ${2 * GU}px;
           margin-bottom: ${0.1 * GU}px;
         `}
       >
