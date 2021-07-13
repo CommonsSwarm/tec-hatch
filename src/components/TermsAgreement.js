@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { GU, textStyle, Button } from '@commonsswarm/ui'
+import { GU, textStyle, Button, Checkbox } from '@commonsswarm/ui'
 import HatchTerms from '../assets/TEC_Hatch_Terms.pdf'
 import { useUserState } from '../providers/UserState'
 import { useAppState } from '../providers/AppState'
@@ -42,7 +42,7 @@ function TermsAgreement(props) {
           margin-bottom: ${0.1 * GU}px;
         `}
       >
-        <input type="checkbox" id="agree" onChange={checkboxHandler} />
+        <Checkbox id="agree" checked={agree} onChange={checkboxHandler} />
         <label>
           I agree to the{' '}
           <a target="_blank" rel="noopener noreferrer" href={HatchTerms}>
