@@ -7,6 +7,7 @@ import { useAppState } from '../providers/AppState'
 import CircleGraphGoals from './CircleGraphGoals'
 import TokenField from './TokenField'
 import { useUserState } from '../providers/UserState'
+import TermsAgreement from './TermsAgreement'
 
 export default React.memo(() => {
   const theme = useTheme()
@@ -23,7 +24,6 @@ export default React.memo(() => {
         state,
       },
     },
-    contributionPanel: { requestOpen: requestContributionOpen },
     redeemPanel: { requestOpen: requestRedeemOpen },
   } = useAppState()
 
@@ -60,13 +60,7 @@ export default React.memo(() => {
         >
           {state === Hatch.state.FUNDING && (
             <>
-              <Button
-                wide
-                mode="normal"
-                label={`Mint ${tokenSymbol}`}
-                onClick={requestContributionOpen}
-                disabled={!account}
-              />
+              <TermsAgreement />
             </>
           )}
           {state === Hatch.state.GOALREACHED && (
