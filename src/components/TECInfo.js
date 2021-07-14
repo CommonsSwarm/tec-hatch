@@ -31,7 +31,7 @@ const TECInfo = () => {
         <Link href="https://medium.com/commonsstack/join-the-commons-stacks-trusted-seed-swiss-association-ed51a356cb6c">
           active Trusted Seed members
         </Link>{' '}
-        for and builders of the Token Engineering Commons!
+        and the builders of the Token Engineering Commons!
       </Paragraph>
       <Paragraph>
         The vision of the <strong>Token Engineering Commons (TEC)</strong> is to
@@ -76,9 +76,9 @@ const TECInfo = () => {
         Minimum Goal that needs to be reached in order for the TEC hatch to be
         successful. If that amount of wxDai is not collected, the Hatch fails
         and 100% of the funds are returned. If the Minimum Goal is reached or
-        surpassed, one week after of the Hatch period, TECH holders will be able
-        to vote for and ratify the Commons Upgrade parameters. For more details,
-        click{' '}
+        surpassed, one week after the end of the Hatch period, TECH holders will
+        be able to vote for and ratify the Commons Upgrade parameters. For more
+        details, click{' '}
         <Link href="https://forum.tecommons.org/t/the-hatch-tl-dr/272">
           here
         </Link>
