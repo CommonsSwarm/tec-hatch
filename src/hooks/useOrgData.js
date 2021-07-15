@@ -6,7 +6,7 @@ import { useConfigSubscription } from './useSubscriptions'
 
 const REDEMPTIONS_APP_NAME = 'redemptions'
 const APP_NAME = process.env.REACT_APP_HATCH_APP_NAME
-const STAGING = process.env.REACT_APP_STAGING ?? false
+const STAGING = process.env.REACT_APP_STAGING === 'true' ?? false
 
 const useOrgData = () => {
   const [hatchConnector, setHatchConnector] = useState(null)
