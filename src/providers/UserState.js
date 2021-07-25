@@ -20,13 +20,11 @@ export const UserStateProvider = ({ children }) => {
   const {
     getContributionTokenBalance,
     getAllowedContributionAmount,
-    getAwardedTokensAmount,
   } = useActions()
   const [collateralBalance, setCollateralBalance] = useState(new BigNumber(0))
   const [allowedContributionAmount, setAllowedContributionAmount] = useState(
     new BigNumber(0)
   )
-  const [awardedTokenAmount, setAwardedTokenAmount] = useState(new BigNumber(0))
   const [loadingTokenData, setLoadingTokenData] = useState(true)
   const [contributorData, loadingContributor] = useContributorSubscription(
     account
@@ -36,7 +34,6 @@ export const UserStateProvider = ({ children }) => {
   const setEmptyTokenData = () => {
     setCollateralBalance(new BigNumber(0))
     setAllowedContributionAmount(new BigNumber(0))
-    setAwardedTokenAmount(new BigNumber(0))
   }
 
   const getUserTokenData = useCallback(
@@ -44,13 +41,8 @@ export const UserStateProvider = ({ children }) => {
       Promise.all([
         getContributionTokenBalance(account),
         getAllowedContributionAmount(account),
-        getAwardedTokensAmount(account),
       ]),
-    [
-      getContributionTokenBalance,
-      getAllowedContributionAmount,
-      getAwardedTokensAmount,
-    ]
+    [getContributionTokenBalance, getAllowedContributionAmount]
   )
 
   // watch for a connected user and get its token data.
@@ -64,15 +56,12 @@ export const UserStateProvider = ({ children }) => {
       setLoadingTokenData(true)
 
       try {
-        const [
-          collateralAmount,
-          allowedAmount,
-          awardedAmount,
-        ] = await getUserTokenData(account)
+        const [collateralAmount, allowedAmount] = await getUserTokenData(
+          account
+        )
 
         setCollateralBalance(collateralAmount)
         setAllowedContributionAmount(allowedAmount)
-        setAwardedTokenAmount(awardedAmount)
 
         setLoadingTokenData(false)
       } catch (err) {
@@ -95,7 +84,6 @@ export const UserStateProvider = ({ children }) => {
       const [
         newCollateralBalance,
         newAllowedContributionAmount,
-        newAwardedTokenAmount,
       ] = await getUserTokenData(account)
 
       if (!newCollateralBalance.eq(collateralBalance)) {
@@ -103,9 +91,6 @@ export const UserStateProvider = ({ children }) => {
       }
       if (!newAllowedContributionAmount.eq(allowedContributionAmount)) {
         setAllowedContributionAmount(newAllowedContributionAmount)
-      }
-      if (!newAwardedTokenAmount.eq(awardedTokenAmount)) {
-        setAwardedTokenAmount(newAwardedTokenAmount)
       }
 
       setLoadingTokenData(false)
@@ -121,7 +106,6 @@ export const UserStateProvider = ({ children }) => {
       loading,
       collateralBalance,
       allowedContributionAmount,
-      awardedTokenAmount,
     }),
     [
       account,
@@ -129,7 +113,6 @@ export const UserStateProvider = ({ children }) => {
       loading,
       collateralBalance,
       allowedContributionAmount,
-      awardedTokenAmount,
     ]
   )
   return (
