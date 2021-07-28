@@ -9,9 +9,13 @@ const TopContributors = ({ contributors = [] }) => {
         <Contributor key={account}>
           <IdentityBadge entity={account} />
           <div
+            title={formattedTotalValue}
             css={`
               ${textStyle('body3')}
               margin-left: ${3 * GU}px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
             `}
           >
             {formattedTotalValue}

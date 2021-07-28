@@ -148,13 +148,6 @@ const useActions = (onClose = () => {}) => {
     [hatchConnector]
   )
 
-  const getAwardedTokensAmount = useCallback(
-    async entity => {
-      return convertBN(await hatchConnector.awardedTokenAmount(entity))
-    },
-    [hatchConnector]
-  )
-
   const getReserveTokenBalance = useCallback(async () => {
     return convertBN(await hatchConnector.reserveTokenBalance())
   }, [hatchConnector])
@@ -171,7 +164,6 @@ const useActions = (onClose = () => {}) => {
     redeem,
     getContributionTokenBalance,
     getAllowedContributionAmount,
-    getAwardedTokensAmount,
     getTokenTotalSupply,
     getReserveTokenBalance,
     txsData: {
