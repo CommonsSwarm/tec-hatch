@@ -8,8 +8,10 @@ export const addressesEqual = (first, second) => {
 }
 
 export const getUseWalletProviders = () => {
-  const providers = [{ id: 'injected' }]
-
+  const providers = [
+    { id: 'injected' },
+    { id: 'frame'}    
+    ]
   // Add other providers here
 
   return providers

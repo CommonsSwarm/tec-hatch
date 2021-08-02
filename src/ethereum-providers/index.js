@@ -1,4 +1,5 @@
 import metamask from './icons/Metamask.png'
+import frame from './icons/Frame.png'
 import wallet from './icons/wallet.svg'
 
 // See the corresponding prop type, EthereumProviderType, in prop-types.js.
@@ -11,6 +12,15 @@ const PROVIDERS = new Map(
       image: metamask,
       strings: {
         'your Ethereum provider': 'Metamask',
+      },
+    },
+    {
+      id: 'frame',
+      name: 'Frame',
+      type: 'Desktop',
+      image: frame,
+      strings: {
+        'your Ethereum provider': 'Frame',
       },
     },
     {
