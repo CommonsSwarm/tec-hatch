@@ -28,13 +28,13 @@ const networks = {
     name: 'xDai',
     type: 'xdai',
     image: xDaiLogo,
-    defaultEthNode: 'https://xdai.1hive.org/',
+    defaultEthNode: 'https://rpc.xdaichain.com/',
     org: { address: ORG_ADDRESS, connectorType: CONNECTOR_TYPE },
     ipfsGateway: 'https://ipfs.eth.aragon.network/ipfs',
     eip3085: {
       chainId: '0x64',
       chainName: 'xDai',
-      rpcUrls: ['https://xdai.1hive.org/'],
+      rpcUrls: ['https://rpc.xdaichain.com/'],
       iconUrls: [
         'https://gblobscdn.gitbook.com/spaces%2F-Lpi9AHj62wscNlQjI-l%2Favatar.png',
       ],
