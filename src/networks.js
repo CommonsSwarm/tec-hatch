@@ -28,7 +28,7 @@ const networks = {
     name: 'xDai',
     type: 'xdai',
     image: xDaiLogo,
-    defaultEthNode: 'https://rpc.xdaichain.com/',
+    defaultEthNode: 'https://dai.poa.network',
     org: { address: ORG_ADDRESS, connectorType: CONNECTOR_TYPE },
     ipfsGateway: 'https://ipfs.eth.aragon.network/ipfs',
     eip3085: {
