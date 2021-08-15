@@ -217,7 +217,7 @@ const RedeemTokens = () => {
         <TxButton
           txsData={txsData}
           disabled={value <= 0}
-          label={`Redeem ${symbol} Tokens`}
+          label={`Ragequit ${symbol} Tokens`}
         />
       </form>
     </div>

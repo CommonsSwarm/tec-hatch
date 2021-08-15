@@ -91,9 +91,11 @@ export default React.memo(() => {
           {state === Hatch.state.CLOSED && (
             <Button
               wide
-              label={`Redeem ${tokenSymbol}`}
+              label={`Ragequit ${tokenSymbol}`}
               disabled={!account}
               onClick={requestRedeemOpen}
+              mode="negative"
+              size="small"
             />
           )}
         </div>
