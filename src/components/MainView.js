@@ -30,8 +30,11 @@ const MainView = ({ children }) => {
           </div>
           <Layout>
             <SyncIndicator visible={isLoading} />
-            <Layout>{!isLoading && children}</Layout>
-            <ErrorModal visible={!!errors} />
+            {errors ? (
+              <ErrorModal visible />
+            ) : (
+              <Layout>{!isLoading && children}</Layout>
+            )}
           </Layout>
         </div>
       </ScrollView>
